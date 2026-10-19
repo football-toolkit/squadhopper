@@ -1,0 +1,12 @@
+# JetBrains IDEs
+.idea/
+
+# Environment files with secrets
+.env
+.env.*
+!.env.example
+
+# Claude Code personal settings and notes
+.claude/settings.local.json
+CLAUDE.local.md
+.claude/CLAUDE.local.md
