@@ -1,4 +1,4 @@
-# SquadHopper
+# Project rules
 
 All your football matches in one place.
 
@@ -7,6 +7,7 @@ No code or tech stack is set up yet. When one is, add the build, test, and lint 
 ## General
 
 - Write in English: code, comments, docs, commit messages, issues and pull requests.
+- Refer to the project as "the project" or "this project". Its name appears only in the `README.md` title.
 - The repo is public. Never commit personal data, secrets, API keys, or credentials. Use environment variables and keep them out of git.
 - Ask before running any command that changes GitHub or the remote, such as `git push`, `gh issue`, `gh pr`, or `gh repo`.
 
