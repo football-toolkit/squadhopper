@@ -17,7 +17,7 @@ SquadHopper is designed through discussion: options are compared and reasons giv
 
 ## Decision outcome
 
-Chosen option: **"ADRs using MADR"**: the most widely used Markdown ADR template, and it records the rejected options, not only the winner.
+Chosen option: **"ADRs using MADR"**: a widely used Markdown ADR template, and it records the rejected options, not only the winner.
 
 - One decision per file: `docs/explanation/decisions/NNNN-short-title.md`, numbered in the order decisions are recorded.
 - New ADRs start as a copy of `templates/adr.md`.
