@@ -20,7 +20,7 @@ This project needs a home on GitHub. The choice of visibility and owner affects 
 
 Chosen option: **"A public repository in an organization"**, because:
 
-- the free plan of the intended host (Vercel Hobby) can’t deploy private organization repositories;
+- the free plan of the intended host (Vercel Hobby) can't deploy private organization repositories;
 - public repositories get security features for free: secret scanning, push protection, Dependabot alerts and updates, code scanning, and private vulnerability reporting;
 - an organization keeps the project separate from the personal account.
 
