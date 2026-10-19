@@ -8,7 +8,7 @@ decision-makers: repository owner
 
 ## Context and problem statement
 
-SquadHopper needs a home on GitHub. The choice of visibility and owner affects where the app can be deployed for free, which security tooling is available, and how the project is kept apart from personal work.
+This project needs a home on GitHub. The choice of visibility and owner affects where the app can be deployed for free, which security tooling is available, and how the project is kept apart from personal work.
 
 ## Considered options
 
@@ -20,7 +20,7 @@ SquadHopper needs a home on GitHub. The choice of visibility and owner affects w
 
 Chosen option: **"A public repository in an organization"**, because:
 
-- free hosting plans for the app can deploy public organization repositories, but not private ones;
+- the free plan of the intended host (Vercel Hobby) can’t deploy private organization repositories;
 - public repositories get security features for free: secret scanning, push protection, Dependabot alerts and updates, code scanning, and private vulnerability reporting;
 - an organization keeps the project separate from the personal account.
 

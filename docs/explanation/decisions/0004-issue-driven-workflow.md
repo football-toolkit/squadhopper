@@ -8,7 +8,7 @@ decision-makers: repository owner
 
 ## Context and problem statement
 
-Changes to SquadHopper need a consistent path to `main`. The workflow should make it clear why each change was made and keep the history clean enough to build on later.
+Changes to the project need a consistent path to `main`. The workflow should make it clear why each change was made and keep the history clean enough to build on later.
 
 ## Considered options
 
