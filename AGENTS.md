@@ -41,3 +41,10 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 - Follow the conventions already in the surrounding code.
 - Add or update tests with every behavior change, once a test setup exists.
 - Update `README.md` and `AGENTS.md` when setup steps or conventions change.
+
+## Decisions and docs
+
+- When a change involves a significant technical choice, add an ADR in the same PR. See [docs/explanation/decisions/](docs/explanation/decisions/README.md).
+- To write one, copy `docs/explanation/decisions/templates/adr.md` to the next free number, e.g. `0003-short-title.md`, and add it to the index.
+- Never rewrite an accepted ADR. To change a decision, write a new ADR and mark the old one `superseded by NNNN`.
+- Every folder under `docs/` has a `README.md`.
