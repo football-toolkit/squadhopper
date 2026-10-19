@@ -10,6 +10,8 @@ Every important choice in this repo, **why** it was made, and which alternatives
 | --- | --- |
 | [0001](0001-record-decisions-with-madr.md) | Record decisions as ADRs, using MADR |
 | [0002](0002-structure-docs-with-diataxis.md) | Structure docs with Diátaxis, with a landing page in every folder |
+| [0003](0003-public-repo-in-an-organization.md) | Host the code in a public repository in a GitHub organization, locked down |
+| [0004](0004-issue-driven-workflow.md) | Use an issue-driven workflow with squash merges and Conventional Commits |
 
 ## Writing a new ADR
 
