@@ -1,0 +1,27 @@
+name: Task
+description: A specific piece of work that isn't a bug or a feature.
+type: Task
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: What needs to be done?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: Why does it need to be done?
+    validations:
+      required: true
+  - type: textarea
+    id: done-when
+    attributes:
+      label: Done when
+      description: How will we know it's done?
+      placeholder: |
+        - [ ] ...
+    validations:
+      required: true
