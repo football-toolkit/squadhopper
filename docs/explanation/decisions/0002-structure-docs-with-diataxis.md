@@ -8,7 +8,7 @@ decision-makers: repository owner
 
 ## Context and problem statement
 
-Readers need different things at different moments: learning the setup, doing one task, looking up a fact, or understanding a design. The SquadHopper docs need a structure that keeps these apart and stays easy to navigate as the project grows.
+Readers need different things at different moments: learning the setup, doing one task, looking up a fact, or understanding a design. The project's docs need a structure that keeps these apart and stays easy to navigate as the project grows.
 
 ## Considered options
 

@@ -1,6 +1,6 @@
 # Documentation
 
-Everything about **SquadHopper**: what it does, how to use it, and why it's built this way.
+Everything about this project: what it does, how to use it, and why it's built this way.
 
 These docs follow **[Diátaxis](https://diataxis.fr)** ([ADR 0002](explanation/decisions/0002-structure-docs-with-diataxis.md)). It splits pages into four kinds, because you need different things at different moments:
 

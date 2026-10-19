@@ -8,7 +8,7 @@ decision-makers: repository owner
 
 ## Context and problem statement
 
-SquadHopper is designed through discussion: options are compared and reasons given. So far those reasons only exist in chat. Without a record, the code shows *what* was built but not *why*, and the same questions get asked again.
+This project is designed through discussion: options are compared and reasons given. So far those reasons only exist in chat. Without a record, the code shows *what* was built but not *why*, and the same questions get asked again.
 
 ## Considered options
 

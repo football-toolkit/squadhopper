@@ -1,6 +1,6 @@
 # Explanation
 
-💡 Pages that help you **understand**: why SquadHopper is built the way it is, and how its parts work together. Read them away from the keyboard. They're for building a mental model, not for following steps.
+💡 Pages that help you **understand**: why this project is built the way it is, and how its parts work together. Read them away from the keyboard. They're for building a mental model, not for following steps.
 
 ## Contents
 
