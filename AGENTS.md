@@ -2,7 +2,13 @@
 
 All your football matches in one place.
 
-The project is at an early stage: no tech stack has been chosen yet. When one is, add the build, test, and lint commands to this file.
+No code or tech stack is set up yet. When one is, add the build, test, and lint commands to this file.
+
+## General
+
+- Write in English: code, comments, docs, commit messages, issues and pull requests.
+- The repo is public. Never commit personal data, secrets, API keys, or credentials. Use environment variables and keep them out of git.
+- Ask before running any command that changes GitHub or the remote, such as `git push`, `gh issue`, `gh pr`, or `gh repo`.
 
 ## Workflow
 
@@ -15,7 +21,18 @@ The project is at an early stage: no tech stack has been chosen yet. When one is
 
 ## Commits
 
-- Write the subject in the imperative mood ("Add match list", not "Added match list"), at most 72 characters, with no trailing period.
+Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subject>`, e.g. `feat: add match list`.
+
+- Types:
+  - `feat`: a new feature
+  - `fix`: a bug fix
+  - `docs`: documentation only
+  - `chore`: maintenance, config, or tooling
+  - `ci`: CI configuration
+  - `test`: adding or updating tests
+  - `refactor`: a code change that neither fixes a bug nor adds a feature
+- Write the subject in the imperative mood ("add match list", not "added match list").
+- Keep the whole first line at most 72 characters, with no trailing period.
 - Use the body to explain why, when that isn't obvious from the change.
 - Make each commit one logical change.
 
@@ -23,5 +40,4 @@ The project is at an early stage: no tech stack has been chosen yet. When one is
 
 - Follow the conventions already in the surrounding code.
 - Add or update tests with every behavior change, once a test setup exists.
-- Never commit secrets, API keys, or credentials. Use environment variables and keep them out of git.
 - Update `README.md` and `AGENTS.md` when setup steps or conventions change.
