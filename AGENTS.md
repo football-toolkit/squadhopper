@@ -46,8 +46,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 ## Implementation
 
 - Implement every change (Feature, Task, or Bug) through the [Superpowers](https://github.com/obra/superpowers) plugin, enabled in `.claude/settings.json`.
-- Save Superpowers technical designs to `superpowers/specs/` and plans to `superpowers/plans/`, not to its default `docs/superpowers/`.
-- When a change involves a significant technical choice, add an ADR in the same PR (see Decisions and docs below).
+- Superpowers saves each change's files in one folder named like its branch, `superpowers/<issue-number>-<short-slug>/`: the technical design as `design.md` and the plan as `plan.md` (not in its default `docs/superpowers/`).
 
 ## Decisions and docs
 

@@ -21,7 +21,7 @@ Changes to the project are implemented with coding agents. Without a shared proc
 Chosen option: **"Superpowers"**, because it gives every change the same discipline (design, plan, test first, code review) and scales the ceremony to the size of the change.
 
 - Every change (Feature, Task, or Bug) is implemented through the [Superpowers](https://github.com/obra/superpowers) plugin, enabled for the project in `.claude/settings.json`.
-- Superpowers saves technical designs to `superpowers/specs/` and plans to `superpowers/plans/`. Its default location, `docs/superpowers/`, is overridden so that `docs/` stays pure Diátaxis ([0002](0002-structure-docs-with-diataxis.md)).
+- Superpowers saves each change's files in one folder named like its branch, `superpowers/<issue-number>-<short-slug>/`: the technical design as `design.md` and the plan as `plan.md`. Its default location, `docs/superpowers/`, is overridden so that `docs/` stays pure Diátaxis ([0002](0002-structure-docs-with-diataxis.md)).
 - Significant technical choices still get an ADR in the same pull request.
 
 ### Consequences
@@ -34,7 +34,7 @@ Chosen option: **"Superpowers"**, because it gives every change the same discipl
 
 - `.claude/settings.json` enables `superpowers@claude-plugins-official`.
 - The "Implementation" section of `AGENTS.md`.
-- Designs and plans appear under `superpowers/`, not `docs/superpowers/`.
+- Each change's `design.md` and `plan.md` appear in its own `superpowers/<issue-number>-<short-slug>/` folder, not under `docs/superpowers/`.
 
 ## More information
 
