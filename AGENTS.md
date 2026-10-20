@@ -43,6 +43,12 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 - Add or update tests with every behavior change, once a test setup exists.
 - Update `README.md` and `AGENTS.md` when setup steps or conventions change.
 
+## Implementation
+
+- Implement every change (Feature, Task, or Bug) through the [Superpowers](https://github.com/obra/superpowers) plugin, enabled in `.claude/settings.json`.
+- Save Superpowers technical designs to `superpowers/specs/` and plans to `superpowers/plans/`, not to its default `docs/superpowers/`.
+- When a change involves a significant technical choice, add an ADR in the same PR (see Decisions and docs below).
+
 ## Decisions and docs
 
 - When a change involves a significant technical choice, add an ADR in the same PR. See [docs/explanation/decisions/](docs/explanation/decisions/README.md).
