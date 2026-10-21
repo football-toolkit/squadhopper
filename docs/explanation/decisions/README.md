@@ -13,6 +13,7 @@ Every important choice in this repo, **why** it was made, and which alternatives
 | [0003](0003-public-repo-in-an-organization.md) | Host the code in a public repository in a GitHub organization, locked down |
 | [0004](0004-issue-driven-workflow.md) | Use an issue-driven workflow with squash merges and Conventional Commits |
 | [0005](0005-implement-every-change-through-superpowers.md) | Implement every change through Superpowers |
+| [0006](0006-one-key-per-change.md) | Link issue, branch, specs and plans with one key per change |
 
 ## Writing a new ADR
 
