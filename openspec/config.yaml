@@ -1,0 +1,38 @@
+schema: spec-driven
+
+context: |
+  A personal app that shows one calendar of the owner's football matches across several teams and flags days with clashes.
+  This repo is public, so artifacts contain no personal data.
+
+rules:
+  proposal:
+    - "Business language only: no technology, libraries, data structures, APIs or code."
+    - "Impact means business impact: what changes for the user, not which parts of the system change."
+    - "These rules override the schema's built-in instruction where they conflict: list no affected code, APIs, dependencies or systems."
+  specs:
+    - "Business language only: no technology, libraries, data structures, APIs or code."
+    - Every requirement has at least one WHEN/THEN scenario.
+  design:
+    - "Business language only: no technology, libraries, data structures, APIs or code."
+    - Describe user flows, business rules and edge cases. The technical design belongs to Superpowers, not here.
+    - "These rules override the schema's built-in instruction where they conflict: always write design.md, use Decisions for business decisions only, and leave out architecture, technical choices and the migration plan."
+  tasks:
+    - "Business language only: no technology, libraries, data structures, APIs or code."
+    - Each task is a user-visible outcome, linked to the scenarios that prove it.
+    - "These rules override the schema's built-in instruction where they conflict: no implementation steps; Superpowers plans the code, tests and docs."
+
+operations:
+  apply:
+    guidance:
+      - "Implement the change through Superpowers: one technical design and one plan for the whole change, in superpowers/<key>/ (design.md, plan.md), where <key> is the change name."
+      - Map every plan step to the task in tasks.md that it delivers.
+      - Test first, starting from each task's scenarios.
+      - Get a code review before the change is done.
+      - Record significant technical choices as ADRs in docs/explanation/decisions/.
+      - Tick a task in tasks.md only when all its scenarios pass.
+      - "When Superpowers finishes the branch, don't push or open the PR yet: run /opsx:archive first, as the last commit before the PR."
+  archive:
+    guidance:
+      - "One active change at a time, across the whole repo: never two Feature branches with an open OpenSpec change."
+      - Archive as the last commit before the pull request.
+      - After archiving, run openspec validate --specs and show the owner the openspec/specs/ diff.

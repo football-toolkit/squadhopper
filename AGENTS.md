@@ -20,6 +20,7 @@ See [docs/how-to/development-workflow.md](docs/how-to/development-workflow.md) f
 - Keep each branch to one issue. If you find unrelated work, open a new issue for it.
 - Open a pull request into `main` using `.github/pull_request_template.md`, and link the issue with `Closes #<issue-number>`.
 - Pull requests are squash-merged, so write the PR title like a commit subject (see Commits below).
+- Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason.
 - Merge only after the PR checklist is complete.
 
 ### Issue types
@@ -28,7 +29,7 @@ See [docs/how-to/development-workflow.md](docs/how-to/development-workflow.md) f
 - **Bug**: the app doesn't do what its spec says.
 - **Task**: everything else (the spec doesn't change, and there's no defect).
 
-Features go through OpenSpec (once set up); Tasks and Bugs don't.
+Features go through OpenSpec (see Business specs below); Tasks and Bugs don't.
 
 ### Creating issues
 
@@ -46,7 +47,7 @@ No personal data in issues.
 - Create the branch from the issue, so GitHub links them: `gh issue develop <number> --name <key> --checkout`.
 - After that, the key is the branch name. Read it with `git branch --show-current`, and never invent it.
 - Never rename the branch. If the key is wrong, delete the branch and recreate it before any work starts. If the slug is what's wrong, fix the issue's Slug first.
-- Use the key as the OpenSpec change name (once OpenSpec is set up) and as the Superpowers folder name, `superpowers/<key>/`.
+- Use the key as the OpenSpec change name and as the Superpowers folder name, `superpowers/<key>/`.
 
 ### Big work
 
@@ -78,6 +79,17 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 - Follow the conventions already in the surrounding code.
 - Add or update tests with every behavior change, once a test setup exists.
 - Update `README.md` and `AGENTS.md` when setup steps or conventions change.
+
+## Business specs
+
+- Features only. Tasks and Bugs skip this section.
+- Optionally, once the branch exists, run `/opsx:explore` to settle open business questions.
+- Run `/opsx:propose` with the change name set to the change key.
+- The repository owner reviews the proposal, specs, design and tasks.
+- Then run `/opsx:apply`. Superpowers settles the technical design (see Implementation below).
+- Then run `/opsx:archive` before opening the PR.
+- One active change at a time, across the whole repo: never two Feature branches with an open OpenSpec change.
+- OpenSpec is pinned to 1.14.2. Upgrades go through their own issue. To install it, see `README.md`.
 
 ## Implementation
 

@@ -14,6 +14,7 @@ Every important choice in this repo, **why** it was made, and which alternatives
 | [0004](0004-issue-driven-workflow.md) | Use an issue-driven workflow with squash merges and Conventional Commits |
 | [0005](0005-implement-every-change-through-superpowers.md) | Implement every change through Superpowers |
 | [0006](0006-one-key-per-change.md) | Link issue, branch, specs and plans with one key per change |
+| [0007](0007-write-business-specs-with-openspec.md) | Write business specs with OpenSpec |
 
 ## Writing a new ADR
 

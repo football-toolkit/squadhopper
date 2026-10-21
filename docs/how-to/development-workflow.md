@@ -8,7 +8,7 @@ This guide walks one change from an idea to a merged pull request. The rules the
 flowchart TD
     A["Issue: type and Slug"] --> B["Branch from the issue"]
     B --> C{"Feature?"}
-    C -->|"yes"| D["OpenSpec business change"]
+    C -->|"yes"| D["OpenSpec: explore (optional), propose"]
     C -->|"no"| E["Superpowers: design, plan, build"]
     D --> E
     E --> F{"Feature?"}
@@ -17,8 +17,6 @@ flowchart TD
     G --> H
     H --> I["Squash merge"]
 ```
-
-The OpenSpec steps apply once OpenSpec is set up. Until then, Features take the same path as Tasks and Bugs.
 
 ## Steps
 
@@ -36,11 +34,14 @@ The OpenSpec steps apply once OpenSpec is set up. Until then, Features take the 
    git branch --show-current
    ```
 
-3. **Features: write the business change** (once OpenSpec is set up). Describe the new behavior as an OpenSpec change named after the change key.
-4. **Design, plan and build with Superpowers.** Superpowers saves the design and the plan in `superpowers/<key>/design.md` and `plan.md`, and asks the owner to approve each one before going on. If the change involves a significant technical choice, add an ADR (see [Decisions](../explanation/decisions/README.md)).
-5. **Features: archive the OpenSpec change** (once OpenSpec is set up), so the spec describes what the app now does.
+3. **Features: write the business change.** Describe the new behavior as an OpenSpec change named after the change key. One active change at a time, across the whole repo: never two Feature branches with an open OpenSpec change.
+   1. *Optional:* run `/opsx:explore` to settle open business questions first.
+   2. Run `/opsx:propose` with the change key as the change name. It writes the proposal, specs, design and tasks, all in business language.
+   3. The owner reviews the proposal, specs, design and tasks before anything is built.
+4. **Design, plan and build with Superpowers.** For a Feature, start with `/opsx:apply`, which hands the change to Superpowers. Superpowers saves the design and the plan in `superpowers/<key>/design.md` and `plan.md`, and asks the owner to approve each one before going on. If the change involves a significant technical choice, add an ADR (see [Decisions](../explanation/decisions/README.md)).
+5. **Features: archive the OpenSpec change** with `/opsx:archive`, so the spec describes what the app now does. Commit the archive on its own, after all other commits, as the last commit before the pull request. Then run `openspec validate --specs`, and the owner reviews the `openspec/specs/` diff.
 6. **Commit.** Write the message as a Conventional Commit (see the Commits section of [AGENTS.md](../../AGENTS.md)).
-7. **Open the pull request.** Ask the owner before pushing and before opening it. Use the pull request template, and link the issue with `Closes #<issue-number>`. Once CI exists, a check confirms that the branch, the Superpowers folder and the OpenSpec change all use the issue's key.
+7. **Open the pull request.** Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason. Ask the owner before pushing and before opening it. Use the pull request template, and link the issue with `Closes #<issue-number>`. Once CI exists, a check confirms that the branch, the Superpowers folder and the OpenSpec change all use the issue's key.
 8. **Squash-merge** once the pull request checklist is complete. The issue closes on its own.
 
 ## Feature, Task and Bug
@@ -63,7 +64,7 @@ Never rename the branch. If the key is wrong, delete the branch and recreate it 
 | --- | --- |
 | Branch | `20-clash-days` |
 | Superpowers folder | `superpowers/20-clash-days/` |
-| OpenSpec change (once OpenSpec is set up) | `openspec/changes/20-clash-days/` |
+| OpenSpec change | `openspec/changes/20-clash-days/` |
 
 One search for the key finds everything about a change. Why we work this way: [ADR 0006](../explanation/decisions/0006-one-key-per-change.md).
 
@@ -89,5 +90,6 @@ Split the work when it has more than one independently useful outcome, won't fit
 
 - 📋 The rules: [AGENTS.md](../../AGENTS.md)
 - 💡 Why one key per change: [ADR 0006](../explanation/decisions/0006-one-key-per-change.md)
+- 💡 Why business specs with OpenSpec: [ADR 0007](../explanation/decisions/0007-write-business-specs-with-openspec.md)
 - ⬆️ [How-to guides](README.md)
 - 🏠 [Docs home](../README.md)
