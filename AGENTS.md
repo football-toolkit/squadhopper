@@ -13,12 +13,48 @@ No code or tech stack is set up yet. When one is, add the build, test, and lint 
 
 ## Workflow
 
-- Every change starts from a GitHub issue. Use the issue templates in `.github/ISSUE_TEMPLATE/`.
-- Never commit directly to `main`. Branch from an up-to-date `main` and name the branch `<issue-number>-<short-slug>`, e.g. `1-dev-workflow`.
+See [docs/how-to/development-workflow.md](docs/how-to/development-workflow.md) for the full flow.
+
+- Every change starts from a GitHub issue of the right type (see Issue types below).
+- Never commit directly to `main`. Start from an up-to-date `main` and create the branch from the issue, named after the change key (see Change key below).
 - Keep each branch to one issue. If you find unrelated work, open a new issue for it.
 - Open a pull request into `main` using `.github/pull_request_template.md`, and link the issue with `Closes #<issue-number>`.
 - Pull requests are squash-merged, so write the PR title like a commit subject (see Commits below).
 - Merge only after the PR checklist is complete.
+
+### Issue types
+
+- **Feature**: changes what the app does (its business spec changes).
+- **Bug**: the app doesn't do what its spec says.
+- **Task**: everything else (the spec doesn't change, and there's no defect).
+
+Features go through OpenSpec (once set up); Tasks and Bugs don't.
+
+### Creating issues
+
+1. Pick the type and read its form in `.github/ISSUE_TEMPLATE/`.
+2. Write the body with one `### <label>` heading per form field, in the form's order. Fill every required field, including Slug.
+3. Show the repository owner the title, type and body first.
+4. Then run `gh issue create --type <Type> --title "…" --body-file <file> --assignee @me`.
+
+No personal data in issues.
+
+### Change key
+
+- Every change has one key, `<issue-number>-<slug>`, e.g. `12-dev-workflow`.
+- The slug comes from the issue's Slug field: 2–4 words, kebab-case. The agent fills it in when creating the issue, and the repository owner approves it.
+- Create the branch from the issue, so GitHub links them: `gh issue develop <number> --name <key> --checkout`.
+- After that, the key is the branch name. Read it with `git branch --show-current`, and never invent it.
+- Never rename the branch. If the key is wrong, delete the branch and recreate it before any work starts. If the slug is what's wrong, fix the issue's Slug first.
+- Use the key as the OpenSpec change name (once OpenSpec is set up) and as the Superpowers folder name, `superpowers/<key>/`.
+
+### Big work
+
+- Split the work when it has more than one independently useful outcome, won't fit in one reviewable PR, or touches several independent parts.
+- A parent issue takes the type of its overall outcome: Feature if the work as a whole changes what the app does, otherwise Task. Its Slug names the overall work, but no branch uses it.
+- The parent issue has no branch or PR. Create each sub-issue with `gh issue create --parent <number>`.
+- Each sub-issue follows the normal flow, and its PR closes only that sub-issue.
+- Close the parent by hand when the last sub-issue's PR merges.
 
 ## Commits
 

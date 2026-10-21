@@ -1,7 +1,14 @@
 name: Feature request
-description: Suggest a new feature or an improvement.
+description: "Change what the app does: its business spec changes."
 type: Feature
 body:
+  - type: input
+    id: slug
+    attributes:
+      label: Slug
+      description: 2–4 words, kebab-case (e.g. clash-days). The branch will be <issue-number>-<slug>.
+    validations:
+      required: true
   - type: textarea
     id: problem
     attributes:
