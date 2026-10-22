@@ -1,5 +1,15 @@
 {
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true
+  },
+  "permissions": {
+    "deny": [
+      "Bash(git add -A *)",
+      "Bash(git add . *)",
+      "Bash(git add --all *)",
+      "Bash(git commit -a *)",
+      "Bash(git commit -am *)",
+      "Bash(git commit --all *)"
+    ]
   }
 }

@@ -73,6 +73,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 - Keep the whole first line at most 72 characters, with no trailing period.
 - Use the body to explain why, when that isn't obvious from the change.
 - Make each commit one logical change.
+- Stage by explicit path: check `git status`, then `git add <path>…`. Never stage everything with `git add -A`, `git add .`, `git add --all`, or `git commit -a`/`-am`/`--all`; `.claude/settings.json` blocks them. Plans list the paths each commit stages.
 
 ## Code
 
