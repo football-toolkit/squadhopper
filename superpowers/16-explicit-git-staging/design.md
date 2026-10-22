@@ -11,8 +11,9 @@ The repo is public. Staging everything (`git add -A` and friends) can commit str
 Issue #16's "Done when" list:
 
 - [ ] AGENTS.md says to stage by explicit path and names the banned commands
-- [ ] `.claude/settings.json` denies `git add -A`, `git add .`, `git add --all` and `git commit -a`
-- [ ] A test run of `git add -A` in a session is blocked
+- [ ] `.claude/settings.json` denies `git add -A`, `git add .`, `git add --all`, `git commit -a`, `git commit -am` and `git commit --all`, and keeps `enabledPlugins`
+- [ ] In a session, `git add -A` and `git commit -am "x"` are blocked
+- [ ] In a session, `git add AGENTS.md` and `git add ./docs/README.md` still work
 
 ## Non-goals
 
