@@ -1,8 +1,13 @@
 schema: spec-driven
 
 context: |
-  A personal app that shows one calendar of the owner's football matches across several teams and flags days with clashes.
-  This repo is public, so artifacts contain no personal data.
+  For amateur football players who play in several teams across different tournaments. It brings everything about their matches into one place, so they don't have to follow each team and organizer separately.
+  Terms:
+  - Team: a squad a player plays for; a player can belong to several teams.
+  - Tournament: a competition that teams play in; a team can play in several tournaments.
+  - Organizer: the body that runs tournaments and publishes their schedules.
+  - Match: a game between two teams in a tournament, at a date, time and place.
+  This repo is public: artifacts use invented teams, places and people, never real ones.
 
 rules:
   proposal:
