@@ -6,7 +6,7 @@ body:
     id: slug
     attributes:
       label: Slug
-      description: 2–4 words, kebab-case (e.g. clash-days). The branch will be <issue-number>-<slug>.
+      description: 2–4 words, kebab-case (e.g. short-change-name). The branch will be <issue-number>-<slug>.
     validations:
       required: true
   - type: textarea
