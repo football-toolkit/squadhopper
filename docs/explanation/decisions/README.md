@@ -15,7 +15,7 @@ Every important choice in this repo, **why** it was made, and which alternatives
 | [0005](0005-implement-every-change-through-superpowers.md) | Implement every change through Superpowers |
 | [0006](0006-one-key-per-change.md) | Link issue, branch, specs and plans with one key per change |
 | [0007](0007-write-business-specs-with-openspec.md) | Write business specs with OpenSpec |
-| [0008](0008-stage-files-by-explicit-path.md) | Stage files by explicit path, enforced by Claude Code deny rules |
+| [0008](0008-stage-files-by-explicit-path.md) | Stage files by explicit path |
 
 ## Writing a new ADR
 

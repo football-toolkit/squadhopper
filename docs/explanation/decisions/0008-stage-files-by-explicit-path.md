@@ -4,7 +4,7 @@ date: 2026-10-22
 decision-makers: repository owner
 ---
 
-# 0008: Stage files by explicit path, enforced by Claude Code deny rules
+# 0008: Stage files by explicit path
 
 ## Context and problem statement
 
