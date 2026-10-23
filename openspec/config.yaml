@@ -33,7 +33,7 @@ operations:
       - Map every plan step to the task in tasks.md that it delivers.
       - Test first, starting from each task's scenarios.
       - Get a code review before the change is done.
-      - Record significant technical choices as ADRs in docs/explanation/decisions/.
+      - "Add an ADR in docs/explanation/decisions/ in the same PR when the change makes a significant choice, about the code or about how we work. A choice is significant when the change chose between real alternatives, and it's costly to undo or someone will later ask why."
       - Tick a task in tasks.md only when all its scenarios pass.
       - "When Superpowers finishes the branch, don't push or open the PR yet: run /opsx:archive first, as the last commit before the PR."
   archive:
