@@ -69,4 +69,4 @@ git commit -m "docs: record the explicit staging decision as ADR 0008" -m "Co-Au
 ### Task 3: PR
 
 - [ ] **Step 1:** Ask, then tick the issue's three "Done when" items with `gh issue edit 22`.
-- [ ] **Step 2:** Ask before `git push` and before `gh pr create`. PR title: `docs: define when a change needs an ADR`. Use the PR template, `Closes #22`, note how each "Done when" item was checked, assign `spanciuc`, and tick the new ADR item: ADR 0008 was added.
+- [ ] **Step 2:** Ask before `git push` and before `gh pr create`. PR title: `docs: define when a change needs an ADR`. Use the PR template, `Closes #22`, note how each "Done when" item was checked, assign the owner, and tick the new ADR item: ADR 0008 was added.
