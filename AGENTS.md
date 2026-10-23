@@ -99,7 +99,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 
 ## Decisions and docs
 
-- When a change involves a significant technical choice, add an ADR in the same PR. See [docs/explanation/decisions/](docs/explanation/decisions/README.md).
+- Add an ADR in the same PR when the change makes a significant choice, about the code or about how we work. A choice is significant when the change chose between real alternatives, and it's costly to undo or someone will later ask why. See [docs/explanation/decisions/](docs/explanation/decisions/README.md).
 - To write one, copy `docs/explanation/decisions/templates/adr.md` to the next free number, e.g. `0003-short-title.md`, and add it to the index.
 - Never rewrite an accepted ADR. To change a decision, write a new ADR and mark the old one `superseded by NNNN`.
 - Every folder under `docs/` has a `README.md`.
