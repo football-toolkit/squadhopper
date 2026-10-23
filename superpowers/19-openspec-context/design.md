@@ -10,9 +10,9 @@ OpenSpec injects `context` into every artifact it writes. The current context li
 
 Issue #19's "Done when" list:
 
-- [ ] `context` matches the text in the issue.
-- [ ] `rules` and `operations` are unchanged.
-- [ ] `openspec list` runs with no config warning.
+- [x] `context` matches the text in the issue.
+- [x] `rules` and `operations` are unchanged.
+- [x] `openspec list` runs with no config warning.
 
 ## Non-goals
 
