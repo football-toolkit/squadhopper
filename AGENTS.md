@@ -59,7 +59,7 @@ No personal data in issues.
 
 ## Commits
 
-Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subject>`, e.g. `feat: add match list`.
+Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subject>`, e.g. `docs: fix typo in README`.
 
 - Types:
   - `feat`: a new feature
@@ -69,7 +69,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
   - `ci`: CI configuration
   - `test`: adding or updating tests
   - `refactor`: a code change that neither fixes a bug nor adds a feature
-- Write the subject in the imperative mood ("add match list", not "added match list").
+- Write the subject in the imperative mood ("fix typo", not "fixed typo").
 - Keep the whole first line at most 72 characters, with no trailing period.
 - Use the body to explain why, when that isn't obvious from the change.
 - Make each commit one logical change.

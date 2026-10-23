@@ -60,11 +60,11 @@ Every change has one key, `<issue-number>-<slug>`. The slug comes from the issue
 
 Never rename the branch. If the key is wrong, delete the branch and recreate it before any work starts. If the slug is what's wrong, fix the issue's Slug first.
 
-| Where | Example for Feature #20, Slug `clash-days` |
+| Where | Example for Feature #42, Slug `short-change-name` |
 | --- | --- |
-| Branch | `20-clash-days` |
-| Superpowers folder | `superpowers/20-clash-days/` |
-| OpenSpec change | `openspec/changes/20-clash-days/` |
+| Branch | `42-short-change-name` |
+| Superpowers folder | `superpowers/42-short-change-name/` |
+| OpenSpec change | `openspec/changes/42-short-change-name/` |
 
 One search for the key finds everything about a change. Why we work this way: [ADR 0006](../explanation/decisions/0006-one-key-per-change.md).
 
