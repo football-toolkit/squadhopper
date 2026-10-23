@@ -33,7 +33,7 @@ Chosen option: **"Explicit paths with the written rule plus Claude Code deny rul
 
 ### Consequences
 
-- Good, because an agent can't run the common bulk commands, even inside a chained command, since Claude Code checks each part on its own.
+- Good, because a Claude Code session can't run the common bulk commands, even inside a chained command, since Claude Code checks each part on its own.
 - Good, because every staged path was chosen on purpose and shows up in the plan.
 - Bad, because deny rules match the command text, so unusual variants can slip past them. The written rule and PR review cover those.
 - Bad, because the deny rules only apply in Claude Code. People and other tools rely on the written rule.
@@ -53,7 +53,7 @@ Chosen option: **"Explicit paths with the written rule plus Claude Code deny rul
 ### Explicit paths with a written rule only
 
 - Good, because it costs one line in `AGENTS.md`.
-- Bad, because it has already failed in practice: agent sessions and plans kept using `git add -A`.
+- Bad, because nothing enforces it, and agent sessions and plans had repeatedly used `git add -A` when nothing stopped them.
 
 ### Explicit paths with the written rule plus a hook
 
