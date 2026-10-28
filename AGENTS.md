@@ -86,6 +86,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 - Use the body to explain why, when that isn't obvious from the change.
 - Make each commit one logical change.
 - Stage by explicit path: check `git status`, then `git add <path>…`. Never stage everything with `git add -A`, `git add .`, `git add --all`, or `git commit -a`/`-am`/`--all`; `.claude/settings.json` blocks them. Plans list the paths each commit stages.
+- After each commit, show the repository owner only `git show --stat`. The repository owner reviews the full diff on the PR.
 
 ## Code
 
@@ -110,6 +111,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 
 - Implement every change (Feature, Task, or Bug) through the [Superpowers](https://github.com/obra/superpowers) plugin, enabled in `.claude/settings.json`.
 - Superpowers saves each change's files in one folder named like its branch, `superpowers/<issue-number>-<short-slug>/`: the technical design as `design.md` and the plan as `plan.md` (not in its default `docs/superpowers/`).
+- Before designing, check what the issue relies on (tools, versions, settings, limits) against the current official docs. If the issue is wrong or out of date, stop and tell the repository owner before designing.
 
 ## Decisions and docs
 
