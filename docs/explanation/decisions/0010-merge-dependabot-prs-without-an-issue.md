@@ -37,7 +37,7 @@ Scope of the exemption: it covers only Dependabot's own diff. If a bot PR fails 
 
 - Good, because dependencies and security fixes land at little cost.
 - Good, because every change we write ourselves still starts from an issue.
-- Bad, because some commits on `main` have no issue behind them. The bot's PR title and the Dependabot branch explain them instead.
+- Bad, because some commits on `main` have no issue behind them. The bot's PR, linked from the squash commit, explains them instead.
 
 ### Confirmation
 

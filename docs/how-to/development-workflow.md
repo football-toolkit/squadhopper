@@ -75,7 +75,7 @@ Every week, Dependabot opens pull requests that update the npm packages and the 
 - They need no issue, change key, Superpowers folder or pull request checklist.
 - The owner reviews each one and squash-merges it once CI is green.
 - If one fails CI and needs code or config changes beyond the bump, the owner closes it and opens a Task for the upgrade, which then follows the normal flow. Never push to a Dependabot branch.
-- If one is behind `main`, comment `@dependabot rebase` on it. Don't use GitHub's "Update branch" button: once anyone else pushes to a Dependabot branch, Dependabot stops rebasing and refreshing that pull request.
+- If one is behind `main`, the owner comments `@dependabot rebase` on it. Don't use GitHub's "Update branch" button: once anyone else pushes to a Dependabot branch, Dependabot stops rebasing and refreshing that pull request.
 
 Why we work this way: [ADR 0010](../explanation/decisions/0010-merge-dependabot-prs-without-an-issue.md).
 
