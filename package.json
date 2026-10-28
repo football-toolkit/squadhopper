@@ -9,7 +9,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "eslint src eslint.config.mjs next.config.ts vitest.config.mts",
+    "typecheck": "next typegen && tsc --noEmit",
+    "format": "prettier --write src eslint.config.mjs next.config.ts vitest.config.mts tsconfig.json package.json .prettierrc.json",
+    "format:check": "prettier --check src eslint.config.mjs next.config.ts vitest.config.mts tsconfig.json package.json .prettierrc.json"
   },
   "dependencies": {
     "next": "16.4.3",
@@ -25,7 +29,9 @@
     "@vitejs/plugin-react": "6.1.2",
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.3",
+    "eslint-config-prettier": "10.1.8",
     "jsdom": "30.1.3",
+    "prettier": "3.9.10",
     "typescript": "5.9.3",
     "vite-tsconfig-paths": "6.1.1",
     "vitest": "5.0.5"
