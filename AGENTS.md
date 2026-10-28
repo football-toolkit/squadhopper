@@ -2,7 +2,19 @@
 
 All your football matches in one place.
 
-No code or tech stack is set up yet. When one is, add the build, test, and lint commands to this file.
+## Commands
+
+The app is built with Next.js on Node 24. Setup steps are in `README.md`.
+
+- `npm run dev`: start the app at http://localhost:3000
+- `npm run build`: build the app for production
+- `npm test`: run the unit tests once
+- `npm run lint`: lint `src/` and the config files
+- `npm run typecheck`: check the TypeScript types
+- `npm run format`: format `src/` and the config files
+- `npm run format:check`: check the formatting without changing files
+
+Before committing, run `npm test`, `npm run lint`, `npm run typecheck`, `npm run format:check` and `npm run build`. All must pass.
 
 ## General
 
@@ -78,7 +90,9 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 ## Code
 
 - Follow the conventions already in the surrounding code.
-- Add or update tests with every behavior change, once a test setup exists.
+- Add or update tests with every behavior change.
+- Put unit tests in a `__tests__/` folder next to the code they test, named after the file, e.g. `src/app/__tests__/page.test.tsx` for `src/app/page.tsx`.
+- Next.js changes fast. Before writing Next.js code, check the docs for the installed version in `node_modules/next/dist/docs/`.
 - Update `README.md` and `AGENTS.md` when setup steps or conventions change.
 
 ## Business specs

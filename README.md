@@ -7,6 +7,17 @@ See [docs/](docs/README.md) for the documentation, including the design decision
 
 ## Setup
 
+The app needs Node.js 24. With [nvm](https://github.com/nvm-sh/nvm), `nvm use` picks the version from `.nvmrc`. Install the dependencies, turn Next.js telemetry off, and start the app at http://localhost:3000:
+
+```bash
+nvm use
+npm install
+npx next telemetry disable  # or set NEXT_TELEMETRY_DISABLED=1
+npm run dev
+```
+
+Run `npx next telemetry disable` in the project root. The other commands are listed in [AGENTS.md](AGENTS.md).
+
 Features are specified with [OpenSpec](https://github.com/Fission-AI/OpenSpec), pinned to 1.14.2. It needs Node.js 20.19.0 or higher. Install it, check the version, and turn telemetry off. The `OPENSPEC_TELEMETRY=0` prefix keeps that command itself from sending an event on first run:
 
 ```bash

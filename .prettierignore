@@ -1,0 +1,6 @@
+.claude/
+openspec/
+docs/
+superpowers/
+package-lock.json
+*.md
