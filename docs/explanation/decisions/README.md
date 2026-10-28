@@ -17,6 +17,12 @@ Every important choice in this repo, **why** it was made, and which alternatives
 | [0007](0007-write-business-specs-with-openspec.md) | Write business specs with OpenSpec |
 | [0008](0008-stage-files-by-explicit-path.md) | Stage files by explicit path |
 
+### Stack and architecture
+
+| ADR | Decision |
+| --- | --- |
+| [0009](0009-build-with-nextjs.md) | Build with Next.js |
+
 ## Writing a new ADR
 
 1. Copy [templates/adr.md](templates/adr.md) to `NNNN-short-title.md` in this folder, using the next free number.
