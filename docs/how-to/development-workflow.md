@@ -15,7 +15,7 @@ flowchart TD
     F -->|"yes"| G["OpenSpec archive"]
     F -->|"no"| H["Pull request"]
     G --> H
-    H --> I["Squash merge"]
+    H -->|"CI green"| I["Squash merge"]
 ```
 
 ## Steps

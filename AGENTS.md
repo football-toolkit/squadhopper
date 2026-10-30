@@ -55,7 +55,7 @@ No personal data in issues.
 
 ### Change key
 
-- Every change has one key, `<issue-number>-<slug>`, e.g. `12-dev-workflow`.
+- Every change has one key, `<issue-number>-<slug>`, e.g. `12-dev-workflow` (Dependabot PRs excepted, see Workflow).
 - The slug comes from the issue's Slug field: 2–4 words, kebab-case. The agent fills it in when creating the issue, and the repository owner approves it.
 - Create the branch from the issue, so GitHub links them: `gh issue develop <number> --name <key> --checkout`.
 - After that, the key is the branch name. Read it with `git branch --show-current`, and never invent it.
@@ -110,7 +110,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 
 ## Implementation
 
-- Implement every change (Feature, Task, or Bug) through the [Superpowers](https://github.com/obra/superpowers) plugin, enabled in `.claude/settings.json`.
+- Implement every change (Feature, Task, or Bug) through the [Superpowers](https://github.com/obra/superpowers) plugin, enabled in `.claude/settings.json` (Dependabot PRs excepted, see Workflow).
 - Superpowers saves each change's files in one folder named like its branch, `superpowers/<issue-number>-<short-slug>/`: the technical design as `design.md` and the plan as `plan.md` (not in its default `docs/superpowers/`).
 - Before designing, check what the issue relies on (tools, versions, settings, limits) against the current official docs. If the issue is wrong or out of date, stop and tell the repository owner before designing.
 
