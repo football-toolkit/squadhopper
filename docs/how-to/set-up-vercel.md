@@ -19,11 +19,11 @@ Vercel builds the app from GitHub. Every merge to `main` deploys to production, 
 ## Check it works
 
 - Open the production URL in a private browser window. It shows the app with no login.
-- On a pull request, open the preview link the Vercel bot comments. It asks for a Vercel login.
+- On a pull request, open the preview link the Vercel bot comments in a private browser window. It asks for a Vercel login.
 
 ## What deploys
 
-Every push to `main` deploys to production, and every other branch gets a preview. Vercel's docs say only the account owner can trigger deployments on Hobby.
+Every push to `main` deploys to production, and every other branch gets a preview. Vercel's docs say only the account owner can trigger deployments on Hobby, and describe the commit-author check for private repositories.
 
 What we've seen so far:
 
