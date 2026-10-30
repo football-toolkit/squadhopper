@@ -178,4 +178,4 @@ git diff --name-only main...HEAD | grep -v '^superpowers/' | xargs grep -n 'verc
 
   Expected: no output from either. (The design and plan mention `vercel.app` only as the rule and as a placeholder, so the second grep skips them.)
 - [ ] **Step 4:** Run `git diff --stat main...HEAD`. Expected: only the paths in Global Constraints.
-- [ ] **Step 5:** Hand back to the owner: ask once whether to tick "Done when" items 1–6 in issue #27 (how each was checked is in design.md's "Ticking the 'Done when' items"), push, and open the PR with `.github/pull_request_template.md`, `Closes #27`, and assignee `spanciuc`. The PR body notes the Task 0 preview result and why no unit tests changed.
+- [ ] **Step 5:** Hand back to the owner: ask once whether to tick "Done when" items 1–6 in issue #27 (how each was checked is in design.md's "Ticking the 'Done when' items"), push, and open the PR with `.github/pull_request_template.md`, `Closes #27`, assigned to the repository owner. The PR body notes the Task 0 preview result and why no unit tests changed.

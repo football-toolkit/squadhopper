@@ -88,7 +88,7 @@ Sections:
 
 `docs/explanation/decisions/0011-host-the-app-on-vercel.md`, from the template, `status: accepted`, `date: 2026-10-30`, `decision-makers: repository owner`.
 
-- **Context:** the app is a Next.js app ([0009](0009-build-with-nextjs.md)) in a public repository in an organization ([0003](0003-public-repo-in-an-organization.md)). v0.1's login needs it running on a real host, with every merge to `main` deployed and every PR viewable before merging. The project has no budget, and one person runs it.
+- **Context:** the app is a Next.js app ([0009](../../docs/explanation/decisions/0009-build-with-nextjs.md)) in a public repository in an organization ([0003](../../docs/explanation/decisions/0003-public-repo-in-an-organization.md)). v0.1's login needs it running on a real host, with every merge to `main` deployed and every PR viewable before merging. The project has no budget, and one person runs it.
 - **Decision drivers:** free for a personal project; runs Next.js as Next.js builds it, with no adapter; a preview per PR, and production updated on every merge, with no deploy pipeline to maintain; little operations work.
 - **Considered options:**
   1. **Vercel** (Hobby plan)
@@ -133,7 +133,7 @@ Because AGENTS.md says to update it when conventions change, the Workflow sectio
 
 ### Indexes
 
-- `docs/how-to/README.md`: a row for [Set up Vercel](set-up-vercel.md), "How to deploy the app to Vercel, and how to roll back".
+- `docs/how-to/README.md`: a row for `[Set up Vercel](set-up-vercel.md)`, "How to deploy the app to Vercel, and how to roll back".
 - `docs/README.md`: the How-to guides row becomes "The development workflow, from idea to merge, and the Vercel setup".
 
 ## Recording the preview result
