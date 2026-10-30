@@ -15,7 +15,7 @@ flowchart TD
     F -->|"yes"| G["OpenSpec archive"]
     F -->|"no"| H["Pull request"]
     G --> H
-    H --> I["Squash merge"]
+    H -->|"CI green"| I["Squash merge"]
 ```
 
 ## Steps
@@ -41,8 +41,8 @@ flowchart TD
 4. **Design, plan and build with Superpowers.** For a Feature, start with `/opsx:apply`, which hands the change to Superpowers. Superpowers saves the design and the plan in `superpowers/<key>/design.md` and `plan.md`, and asks the owner to approve each one before going on. Add an ADR in the same PR when the change makes a significant choice, about the code or about how we work. A choice is significant when the change chose between real alternatives, and it's costly to undo or someone will later ask why (see [Decisions](../explanation/decisions/README.md)).
 5. **Features: archive the OpenSpec change** with `/opsx:archive`, so the spec describes what the app now does. Commit the archive on its own, after all other commits, as the last commit before the pull request. Then run `openspec validate --specs`, and the owner reviews the `openspec/specs/` diff.
 6. **Commit.** Write the message as a Conventional Commit (see the Commits section of [AGENTS.md](../../AGENTS.md)).
-7. **Open the pull request.** Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason. Ask the owner before pushing and before opening it. Use the pull request template, and link the issue with `Closes #<issue-number>`. Once CI exists, a check confirms that the branch, the Superpowers folder and the OpenSpec change all use the issue's key.
-8. **Squash-merge** once the pull request checklist is complete. The issue closes on its own.
+7. **Open the pull request.** Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason. Ask the owner before pushing and before opening it. Use the pull request template, and link the issue with `Closes #<issue-number>`. A later Task adds a CI check that the branch, the Superpowers folder and the OpenSpec change all use the issue's key.
+8. **Squash-merge** once CI is green and the pull request checklist is complete. CI runs typecheck, lint, format check, tests and build on every pull request into `main`, and the `main` ruleset blocks merging until they pass and the branch is up to date. The issue closes on its own.
 
 ## Feature, Task and Bug
 
@@ -68,6 +68,17 @@ Never rename the branch. If the key is wrong, delete the branch and recreate it 
 
 One search for the key finds everything about a change. Why we work this way: [ADR 0006](../explanation/decisions/0006-one-key-per-change.md).
 
+## Dependency updates
+
+Every week, Dependabot opens pull requests that update the npm packages and the pinned GitHub Actions, titled `chore: bump …`. It also opens security update pull requests whenever an alert has a fix. The same rules apply to both version updates and security updates:
+
+- They need no issue, change key, Superpowers folder or pull request checklist.
+- The owner reviews each one and squash-merges it once CI is green.
+- If one fails CI and needs code or config changes beyond the bump, the owner closes it and opens a Task for the upgrade, which then follows the normal flow. Never push to a Dependabot branch.
+- If one is behind `main`, the owner comments `@dependabot rebase` on it. Don't use GitHub's "Update branch" button: once anyone else pushes to a Dependabot branch, Dependabot stops rebasing and refreshing that pull request.
+
+Why we work this way: [ADR 0010](../explanation/decisions/0010-merge-dependabot-prs-without-an-issue.md).
+
 ## Big work
 
 Split the work when it has more than one independently useful outcome, won't fit in one reviewable pull request, or touches several independent parts.
@@ -91,5 +102,6 @@ Split the work when it has more than one independently useful outcome, won't fit
 - 📋 The rules: [AGENTS.md](../../AGENTS.md)
 - 💡 Why one key per change: [ADR 0006](../explanation/decisions/0006-one-key-per-change.md)
 - 💡 Why business specs with OpenSpec: [ADR 0007](../explanation/decisions/0007-write-business-specs-with-openspec.md)
+- 💡 Why Dependabot PRs skip the issue: [ADR 0010](../explanation/decisions/0010-merge-dependabot-prs-without-an-issue.md)
 - ⬆️ [How-to guides](README.md)
 - 🏠 [Docs home](../README.md)

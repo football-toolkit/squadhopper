@@ -27,13 +27,14 @@ Before committing, run `npm test`, `npm run lint`, `npm run typecheck`, `npm run
 
 See [docs/how-to/development-workflow.md](docs/how-to/development-workflow.md) for the full flow.
 
-- Every change starts from a GitHub issue of the right type (see Issue types below).
+- Every change starts from a GitHub issue of the right type (see Issue types below). Dependabot PRs are the only exception (see below).
 - Never commit directly to `main`. Start from an up-to-date `main` and create the branch from the issue, named after the change key (see Change key below).
 - Keep each branch to one issue. If you find unrelated work, open a new issue for it.
 - Open a pull request into `main` using `.github/pull_request_template.md`, and link the issue with `Closes #<issue-number>`.
 - Pull requests are squash-merged, so write the PR title like a commit subject (see Commits below).
 - Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason.
-- Merge only after the PR checklist is complete.
+- Merge only after CI is green and the PR checklist is complete.
+- Dependency PRs opened by Dependabot, both version updates and security updates, need no issue, change key, Superpowers folder or PR checklist. The repository owner reviews them and merges them once CI is green. If one needs code or config changes beyond the bump, close it and do the upgrade as a Task. Never push to a Dependabot branch. See [ADR 0010](docs/explanation/decisions/0010-merge-dependabot-prs-without-an-issue.md).
 
 ### Issue types
 
@@ -54,7 +55,7 @@ No personal data in issues.
 
 ### Change key
 
-- Every change has one key, `<issue-number>-<slug>`, e.g. `12-dev-workflow`.
+- Every change has one key, `<issue-number>-<slug>`, e.g. `12-dev-workflow` (Dependabot PRs excepted, see Workflow).
 - The slug comes from the issue's Slug field: 2–4 words, kebab-case. The agent fills it in when creating the issue, and the repository owner approves it.
 - Create the branch from the issue, so GitHub links them: `gh issue develop <number> --name <key> --checkout`.
 - After that, the key is the branch name. Read it with `git branch --show-current`, and never invent it.
@@ -109,7 +110,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 
 ## Implementation
 
-- Implement every change (Feature, Task, or Bug) through the [Superpowers](https://github.com/obra/superpowers) plugin, enabled in `.claude/settings.json`.
+- Implement every change (Feature, Task, or Bug) through the [Superpowers](https://github.com/obra/superpowers) plugin, enabled in `.claude/settings.json` (Dependabot PRs excepted, see Workflow).
 - Superpowers saves each change's files in one folder named like its branch, `superpowers/<issue-number>-<short-slug>/`: the technical design as `design.md` and the plan as `plan.md` (not in its default `docs/superpowers/`).
 - Before designing, check what the issue relies on (tools, versions, settings, limits) against the current official docs. If the issue is wrong or out of date, stop and tell the repository owner before designing.
 
