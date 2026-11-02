@@ -23,6 +23,7 @@ Every important choice in this repo, **why** it was made, and which alternatives
 | ADR | Decision |
 | --- | --- |
 | [0009](0009-build-with-nextjs.md) | Build with Next.js |
+| [0011](0011-host-the-app-on-vercel.md) | Host the app on Vercel |
 
 ## Writing a new ADR
 

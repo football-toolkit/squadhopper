@@ -7,6 +7,7 @@
 | Guide | What you'll find |
 | --- | --- |
 | [Development workflow](development-workflow.md) | How to take a change from an idea to a merged pull request |
+| [Set up Vercel](set-up-vercel.md) | How to deploy the app to Vercel, and how to roll back |
 
 ## Where next
 

@@ -15,7 +15,7 @@ flowchart TD
     F -->|"yes"| G["OpenSpec archive"]
     F -->|"no"| H["Pull request"]
     G --> H
-    H -->|"CI green"| I["Squash merge"]
+    H -->|"CI green, preview reviewed if the app changed"| I["Squash merge"]
 ```
 
 ## Steps
@@ -42,7 +42,8 @@ flowchart TD
 5. **Features: archive the OpenSpec change** with `/opsx:archive`, so the spec describes what the app now does. Commit the archive on its own, after all other commits, as the last commit before the pull request. Then run `openspec validate --specs`, and the owner reviews the `openspec/specs/` diff.
 6. **Commit.** Write the message as a Conventional Commit (see the Commits section of [AGENTS.md](../../AGENTS.md)).
 7. **Open the pull request.** Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason. Ask the owner before pushing and before opening it. Use the pull request template, and link the issue with `Closes #<issue-number>`. A later Task adds a CI check that the branch, the Superpowers folder and the OpenSpec change all use the issue's key.
-8. **Squash-merge** once CI is green and the pull request checklist is complete. CI runs typecheck, lint, format check, tests and build on every pull request into `main`, and the `main` ruleset blocks merging until they pass and the branch is up to date. The issue closes on its own.
+8. **Review the preview, if the app changed.** When a pull request changes what the app shows or does, the owner reviews its Vercel preview before merging. The Vercel bot comments the preview link on the pull request. Open it, log in to Vercel, and check that the change works as it will in production. The preview needs the owner's Vercel login, which an agent doesn't have, so an agent can't do this step and never claims it's done. Docs-only and workflow pull requests skip it. See [Set up Vercel](set-up-vercel.md).
+9. **Squash-merge** once CI is green, the owner has reviewed the preview if the app changed, and the pull request checklist is complete. CI runs typecheck, lint, format check, tests and build on every pull request into `main`, and the `main` ruleset blocks merging until they pass and the branch is up to date. Merging deploys `main` to production (unless production is rolled back, see [Set up Vercel](set-up-vercel.md#roll-back-production)), and the issue closes on its own.
 
 ## Feature, Task and Bug
 
@@ -103,5 +104,6 @@ Split the work when it has more than one independently useful outcome, won't fit
 - 💡 Why one key per change: [ADR 0006](../explanation/decisions/0006-one-key-per-change.md)
 - 💡 Why business specs with OpenSpec: [ADR 0007](../explanation/decisions/0007-write-business-specs-with-openspec.md)
 - 💡 Why Dependabot PRs skip the issue: [ADR 0010](../explanation/decisions/0010-merge-dependabot-prs-without-an-issue.md)
+- 🛠️ Deploys and previews: [Set up Vercel](set-up-vercel.md)
 - ⬆️ [How-to guides](README.md)
 - 🏠 [Docs home](../README.md)

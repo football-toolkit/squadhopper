@@ -34,6 +34,7 @@ See [docs/how-to/development-workflow.md](docs/how-to/development-workflow.md) f
 - Pull requests are squash-merged, so write the PR title like a commit subject (see Commits below).
 - Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason.
 - Merge only after CI is green and the PR checklist is complete.
+- When a PR changes what the app shows or does, the repository owner reviews its Vercel preview before merging.
 - Dependency PRs opened by Dependabot, both version updates and security updates, need no issue, change key, Superpowers folder or PR checklist. The repository owner reviews them and merges them once CI is green. If one needs code or config changes beyond the bump, close it and do the upgrade as a Task. Never push to a Dependabot branch. See [ADR 0010](docs/explanation/decisions/0010-merge-dependabot-prs-without-an-issue.md).
 
 ### Issue types
