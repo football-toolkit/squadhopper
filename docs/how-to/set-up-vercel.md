@@ -12,7 +12,7 @@ Vercel builds the app from GitHub. Every merge to `main` deploys to production, 
 1. **Sign up.** Sign up for Vercel Hobby with the owner's GitHub account, and turn on two-factor authentication.
 2. **Install the GitHub app.** Install the Vercel GitHub app on the organization. Under repository access, pick only this repository.
 3. **Import the repository.** Vercel detects Next.js. Keep the default settings, and don't add a `vercel.json`. Importing deploys the current `main` to production.
-4. **Add the environment variable.** In the project's Settings → Environment Variables, add `NEXT_TELEMETRY_DISABLED` with the value `1`, type Config (it isn't secret), for all environments. A change only applies to new deployments, so redeploy if you add it after the import.
+4. **Add the environment variable.** Add `NEXT_TELEMETRY_DISABLED` with the value `1`, type Config (it isn't secret), for all environments. You can add it on the import screen, under Environment Variables, before the first deploy. If you add it later, in the project's Settings → Environment Variables, redeploy production, because a change only applies to new deployments.
 5. **Protect the previews.** In Settings → Deployment Protection, pick Standard Protection with Vercel Authentication. Previews then need a Vercel login, and production stays public, because the app's login page will live there.
 6. **Pick the Node.js version.** In Settings → Build and Deployment → Node.js Version, pick 24.x, to match `engines` in `package.json`. If the two differ, `engines` wins, so production runs on Node 24 either way. The setting just keeps the dashboard in line with it. The upgrade to Node 26 is tracked in #35.
 
@@ -27,7 +27,7 @@ Every push to `main` deploys to production, and every other branch gets a previe
 
 What we've seen so far:
 
-- The import deployed a `main` commit that carries a `Co-Authored-By` trailer.
+- The import deployed a `main` commit that carries a `Co-authored-by` trailer.
 - Squash-merged Dependabot pull requests, authored by `dependabot[bot]`, deployed to production too.
 
 The commits behind each result are in [ADR 0011](../explanation/decisions/0011-host-the-app-on-vercel.md).

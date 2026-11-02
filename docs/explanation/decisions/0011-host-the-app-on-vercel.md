@@ -39,7 +39,7 @@ We accept these Hobby limits:
 
 - At import, production deployed commit `e44796f` on `main`, which carries the `Co-authored-by: Claude …` trailer. A Hobby block on such commits had been reported on the community forum ([forum thread](https://community.vercel.com/t/vercel-hobby-plan-deployment-blocked-by-claude-code-ai-co-author-attribution/35972)). It didn't happen here.
 - Dependabot PRs #32 (`08c194b`) and #34 (`f1ba75b`) were squash-merged with `dependabot[bot]` as the commit author, and both deployed to production.
-- The preview of #27's branch built from commit `ee6f3d1`, which carries the same trailer. Without a Vercel login, its URL redirects to Vercel's login.
+- The preview of PR #36 (commit `ee6f3d1`), which carries the same trailer, built successfully. Without a Vercel login, its URL redirects to Vercel's login.
 
 ### Consequences
 
@@ -58,9 +58,9 @@ We accept these Hobby limits:
 
 ### Cloudflare Workers
 
-- Good, because the Workers Free plan is free, and its [pricing page](https://developers.cloudflare.com/workers/platform/pricing/) doesn't mention a non-commercial clause.
+- Good, because the Workers Free plan costs nothing, and its [pricing page](https://developers.cloudflare.com/workers/platform/pricing/) doesn't mention a non-commercial clause.
 - Bad, because Next.js runs there only through the [OpenNext adapter](https://opennext.js.org/cloudflare), a separate project that follows Next.js releases, and Node.js middleware isn't supported yet.
-- Bad, because the Free plan caps a Worker at 3 MiB gzipped and 10 ms of CPU time per invocation.
+- Bad, because the Free plan caps a Worker at 3 MiB gzipped ([OpenNext docs](https://opennext.js.org/cloudflare)) and 10 ms of CPU time per invocation ([Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/)).
 - Bad, because it needs adapter config and a Wrangler setup in the repo.
 
 ### A long-running Node server
