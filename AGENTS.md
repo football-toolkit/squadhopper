@@ -96,6 +96,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 - Add or update tests with every behavior change.
 - Put unit tests in a `__tests__/` folder next to the code they test, named after the file, e.g. `src/app/__tests__/page.test.tsx` for `src/app/page.tsx`.
 - Next.js changes fast. Before writing Next.js code, check the docs for the installed version in `node_modules/next/dist/docs/`.
+- Style with Tailwind classes and the theme variables in `src/app/globals.css`. Add a shadcn/ui component with `npx shadcn add <name>` when a screen first needs it, then run `npm run format`.
 - Update `README.md` and `AGENTS.md` when setup steps or conventions change.
 
 ## Business specs
