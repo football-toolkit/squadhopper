@@ -8,7 +8,7 @@ decision-makers: repository owner
 
 ## Context and problem statement
 
-v0.1's login is the first of many screens, and they need one consistent look. The app has no styles yet: the starter's `globals.css` and `page.module.css` were dropped when the app was created. One person and coding agents build the screens, so where the design lives decides whether agents can read and change it. Where should the design system live, and what should it be built from?
+v0.1's login is the first of many screens, and they need one consistent look. The app has no styles yet: the starter's `globals.css` and `page.module.css` were dropped in #25. One person and coding agents build the screens, so where the design lives decides whether agents can read and change it. Where should the design system live, and what should it be built from?
 
 ## Decision drivers
 
