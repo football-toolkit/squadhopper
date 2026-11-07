@@ -10,15 +10,18 @@
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
-    "lint": "eslint src eslint.config.mjs next.config.ts vitest.config.mts vitest.setup.ts",
+    "lint": "eslint src eslint.config.mjs next.config.ts postcss.config.mjs vitest.config.mts vitest.setup.ts",
     "typecheck": "next typegen && tsc --noEmit",
-    "format": "prettier --write src eslint.config.mjs next.config.ts vitest.config.mts vitest.setup.ts tsconfig.json package.json .prettierrc.json",
-    "format:check": "prettier --check src eslint.config.mjs next.config.ts vitest.config.mts vitest.setup.ts tsconfig.json package.json .prettierrc.json"
+    "format": "prettier --write src eslint.config.mjs next.config.ts postcss.config.mjs vitest.config.mts vitest.setup.ts tsconfig.json package.json .prettierrc.json",
+    "format:check": "prettier --check src eslint.config.mjs next.config.ts postcss.config.mjs vitest.config.mts vitest.setup.ts tsconfig.json package.json .prettierrc.json"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "4.3.4",
     "next": "16.4.3",
+    "postcss": "8.5.32",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "tailwindcss": "4.3.4"
   },
   "devDependencies": {
     "@testing-library/dom": "10.4.2",
