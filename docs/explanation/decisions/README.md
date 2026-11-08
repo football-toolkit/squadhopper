@@ -17,6 +17,7 @@ Every important choice in this repo, **why** it was made, and which alternatives
 | [0007](0007-write-business-specs-with-openspec.md) | Write business specs with OpenSpec |
 | [0008](0008-stage-files-by-explicit-path.md) | Stage files by explicit path |
 | [0010](0010-merge-dependabot-prs-without-an-issue.md) | Merge Dependabot PRs without an issue |
+| [0013](0013-design-screens-in-code.md) | Design screens in code, reviewed on the preview |
 
 ### Stack and architecture
 
