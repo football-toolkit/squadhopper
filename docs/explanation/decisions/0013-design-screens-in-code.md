@@ -35,7 +35,7 @@ For a Feature that adds or changes screens:
 4. **Review:** the owner reviews the screens on the pull request's Vercel preview.
 5. **Record:** the pull request includes screenshots of each new or changed screen at phone (390 px) and desktop (1280 px) widths, with invented data only.
 
-The one picture of the chosen look that #38 commits with the design guide records the app's look as a whole. It isn't a mockup of any screen, so it doesn't conflict with this decision.
+#38 commits one picture of the chosen look with the design guide. It may show a sample screen, but it records the look as a whole. It isn't the spec for any screen's layout or values, and it isn't kept up to date as screens change, so it doesn't conflict with this decision.
 
 ### Consequences
 
