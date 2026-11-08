@@ -81,6 +81,8 @@ gh pr edit <number> --attach './screen-phone.png#Screen at phone width' --attach
 
 If `gh pr edit` fails, `gh pr comment <number> --attach …` adds them in a comment instead. The owner can also drag the files into the pull request on GitHub.
 
+`--attach` only appends, so running it again leaves the old screenshots in place. To replace one, edit the pull request body so the old image becomes a reference to the new local file, such as `![Screen at phone width](./screen-phone.png)`. Then run `gh pr edit <number> --body-file body.md --attach ./screen-phone.png`, and gh points the reference at the upload. If the screenshots are in a comment, edit or replace that comment instead.
+
 A local run and the preview build the same code at the same commit, apart from data and environment settings. So the screenshots are a record, and the owner's review on the preview stays the check.
 
 ## The change key
