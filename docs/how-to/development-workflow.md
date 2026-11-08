@@ -36,12 +36,12 @@ flowchart TD
 
 3. **Features: write the business change.** Describe the new behavior as an OpenSpec change named after the change key. One active change at a time, across the whole repo: never two Feature branches with an open OpenSpec change.
    1. *Optional:* run `/opsx:explore` to settle open business questions first.
-   2. Run `/opsx:propose` with the change key as the change name. It writes the proposal, specs, design and tasks, all in business language.
+   2. Run `/opsx:propose` with the change key as the change name. It writes the proposal, specs, design and tasks, all in business language. For a Feature that adds or changes screens, the design also holds its flows (see [Screen design](#screen-design)).
    3. The owner reviews the proposal, specs, design and tasks before anything is built.
-4. **Design, plan and build with Superpowers.** For a Feature, start with `/opsx:apply`, which hands the change to Superpowers. Superpowers saves the design and the plan in `superpowers/<key>/design.md` and `plan.md`, and asks the owner to approve each one before going on. Add an ADR in the same PR when the change makes a significant choice, about the code or about how we work. A choice is significant when the change chose between real alternatives, and it's costly to undo or someone will later ask why (see [Decisions](../explanation/decisions/README.md)).
+4. **Design, plan and build with Superpowers.** For a Feature, start with `/opsx:apply`, which hands the change to Superpowers. Superpowers saves the design and the plan in `superpowers/<key>/design.md` and `plan.md`, and asks the owner to approve each one before going on. For a Feature that adds or changes screens, build them from the design system (see [Screen design](#screen-design)). Add an ADR in the same PR when the change makes a significant choice, about the code or about how we work. A choice is significant when the change chose between real alternatives, and it's costly to undo or someone will later ask why (see [Decisions](../explanation/decisions/README.md)).
 5. **Features: archive the OpenSpec change** with `/opsx:archive`, so the spec describes what the app now does. Commit the archive on its own, after all other commits, as the last commit before the pull request. Then run `openspec validate --specs`, and the owner reviews the `openspec/specs/` diff.
 6. **Commit.** Write the message as a Conventional Commit (see the Commits section of [AGENTS.md](../../AGENTS.md)).
-7. **Open the pull request.** Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason. Ask the owner before pushing and before opening it. Use the pull request template, and link the issue with `Closes #<issue-number>`. A later Task adds a CI check that the branch, the Superpowers folder and the OpenSpec change all use the issue's key.
+7. **Open the pull request.** Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason. Ask the owner before pushing and before opening it. Use the pull request template, and link the issue with `Closes #<issue-number>`. For a Feature that adds or changes screens, attach the first screenshots when opening the pull request (see [Screen design](#screen-design)). A later Task adds a CI check that the branch, the Superpowers folder and the OpenSpec change all use the issue's key.
 8. **Review the preview, if the app changed.** When a pull request changes what the app shows or does, the owner reviews its Vercel preview before merging. The Vercel bot comments the preview link on the pull request. Open it, log in to Vercel, and check that the change works as it will in production. The preview needs the owner's Vercel login, which an agent doesn't have, so an agent can't do this step and never claims it's done. Docs-only and workflow pull requests skip it. See [Set up Vercel](set-up-vercel.md).
 9. **Squash-merge** once CI is green, the owner has reviewed the preview if the app changed, and the pull request checklist is complete. CI runs typecheck, lint, format check, tests and build on every pull request into `main`, and the `main` ruleset blocks merging until they pass and the branch is up to date. Merging deploys `main` to production (unless production is rolled back, see [Set up Vercel](set-up-vercel.md#roll-back-production)), and the issue closes on its own.
 
@@ -54,6 +54,36 @@ flowchart TD
 | **Task** | Everything else: the spec doesn't change, and there's no defect. | Issue → branch → Superpowers → PR → merge |
 
 A Bug skips OpenSpec because the spec is already right: the fix brings the app back in line with it.
+
+## Screen design
+
+This is the design step for a Feature that adds or changes screens. Other changes skip it. Screens are designed in code, from the design system, and reviewed on the preview. Why: [ADR 0013](../explanation/decisions/0013-design-screens-in-code.md).
+
+1. **Flows.** The Feature's OpenSpec design describes the screens and the user's path between them, as Mermaid diagrams. Label them in business language, like the rest of the OpenSpec design.
+2. **Wireframe, only if the layout is unclear.** The agent or the owner can call for one. The agent sketches it as a Claude Design artifact, and the owner agrees it. It settles layout only, not colors or spacing, and it isn't stored as a source.
+3. **Build from the design system.** Take colors and fonts only from the theme variables in `src/app/globals.css`, spacing and type sizes only from the theme's scales (Tailwind's defaults, unless `globals.css` overrides them), and components from shadcn/ui. No one-off colors, fonts or spacing, such as `p-[13px]`, `text-[#123456]` or `bg-red-500`. This covers the code we write for screens, not what `npx shadcn add` generates.
+4. **Review on the preview.** The owner reviews the screens on the pull request's Vercel preview (step 8).
+5. **Record with screenshots.** The pull request includes a screenshot of each new or changed screen at each width: phone (390 px) and desktop (1280 px). The agent captures them from `npm run dev` with a browser it can already drive, adding no tooling just for screenshots. If it can't, the owner captures them from the preview or a local run. Files attached on a public repository can be opened without signing in, so use invented data only. If the review changes a screen, retake its screenshots and replace the old ones in the pull request body.
+
+| Step | When | Who |
+| --- | --- | --- |
+| Flows | Written with `/opsx:propose`, reviewed with the rest of the change | Agent writes, owner reviews |
+| Wireframe, if needed | Before the owner finishes reviewing the OpenSpec change | Agent sketches, owner agrees |
+| Build from the design system | During Superpowers | Agent |
+| Review on the preview | After the pull request opens (step 8) | Owner |
+| Screenshots | When the pull request opens, and again if the review changes a screen | Agent, else owner |
+
+To attach screenshots, pass `--attach` to `gh pr create` when opening the pull request, or to `gh pr edit` once it's open. Alt text goes after `#`. Like any command that changes GitHub, an agent asks the owner before running it.
+
+```bash
+gh pr edit <number> --attach './screen-phone.png#Screen at phone width' --attach './screen-desktop.png#Screen at desktop width'
+```
+
+If `gh pr edit` fails, `gh pr comment <number> --attach …` adds them in a comment instead. The owner can also drag the files into the pull request on GitHub.
+
+`--attach` only appends, so running it again leaves the old screenshots in place. To replace one, edit the pull request body so the old image becomes a reference to the new local file, such as `![Screen at phone width](./screen-phone.png)`. Then run `gh pr edit <number> --body-file body.md --attach ./screen-phone.png`, and gh points the reference at the upload. If the screenshots are in a comment, edit or replace that comment instead.
+
+A local run and the preview build the same code at the same commit, apart from data and environment settings. So the screenshots are a record, and the owner's review on the preview stays the check.
 
 ## The change key
 
@@ -104,6 +134,7 @@ Split the work when it has more than one independently useful outcome, won't fit
 - 💡 Why one key per change: [ADR 0006](../explanation/decisions/0006-one-key-per-change.md)
 - 💡 Why business specs with OpenSpec: [ADR 0007](../explanation/decisions/0007-write-business-specs-with-openspec.md)
 - 💡 Why Dependabot PRs skip the issue: [ADR 0010](../explanation/decisions/0010-merge-dependabot-prs-without-an-issue.md)
+- 💡 Why screens are designed in code: [ADR 0013](../explanation/decisions/0013-design-screens-in-code.md)
 - 🛠️ Deploys and previews: [Set up Vercel](set-up-vercel.md)
 - ⬆️ [How-to guides](README.md)
 - 🏠 [Docs home](../README.md)

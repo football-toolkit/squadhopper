@@ -110,6 +110,17 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 - One active change at a time, across the whole repo: never two Feature branches with an open OpenSpec change.
 - OpenSpec is pinned to 1.14.2. Upgrades go through their own issue. To install it, see `README.md`.
 
+## Screen design
+
+The design step for Features that add or change screens. Everything else skips this section.
+
+- **Flows:** the Feature's OpenSpec design describes the screens and the user's path between them, as Mermaid diagrams, in business language.
+- **Wireframe, only if the layout is unclear:** the agent or the repository owner can call for one. Sketch it as a Claude Design artifact and agree it with the repository owner. It settles layout only, and isn't stored as a source.
+- **Build from the design system:** take colors and fonts only from the theme variables in `src/app/globals.css`, spacing and type sizes only from the theme's scales (Tailwind's defaults, unless `globals.css` overrides them), and components from shadcn/ui. No one-off colors, fonts or spacing, such as `p-[13px]`, `text-[#123456]` or `bg-red-500`. This covers the code we write for screens, not what `npx shadcn add` generates.
+- **Review:** the repository owner reviews the screens on the PR's Vercel preview.
+- **Record:** the PR includes screenshots of each new or changed screen at phone (390 px) and desktop (1280 px) widths. The agent captures them from `npm run dev` with a browser it can already drive, adding no tooling just for screenshots. If it can't, the repository owner captures them from the preview or a local run. They're publicly reachable, so use invented data only. If the review changes a screen, retake its screenshots and replace the old ones in the PR body.
+- See [the how-to guide](docs/how-to/development-workflow.md#screen-design) and [ADR 0013](docs/explanation/decisions/0013-design-screens-in-code.md).
+
 ## Implementation
 
 - Implement every change (Feature, Task, or Bug) through the [Superpowers](https://github.com/obra/superpowers) plugin, enabled in `.claude/settings.json` (Dependabot PRs excepted, see Workflow).
