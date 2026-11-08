@@ -93,7 +93,7 @@ git commit -m "docs: describe the screen design step in the how-to guide" -m "Co
 ## Task 5: Verify
 
 - [ ] **Step 1:** Check the links. For each relative link in the four changed docs files, check that the target exists from that file's folder. For each `#anchor`, check that the target file has a heading that GitHub's slug rules turn into that anchor. Use a throwaway script in the scratchpad, not the repo. Expected: no missing target.
-- [ ] **Step 2:** Check that the project's name doesn't appear in the changed files: `git diff main --name-only | xargs grep -il squadhopper` prints nothing.
+- [ ] **Step 2:** Check that the project's name doesn't appear in the changed files: `git diff main --name-only | xargs grep -il "$(basename "$(git rev-parse --show-toplevel)")"` prints nothing. The name comes from the repo folder, so the plan doesn't spell it out.
 - [ ] **Step 3:** Check that ADR 0012 is unchanged: `git diff main -- docs/explanation/decisions/0012-keep-the-design-system-in-code.md` prints nothing.
 - [ ] **Step 4:** Run `npm test`, `npm run lint`, `npm run typecheck`, `npm run format:check` and `npm run build`. All must pass.
 - [ ] **Step 5:** `git diff main --name-only` lists only the paths in Global constraints.
