@@ -1,16 +1,33 @@
 import { expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
 import Page from "../page";
+import { APP_NAME } from "@/lib/app-name";
 
-test("the home page says Coming soon", () => {
+test("the home page has the heading, with one place. in volt", () => {
   render(<Page />);
-  expect(screen.getByText("Coming soon")).toBeDefined();
+  expect(
+    screen.getByRole("heading", {
+      level: 1,
+      name: "All your matches in one place.",
+    }),
+  ).toBeDefined();
+  expect(screen.getByText("one place.").className).toContain("text-primary");
 });
 
-test("the home page shows nothing else", () => {
+test("the home page shows the lead text", () => {
   render(<Page />);
-  expect(document.body.textContent).toBe("Coming soon");
-  expect(screen.queryByRole("heading")).toBeNull();
+  expect(
+    screen.getByText("Every team and every tournament on one calendar."),
+  ).toBeDefined();
+});
+
+test("the header shows the app name", () => {
+  render(<Page />);
+  expect(screen.getByRole("banner").textContent).toBe(APP_NAME);
+});
+
+test("Coming soon is gone, and there are no links", () => {
+  render(<Page />);
+  expect(screen.queryByText("Coming soon")).toBeNull();
   expect(screen.queryByRole("link")).toBeNull();
-  expect(screen.queryByRole("img")).toBeNull();
 });
