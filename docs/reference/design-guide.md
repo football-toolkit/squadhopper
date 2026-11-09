@@ -73,8 +73,10 @@ Highlight a few words of a page title with `<span className="text-primary">`, as
 Every page has the same frame:
 
 - **The top half of the screen is the surface color.** It holds the header (on pages that have one) and the pitch band. On short screens, such as a phone in landscape, the surface grows past half, just enough to keep the pitch about 96 px tall.
-- **The pitch** is centered in the band. It's at most 368 × 228 px and shrinks to fit narrow phones and short screens, so it's never cropped, but never below about 96 px tall. The space above it always equals the space between it and the card.
+- **The pitch** is centered in the band and grows with it. Its area takes about 80% of the band's free height, and the pitch fills it as far as its width allows, up to 960 px wide. It shrinks to fit narrow phones and short screens, so it's never cropped, but never below about 96 px tall. The space above it always equals the space between it and the card.
 - **The card** sits centered below, overlapping the band by 48 px. On phones it has 20 px margins; on desktop the page sets its width (the home card is at most 640 px wide).
+
+The pitch's maximum width (960 px) belongs to the page frame, not to any card. If a card gets much wider, check the pitch on a large screen and raise the cap in the same change if needed.
 
 `PitchLayout` builds this frame, so a screen only supplies the header and the card:
 
