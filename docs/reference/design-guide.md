@@ -17,6 +17,7 @@ Use these through their Tailwind classes. Never write the value itself in a scre
 | `surface` | `#141A22` | `bg-surface` | The header, the pitch band and inputs: the lighter, raised areas |
 | `popover`, `muted`, `secondary` | `#141A22` | `bg-popover`, `bg-muted`, `bg-secondary` | Floating menus, subtle fills and low-emphasis buttons (used by shadcn/ui components) |
 | `foreground` | `#F2F5F7` | `text-foreground` | Normal text |
+| `card-foreground`, `popover-foreground`, `secondary-foreground`, `accent-foreground` | `#F2F5F7` | `text-card-foreground` and so on | Text on cards, menus, low-emphasis buttons and hover backgrounds (used by shadcn/ui components) |
 | `muted-foreground` | `#9AA4B2` | `text-muted-foreground` | Secondary text: lead text, hints, small print |
 | `primary` (volt) | `#C8FF2E` | `text-primary`, `bg-primary`, `stroke-primary` | **Only** the pitch lines, highlighted words and the main button. Never links, focus rings or borders |
 | `primary-foreground` | `#0B0F14` | `text-primary-foreground` | Text on volt, such as the main button's label |
