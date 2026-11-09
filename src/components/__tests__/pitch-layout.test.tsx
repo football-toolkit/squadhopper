@@ -32,52 +32,91 @@ test("the pitch drawing is hidden from screen readers", () => {
   );
 });
 
+function classesOf(element: Element | null | undefined) {
+  return element?.getAttribute("class")?.split(" ") ?? [];
+}
+
 function renderBand() {
   const { container } = render(
     <PitchLayout>
       <p>Card</p>
     </PitchLayout>,
   );
-  const box = container.querySelector("svg")?.parentElement;
-  const band = box?.parentElement;
+  const pitch = container.querySelector("svg");
+  const box = pitch?.parentElement;
+  const area = box?.parentElement;
+  const band = area?.parentElement;
   return {
-    box: box?.className.split(" ") ?? [],
-    band: band?.className.split(" ") ?? [],
+    pitch: classesOf(pitch),
+    box: classesOf(box),
+    area: classesOf(area),
+    band: classesOf(band),
+    bandChildren: Array.from(band?.children ?? []).map(classesOf),
+    surface: classesOf(band?.parentElement),
   };
 }
 
-test("the pitch sits in a box positioned over the band's padded area", () => {
+test("the pitch sits in a box positioned over the pitch area", () => {
   // Safari doesn't resolve the pitch's height: 100% inside a flex band, so the
   // pitch fills an absolutely positioned box, whose size is always definite.
-  // The box's bottom gap is its top gap (16 px) plus the card's 48 px overlap.
-  const { box, band } = renderBand();
-  expect(band).toContain("relative");
+  const { box, area, band } = renderBand();
+  expect(area).toContain("relative");
   expect(band).not.toContain("contain-size");
-  for (const c of ["absolute", "inset-x-5", "top-4", "bottom-16", "flex"]) {
+  for (const c of ["absolute", "inset-x-5", "inset-y-0", "flex"]) {
     expect(box).toContain(c);
   }
   expect(box).toEqual(
     expect.arrayContaining(["items-center", "justify-center"]),
   );
+  expect(box).not.toContain("top-4");
+  expect(box).not.toContain("bottom-16");
+});
+
+test("the pitch is at most 960 px wide", () => {
+  const { pitch } = renderBand();
+  for (const c of ["block", "size-full", "max-w-240"]) {
+    expect(pitch).toContain(c);
+  }
+  expect(pitch).not.toContain("max-h-57");
+  expect(pitch).not.toContain("max-w-92");
+});
+
+test("the band splits its height between two equal spaces and the pitch area", () => {
+  // Grow 1 : 8 : 1, so the pitch area takes about 80% of the free height and
+  // the space above the pitch equals the space between it and the card. The
+  // last 48 px sit under the card.
+  const { band, bandChildren } = renderBand();
+  for (const c of [
+    "flex",
+    "flex-1",
+    "flex-col",
+    "border-b",
+    "border-divider",
+  ]) {
+    expect(band).toContain(c);
+  }
+  expect(bandChildren).toHaveLength(4);
+  const [above, area, below, overlap] = bandChildren;
+  expect(above).toEqual(expect.arrayContaining(["min-h-4", "grow"]));
+  expect(area).toEqual(
+    expect.arrayContaining(["relative", "min-h-24", "grow-8"]),
+  );
+  expect(below).toEqual(expect.arrayContaining(["min-h-4", "grow"]));
+  expect(overlap).toEqual(expect.arrayContaining(["h-12", "shrink-0"]));
 });
 
 test("the band keeps room for a pitch at least 96 px tall", () => {
-  // min-h-44 = 96 px pitch + 16 px above + 64 px below.
-  expect(renderBand().band).toContain("min-h-44");
+  // min-h-44 = 16 px above + 96 px pitch + 16 px below + 48 px overlap.
+  const { band, area } = renderBand();
+  expect(band).toContain("min-h-44");
+  expect(area).toContain("min-h-24");
 });
 
 test("the surface is at least half the screen, and grows when the band needs it", () => {
   // Safari doesn't let min-h-min beat a fixed height, so the surface has only a
   // minimum: h-[50svh] would keep it at half while the band overflowed below it.
-  const { container } = render(
-    <PitchLayout>
-      <p>Card</p>
-    </PitchLayout>,
-  );
-  const surface =
-    container.querySelector("svg")?.parentElement?.parentElement?.parentElement;
-  const classes = surface?.className.split(" ") ?? [];
-  expect(classes).toContain("min-h-[50svh]");
-  expect(classes).not.toContain("h-[50svh]");
-  expect(classes).not.toContain("min-h-min");
+  const { surface } = renderBand();
+  expect(surface).toContain("min-h-[50svh]");
+  expect(surface).not.toContain("h-[50svh]");
+  expect(surface).not.toContain("min-h-min");
 });
