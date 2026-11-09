@@ -1,5 +1,5 @@
 import { expect, test, vi } from "vitest";
-import RootLayout, { metadata } from "../layout";
+import RootLayout, { metadata, viewport } from "../layout";
 import { APP_NAME } from "@/lib/app-name";
 
 // next/font only works inside the Next.js build, so each font returns a fixed class.
@@ -10,6 +10,10 @@ vi.mock("next/font/google", () => ({
 
 test("the page title is the app name", () => {
   expect(metadata.title).toBe(APP_NAME);
+});
+
+test("phone browsers color their bar with the surface color", () => {
+  expect(viewport.themeColor).toBe("#141A22");
 });
 
 test("the root element is dark and carries both font variables", () => {
