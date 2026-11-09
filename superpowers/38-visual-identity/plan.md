@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - The only custom tokens are the colors (`surface`, `divider` and shadcn's color tokens) and the two fonts. Type sizes, spacing, radius (`--radius` stays `0.625rem`) and shadow use Tailwind's defaults.
-- No arbitrary `[…]` values in code written for this change, except `h-[50svh]` in `PitchLayout`. No hex colors in `src/` outside `globals.css` and `src/app/icon.svg`. No Tailwind palette classes (`lime-`, `slate-`, `red-`…).
+- No arbitrary `[…]` values in code written for this change, except `min-h-[50svh]` in `PitchLayout`. No hex colors in `src/` outside `globals.css` and `src/app/icon.svg`. No Tailwind palette classes (`lime-`, `slate-`, `red-`…).
 - Volt (`primary`) only in the pitch lines, highlighted words and the main button. Never links, focus rings (`--ring` is `#9AA4B2`) or borders.
 - next/font variables are `--font-inter` and `--font-barlow-condensed`, never `--font-sans` or `--font-heading` (the self-reference trap from #37).
 - Both fonts use `display: "block"`. Heading text always pairs `font-heading` with `italic font-extrabold`.
@@ -195,6 +195,10 @@ test("the pitch sits in a box positioned over the band's padded area", () => {
 test("the band keeps room for a pitch at least 96 px tall", () => {
   // band contains "min-h-44"
 });
+
+test("the surface is at least half the screen, and grows when the band needs it", () => {
+  // surface (the band's parent) contains "min-h-[50svh]", not "h-[50svh]" or "min-h-min"
+});
 ```
 
 `app-header.test.tsx`:
@@ -233,7 +237,7 @@ Base classes `font-heading text-2xl leading-none font-extrabold tracking-wide it
 Exact classes from the design:
 
 - root `flex min-h-svh flex-col`
-- surface `flex h-[50svh] min-h-min shrink-0 flex-col bg-surface`, holding `header` then the band
+- surface `flex min-h-[50svh] shrink-0 flex-col bg-surface`, holding `header` then the band. A minimum, not a fixed height: Safari doesn't let `min-h-min` beat a fixed height, so the surface must be free to grow when the band's minimum needs it.
 - band `relative min-h-44 flex-1 border-b border-divider`, holding a box `absolute inset-x-5 top-4 bottom-16 flex items-center justify-center`, which holds `<Pitch className="block size-full max-h-57 max-w-92" />`. The positioned box gives the pitch a definite size in Safari too. `min-h-44` keeps the pitch at least 96 px tall (96 + 16 + 64).
 - `<main className="relative -mt-12 flex justify-center px-5 pb-8">{children}</main>`
 
@@ -345,7 +349,7 @@ Expected: only `font-display:block`, and a preload link for each font.
 - [ ] **Step 4: No one-off values, and volt only where allowed**
 
 Run: `grep -rnE '\[[^]]*\]' src --include=*.tsx | grep -v __tests__ | grep -v components/ui/` and `grep -rniE '#[0-9a-f]{3,8}\b' src | grep -vE 'globals.css|icon.svg'` and `grep -rnE '\b(text|bg|border|ring|stroke|fill)-(red|lime|slate|gray|zinc|neutral|green|yellow)-' src`
-Expected: the first prints only `h-[50svh]` in `pitch-layout.tsx`, plus `APP_NAME_PARTS[0]` and `APP_NAME_PARTS[1]` in `wordmark.tsx` (array indexes, not classes). The other two print nothing.
+Expected: the first prints only `min-h-[50svh]` in `pitch-layout.tsx`, plus `APP_NAME_PARTS[0]` and `APP_NAME_PARTS[1]` in `wordmark.tsx` (array indexes, not classes). The other two print nothing.
 
 Run: `grep -rn "primary" src --include=*.tsx | grep -v __tests__`
 Expected: only the pitch lines and spots, the wordmark's second part, and "one place." on the home page. Lines in `components/ui/card.tsx` must not use `primary`. Check `--ring: #9AA4B2` in `globals.css`.
@@ -371,7 +375,7 @@ If no browser an agent can drive is available (none was when this was planned), 
 
 - [ ] **Step 1: Write `docs/reference/design-guide.md`**
 
-The design's six parts, in order: tokens table (name, value, Tailwind class, when to use; volt's row states its rule), type scale table, page layout in words with a short `PitchLayout` example (the surface ends at half the screen, the 48 px overlap, the pitch scales and never touches the card, `h-[50svh]` only in `PitchLayout` and why `svh`), do and don't with one-line reasons (the design's examples), "Need a new value?", and the picture with its note (records the look, not a spec, per ADR 0013; the code wins where they differ). Write it for people first, in the repo's docs style, ending with a "Where next" list.
+The design's six parts, in order: tokens table (name, value, Tailwind class, when to use; volt's row states its rule), type scale table, page layout in words with a short `PitchLayout` example (the surface ends at half the screen, or below it only on short screens; the 48 px overlap; the pitch scales, is never below about 96 px and never touches the card; `min-h-[50svh]` only in `PitchLayout`, why it's a minimum, and why `svh`), do and don't with one-line reasons (the design's examples), "Need a new value?", and the picture with its note (records the look, not a spec, per ADR 0013; the code wins where they differ). Write it for people first, in the repo's docs style, ending with a "Where next" list.
 
 - [ ] **Step 2: Add the picture and the section landing page**
 
