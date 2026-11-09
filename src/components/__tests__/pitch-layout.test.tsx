@@ -32,14 +32,36 @@ test("the pitch drawing is hidden from screen readers", () => {
   );
 });
 
-test("the band's own size ignores the pitch, so the pitch shrinks to fit the band", () => {
-  // Without size containment, the surface's min-h-min measures the pitch at its
-  // width-derived height, and the grey grows past half the screen instead.
+function renderBand() {
   const { container } = render(
     <PitchLayout>
       <p>Card</p>
     </PitchLayout>,
   );
-  const band = container.querySelector("svg")?.parentElement;
-  expect(band?.className.split(" ")).toContain("contain-size");
+  const box = container.querySelector("svg")?.parentElement;
+  const band = box?.parentElement;
+  return {
+    box: box?.className.split(" ") ?? [],
+    band: band?.className.split(" ") ?? [],
+  };
+}
+
+test("the pitch sits in a box positioned over the band's padded area", () => {
+  // Safari doesn't resolve the pitch's height: 100% inside a flex band, so the
+  // pitch fills an absolutely positioned box, whose size is always definite.
+  // The box's bottom gap is its top gap (16 px) plus the card's 48 px overlap.
+  const { box, band } = renderBand();
+  expect(band).toContain("relative");
+  expect(band).not.toContain("contain-size");
+  for (const c of ["absolute", "inset-x-5", "top-4", "bottom-16", "flex"]) {
+    expect(box).toContain(c);
+  }
+  expect(box).toEqual(
+    expect.arrayContaining(["items-center", "justify-center"]),
+  );
+});
+
+test("the band keeps room for a pitch at least 96 px tall", () => {
+  // min-h-44 = 96 px pitch + 16 px above + 64 px below.
+  expect(renderBand().band).toContain("min-h-44");
 });

@@ -1,6 +1,6 @@
 # Design guide
 
-How the app looks, and how to build a screen that matches. The look is called "Night pitch": a dark page, a football pitch drawn in volt lines across the top half of the screen, and a card that overlaps it.
+How the app looks, and how to build a screen that matches. The look is called "Night pitch": a dark page, a football pitch drawn in volt lines across the top of the screen, and a card that overlaps it.
 
 This page describes the code. The theme lives in [`src/app/globals.css`](../../src/app/globals.css) and the shared pieces in [`src/components/`](../../src/components/). They are the source of truth: if this guide and the code ever disagree, the code wins and this guide gets fixed. Why the app has one dark theme: [ADR 0014](../explanation/decisions/0014-ship-one-dark-theme.md).
 
@@ -63,8 +63,8 @@ Highlight a few words of a page title with `<span className="text-primary">`, as
 
 Every page has the same frame:
 
-- **The top half of the screen is the surface color.** It holds the header (on pages that have one) and the pitch band.
-- **The pitch** is centered in the band. It's at most 368 × 228 px and shrinks to fit narrow phones and short screens, so it's never cropped. The space above it always equals the space between it and the card.
+- **The top half of the screen is the surface color.** It holds the header (on pages that have one) and the pitch band. On short screens, such as a phone in landscape, the surface grows past half, just enough to keep the pitch about 96 px tall.
+- **The pitch** is centered in the band. It's at most 368 × 228 px and shrinks to fit narrow phones and short screens, so it's never cropped, but never below about 96 px tall. The space above it always equals the space between it and the card.
 - **The card** sits centered below, overlapping the band by 48 px. On phones it has 20 px margins; on desktop the page sets its width (the home card is at most 640 px wide).
 
 `PitchLayout` builds this frame, so a screen only supplies the header and the card:
