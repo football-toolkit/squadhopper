@@ -19,7 +19,7 @@ Before committing, run `npm test`, `npm run lint`, `npm run typecheck`, `npm run
 ## General
 
 - Write in English: code, comments, docs, commit messages, issues and pull requests.
-- Refer to the project as "the project" or "this project". Its name appears only in the `README.md` title.
+- Refer to the project as "the project" or "this project". Its name appears only in the `README.md` title and in `src/lib/app-name.ts`.
 - The repo is public. Never commit personal data, secrets, API keys, or credentials. Use environment variables and keep them out of git.
 - Ask before running any command that changes GitHub or the remote, such as `git push`, `gh issue`, `gh pr`, or `gh repo`.
 
