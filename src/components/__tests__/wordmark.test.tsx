@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Wordmark } from "../wordmark";
-import { APP_NAME } from "@/lib/app-name";
+import { APP_NAME, APP_NAME_PARTS } from "@/lib/app-name";
 
 test("the wordmark spells the app name, as a paragraph by default", () => {
   const { container } = render(<Wordmark />);
@@ -11,9 +11,13 @@ test("the wordmark spells the app name, as a paragraph by default", () => {
 
 test("only the second part is volt", () => {
   render(<Wordmark />);
-  expect(screen.getByText("Hopper").className).toContain("text-primary");
+  expect(screen.getByText(APP_NAME_PARTS[1]).className).toContain(
+    "text-primary",
+  );
   // getByText matches the outer element, whose own text is the first part.
-  expect(screen.getByText("Squad").className).not.toContain("text-primary");
+  expect(screen.getByText(APP_NAME_PARTS[0]).className).not.toContain(
+    "text-primary",
+  );
 });
 
 test("the element can be changed", () => {
