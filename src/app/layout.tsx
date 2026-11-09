@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
 import { APP_NAME } from "@/lib/app-name";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,11 @@ const barlowCondensed = Barlow_Condensed({
 
 export const metadata: Metadata = {
   title: APP_NAME,
+};
+
+// A <meta> tag can't read CSS variables, so this repeats --surface (see the design guide).
+export const viewport: Viewport = {
+  themeColor: "#141A22",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
