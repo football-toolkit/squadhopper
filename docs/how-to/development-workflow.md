@@ -61,7 +61,7 @@ This is the design step for a Feature that adds or changes screens. Other change
 
 1. **Flows.** The Feature's OpenSpec design describes the screens and the user's path between them, as Mermaid diagrams. Label them in business language, like the rest of the OpenSpec design.
 2. **Wireframe, only if the layout is unclear.** The agent or the owner can call for one. The agent sketches it as a Claude Design artifact, and the owner agrees it. It settles layout only, not colors or spacing, and it isn't stored as a source.
-3. **Build from the design system.** Take colors and fonts only from the theme variables in `src/app/globals.css`, spacing and type sizes only from the theme's scales (Tailwind's defaults, unless `globals.css` overrides them), and components from shadcn/ui. No one-off colors, fonts or spacing, such as `p-[13px]`, `text-[#123456]` or `bg-red-500`. This covers the code we write for screens, not what `npx shadcn add` generates.
+3. **Build from the design system.** Take colors and fonts only from the theme variables in `src/app/globals.css`, spacing and type sizes only from the theme's scales (Tailwind's defaults, unless `globals.css` overrides them), and components from shadcn/ui. No one-off colors, fonts or spacing, such as `p-[13px]`, `text-[#123456]` or `bg-red-500`. This covers the code we write for screens, not what `npx shadcn add` generates. The [design guide](../reference/design-guide.md) lists the tokens, the type scale and the page layout.
 4. **Review on the preview.** The owner reviews the screens on the pull request's Vercel preview (step 8).
 5. **Record with screenshots.** The pull request includes a screenshot of each new or changed screen at each width: phone (390 px) and desktop (1280 px). The agent captures them from `npm run dev` with a browser it can already drive, adding no tooling just for screenshots. If it can't, the owner captures them from the preview or a local run. Files attached on a public repository can be opened without signing in, so use invented data only. If the review changes a screen, retake its screenshots and replace the old ones in the pull request body.
 
@@ -136,5 +136,6 @@ Split the work when it has more than one independently useful outcome, won't fit
 - 💡 Why Dependabot PRs skip the issue: [ADR 0010](../explanation/decisions/0010-merge-dependabot-prs-without-an-issue.md)
 - 💡 Why screens are designed in code: [ADR 0013](../explanation/decisions/0013-design-screens-in-code.md)
 - 🛠️ Deploys and previews: [Set up Vercel](set-up-vercel.md)
+- 📚 The look and its tokens: [Design guide](../reference/design-guide.md)
 - ⬆️ [How-to guides](README.md)
 - 🏠 [Docs home](../README.md)

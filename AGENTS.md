@@ -96,7 +96,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 - Add or update tests with every behavior change.
 - Put unit tests in a `__tests__/` folder next to the code they test, named after the file, e.g. `src/app/__tests__/page.test.tsx` for `src/app/page.tsx`.
 - Next.js changes fast. Before writing Next.js code, check the docs for the installed version in `node_modules/next/dist/docs/`.
-- Style with Tailwind classes and the theme variables in `src/app/globals.css`. Add a shadcn/ui component with `npx shadcn add <name>` when a screen first needs it, then run `npm run format`. The `cn()` helper lives at `@/lib/utils`.
+- Style with Tailwind classes and the theme variables in `src/app/globals.css`, with no one-off colors, fonts or spacing. Add a shadcn/ui component with `npx shadcn add <name>` when a screen first needs it, then run `npm run format`. The `cn()` helper lives at `@/lib/utils`.
 - Update `README.md` and `AGENTS.md` when setup steps or conventions change.
 
 ## Business specs
@@ -116,7 +116,7 @@ The design step for Features that add or change screens. Everything else skips t
 
 - **Flows:** the Feature's OpenSpec design describes the screens and the user's path between them, as Mermaid diagrams, in business language.
 - **Wireframe, only if the layout is unclear:** the agent or the repository owner can call for one. Sketch it as a Claude Design artifact and agree it with the repository owner. It settles layout only, and isn't stored as a source.
-- **Build from the design system:** take colors and fonts only from the theme variables in `src/app/globals.css`, spacing and type sizes only from the theme's scales (Tailwind's defaults, unless `globals.css` overrides them), and components from shadcn/ui. No one-off colors, fonts or spacing, such as `p-[13px]`, `text-[#123456]` or `bg-red-500`. This covers the code we write for screens, not what `npx shadcn add` generates.
+- **Build from the design system:** take colors and fonts only from the theme variables in `src/app/globals.css`, spacing and type sizes only from the theme's scales (Tailwind's defaults, unless `globals.css` overrides them), and components from shadcn/ui. No one-off colors, fonts or spacing, such as `p-[13px]`, `text-[#123456]` or `bg-red-500`. This covers the code we write for screens, not what `npx shadcn add` generates. The [design guide](docs/reference/design-guide.md) lists the tokens, the type scale and the page layout.
 - **Review:** the repository owner reviews the screens on the PR's Vercel preview.
 - **Record:** the PR includes screenshots of each new or changed screen at phone (390 px) and desktop (1280 px) widths. The agent captures them from `npm run dev` with a browser it can already drive, adding no tooling just for screenshots. If it can't, the repository owner captures them from the preview or a local run. They're publicly reachable, so use invented data only. If the review changes a screen, retake its screenshots and replace the old ones in the PR body.
 - See [the how-to guide](docs/how-to/development-workflow.md#screen-design) and [ADR 0013](docs/explanation/decisions/0013-design-screens-in-code.md).

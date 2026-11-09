@@ -14,6 +14,7 @@ These docs follow **[Diátaxis](https://diataxis.fr)** ([ADR 0002](explanation/d
 | Section | What you'll find |
 | --- | --- |
 | 🛠️ [How-to guides](how-to/README.md) | The development workflow, from idea to merge, and the Vercel setup |
+| 📚 [Reference](reference/README.md) | The design guide: tokens, type and page layout |
 | 💡 [Explanation](explanation/README.md) | Design decisions (ADRs) |
 
 Sections get linked here as they're written. Following Diátaxis, there are no empty placeholder pages.
