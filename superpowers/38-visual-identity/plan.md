@@ -29,7 +29,7 @@
 
 These have no unit test, so each is pinned by a verification step in the task named.
 
-- **A narrow phone or a short screen** (360 × 640, 844 × 390, 1280 × 500): the pitch shrinks whole, stays centered with equal space above and below, and never touches the card. The grey ends at half the screen. Task 4 lists the sizes. This machine has no browser an agent can drive, so the owner checks them on the preview.
+- **A narrow phone or a short screen** (360 × 640, 844 × 390, 1280 × 500): the pitch shrinks whole, but not below about 96 px tall, stays centered with equal space above and below, and never touches the card. The grey ends at half the screen, except on short screens, where it grows just enough for the 96 px pitch. Safari on a real iPhone in landscape is the case that broke before. Task 4 lists the sizes. This machine has no browser an agent can drive, so the owner checks them on the preview.
 - **The font trap:** a theme font variable that refers to itself makes the page fall back to the browser's font while the build stays green. Task 4 checks the compiled CSS.
 - **A flash of the wrong font:** the built CSS must have `font-display:block` for both fonts, and the HTML must preload them. Task 4 checks both.
 - **Volt creeping in through generated code:** shadcn's Card or the base layer could use `primary` or `ring` in a way that shows volt. Task 4 searches `src/` and checks `--ring`.
@@ -185,6 +185,16 @@ test("the pitch drawing is hidden from screen readers", () => {
   const { container } = render(<PitchLayout><p>Card</p></PitchLayout>);
   expect(container.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
 });
+
+// box = the svg's parent, band = the box's parent, as class lists
+test("the pitch sits in a box positioned over the band's padded area", () => {
+  // band contains "relative", not "contain-size"; box contains
+  // "absolute", "inset-x-5", "top-4", "bottom-16", "flex", "items-center", "justify-center"
+});
+
+test("the band keeps room for a pitch at least 96 px tall", () => {
+  // band contains "min-h-44"
+});
 ```
 
 `app-header.test.tsx`:
@@ -224,7 +234,7 @@ Exact classes from the design:
 
 - root `flex min-h-svh flex-col`
 - surface `flex h-[50svh] min-h-min shrink-0 flex-col bg-surface`, holding `header` then the band
-- band `flex min-h-20 flex-1 items-center justify-center border-b border-divider px-5 pt-4 pb-16`, holding `<Pitch className="block size-full max-h-57 max-w-92" />`
+- band `relative min-h-44 flex-1 border-b border-divider`, holding a box `absolute inset-x-5 top-4 bottom-16 flex items-center justify-center`, which holds `<Pitch className="block size-full max-h-57 max-w-92" />`. The positioned box gives the pitch a definite size in Safari too. `min-h-44` keeps the pitch at least 96 px tall (96 + 16 + 64).
 - `<main className="relative -mt-12 flex justify-center px-5 pb-8">{children}</main>`
 
 - [ ] **Step 6: Implement `AppHeader` in `src/components/app-header.tsx`**
@@ -343,8 +353,9 @@ Expected: only the pitch lines and spots, the wordmark's second part, and "one p
 - [ ] **Step 5: The layout at each size**
 
 From `npm run dev`, at 360 × 640, 390 × 844, 844 × 390, 768 × 1024, 1280 × 800 and 1280 × 500:
-- The grey ends at half the screen height.
+- The grey ends at half the screen height, except at 844 × 390 and 1280 × 500, where it grows just enough to keep the pitch about 96 px tall.
 - The pitch is whole and centered, with equal space above it and between it and the card, and doesn't touch the card.
+- 844 × 390 also on a real iPhone in Safari.
 - The page matches the picture's home screen at 390 and 1280.
 
 If no browser an agent can drive is available (none was when this was planned), record that the owner does this on the preview, along with the 390 px and 1280 px screenshots for the PR.

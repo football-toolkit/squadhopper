@@ -36,10 +36,10 @@ Only the owner can do the last item, and only once the PR exists. The PR opens w
 
 The owner named these. Any of them makes the change a failure, even if it technically works:
 
-- **The pitch is cropped or overflows**, on a narrow phone (360 px wide) or a short screen (a phone in landscape, a short desktop window). It must scale down to fit the band and never touch the card.
+- **The pitch is cropped or overflows**, on a narrow phone (360 px wide) or a short screen (a phone in landscape, a short desktop window). It must scale down to fit the band, never shorter than about 96 px, and never touch the card.
 - **Volt anywhere else.** Volt (`#C8FF2E`) appears only in the pitch lines, highlighted words and the main button. It is never used for links, focus rings or borders.
 - **A flash of the wrong font** while the page loads.
-- **The grey not ending at half the screen height.** The surface (header plus pitch band) ends exactly halfway down the screen.
+- **The grey not ending at half the screen height.** The surface (header plus pitch band) ends exactly halfway down the screen. The one exception is short screens, such as a phone in landscape: there the pitch's 96 px minimum wins, and the grey grows just enough to fit it (owner's decision).
 
 ## Constraints
 
@@ -115,7 +115,7 @@ The login's sizes (wordmark as page title, labels, button) are added to the guid
 
 ```mermaid
 flowchart TD
-    subgraph S["Surface: exactly the top half of the screen"]
+    subgraph S["Surface: the top half of the screen, more only on short screens"]
         H["Header (optional): wordmark, later actions"]
         B["Pitch band: the pitch drawing, centered, scaled to fit"]
     end
@@ -136,10 +136,11 @@ One component renders the whole page frame. It's what the login Feature reuses.
 
 - **Props:** `header?: ReactNode` (home passes `<AppHeader />`; login passes nothing) and `children` (the card).
 - **Root:** `flex min-h-svh flex-col`.
-- **Surface:** `flex h-[50svh] min-h-min shrink-0 flex-col bg-surface`. It holds the header (if any) and the band. This one arbitrary value is the only way in Tailwind to say "half the viewport height". It isn't a color, font or spacing value. It lives only in this component, and the guide says so, so screens never write it. `svh` (owner's decision), not `dvh`: `dvh` resizes while a phone's address bar slides, which makes the band and the pitch jump on scroll ([WebKit bug 266835](https://bugs.webkit.org/show_bug.cgi?id=266835)). Home and login don't scroll, so the address bar never hides, and for them `svh` and `dvh` are the same: the grey ends at half the screen.
-- **Band:** `flex min-h-20 flex-1 items-center justify-center border-b border-divider px-5 pt-4 pb-16`. The bottom padding is the top padding (16 px) plus the card's 48 px overlap. So the free space above the pitch equals the free space between the pitch and the card, whatever the band's height.
-  - `min-h-20` (80 px, the two paddings) with the surface's `min-h-min` stops the card from climbing over the header on very short screens: the surface grows to fit the header and the band's minimum. Only below about 300 px of screen height does this push the grey past halfway (my call: covering the header would be worse).
-- **Pitch drawing:** the `<Pitch />` SVG, sized `block size-full max-h-57 max-w-92 overflow-visible`. `overflow-visible` keeps the outer half of the 2 px lines from being clipped when the drawing scales down, since the viewBox leaves only 1 unit of margin. Its viewBox fits the drawing exactly (`11 7 368 228`: the field plus goals and line width), so at full size it's 368 × 228 px, as in the reference at 390 px. `preserveAspectRatio` stays at its default (`xMidYMid meet`), so the drawing scales down uniformly to fit both the band's width and its height, stays centered, and is never cropped. On a very short screen it gets small. It never overflows.
+- **Surface:** `flex h-[50svh] min-h-min shrink-0 flex-col bg-surface`. It holds the header (if any) and the band. This one arbitrary value is the only way in Tailwind to say "half the viewport height". It isn't a color, font or spacing value. It lives only in this component, and the guide says so, so screens never write it. `svh` (owner's decision), not `dvh`: `dvh` resizes while a phone's address bar slides, which makes the band and the pitch jump on scroll ([WebKit bug 266835](https://bugs.webkit.org/show_bug.cgi?id=266835)). Home and login don't scroll, so the address bar never hides, and for them `svh` and `dvh` are the same: the grey ends at half the screen. `min-h-min` lets the surface grow past half only when the header plus the band's minimum height (below) doesn't fit.
+- **Band:** `relative min-h-44 flex-1 border-b border-divider`. It holds one box, `absolute inset-x-5 top-4 bottom-16 flex items-center justify-center`, over its padded area, and the pitch sits in that box. The box's bottom gap is its top gap (16 px) plus the card's 48 px overlap, so the free space above the pitch equals the free space between the pitch and the card, whatever the band's height.
+  - **Why a positioned box (owner's decision):** on a real iPhone in landscape, Safari didn't resolve the pitch's `height: 100%` inside a flex band. The pitch stayed full size, overflowed the band and showed under the card. An absolutely positioned box always has a definite size, so the pitch's `size-full` resolves in every browser. Because the box is out of flow, the pitch also adds nothing to the band's own height.
+  - **Minimum pitch size (owner's decision):** `min-h-44` (176 px: a 96 px pitch plus 16 px above and 64 px below) keeps the pitch at least about 96 px tall. Through the surface's `min-h-min`, the grey grows past half only when half the screen is shorter than the header plus 176 px: below about 488 px of screen height on phones (68 px header), about 528 px from `md` up (88 px header), and about 352 px without a header (login). So a phone in landscape and a desktop window under about 528 px get more grey. Every taller screen gets exactly half.
+- **Pitch drawing:** the `<Pitch />` SVG, sized `block size-full max-h-57 max-w-92 overflow-visible`. `overflow-visible` keeps the outer half of the 2 px lines from being clipped when the drawing scales down, since the viewBox leaves only 1 unit of margin. Its viewBox fits the drawing exactly (`11 7 368 228`: the field plus goals and line width), so at full size it's 368 × 228 px, as in the reference at 390 px. `preserveAspectRatio` stays at its default (`xMidYMid meet`), so the drawing scales down uniformly to fit both the box's width and its height, stays centered, and is never cropped. It's never shorter than about 96 px (see Band), and it never overflows.
 - **Card slot:** `relative -mt-12 flex justify-center px-5 pb-8`. `-mt-12` is the 48 px overlap. `relative` paints the card above the band. Phone side margins are 20 px (`px-5`). The card sets its own width (home: `w-full md:max-w-160`, 640 px).
 
 ### `Pitch` (`src/components/pitch.tsx`)
@@ -197,7 +198,7 @@ The wordmark needs the split, and the title needs the whole name. Both come from
 
 1. **Tokens table:** name, value, Tailwind class, and when to use it. Every color token from Values above, plus the two fonts and the radius. Volt's row states the rule: pitch lines, highlighted words and the main button only, never links, focus rings or borders.
 2. **Type scale table:** the classes for each kind of text, as above.
-3. **Page layout in words**, with the short `PitchLayout` example and the rules: surface ends at half the screen, the card overlaps 48 px, the pitch scales to fit and never touches the card. It notes that `h-[50svh]` lives only in `PitchLayout`, and why it's `svh` (the band and pitch don't jump while a phone's address bar slides).
+3. **Page layout in words**, with the short `PitchLayout` example and the rules: the surface ends at half the screen except on short screens, the card overlaps 48 px, the pitch scales to fit, is never shorter than about 96 px, and never touches the card. It notes that `h-[50svh]` lives only in `PitchLayout`, and why it's `svh` (the band and pitch don't jump while a phone's address bar slides).
 4. **Do and don't**, each with a one-line reason. For example: `text-primary`, not `text-[#C8FF2E]` or `text-lime-400`; `text-4xl`, not `text-[38px]`; `rounded-2xl` on cards, not `rounded-[20px]`; `border-border` or `border-divider`, never `border-primary`; `text-foreground underline` for links, not `text-primary`; `font-heading italic font-extrabold`, never `font-heading` alone.
 5. **"Need a new value?":** add the token to `globals.css` and a row to this guide in the same PR.
 6. **The picture**, `docs/reference/night-pitch.png`, committed as the before-code reference. A note says it records the look, not any screen's spec ([ADR 0013](../explanation/decisions/0013-design-screens-in-code.md)), and that its pixel sizes were snapped to Tailwind's scale, so the code wins where they differ.
@@ -223,7 +224,7 @@ Add **ADR 0014, "Ship one dark theme"**, in this PR, and list it in the index. I
 Unit tests, in `__tests__/` folders next to the code (Vitest and Testing Library, as today):
 
 - `src/app/__tests__/page.test.tsx` (rewritten): the `h1` reads "All your matches in one place."; "one place." is in an element with `text-primary`; the lead text is there; the wordmark shows the app name; "Coming soon" is gone; no links.
-- `src/components/__tests__/pitch-layout.test.tsx`: renders the header when given and not when omitted; renders the children; the pitch drawing is `aria-hidden`.
+- `src/components/__tests__/pitch-layout.test.tsx`: renders the header when given and not when omitted; renders the children; the pitch drawing is `aria-hidden`; the pitch sits in the absolutely positioned box over the band's padded area; the band has `min-h-44`. (jsdom has no layout, so these pin the structure; the sizes themselves are checked on the preview.)
 - `src/components/__tests__/wordmark.test.tsx`: the text is `APP_NAME`; only the second part has `text-primary`; `as` changes the element.
 - `src/components/__tests__/app-header.test.tsx`: shows the wordmark and any children.
 - `src/lib/__tests__/app-name.test.ts`: `APP_NAME` is the parts joined.
@@ -236,7 +237,7 @@ Volt's limited use isn't fully testable in unit tests. A check in the plan searc
 - `npm test`, `npm run lint`, `npm run typecheck`, `npm run format:check` and `npm run build` pass. Run `npm run format` after `npx shadcn add card`.
 - **The compiled-CSS check from #37, re-run:** in the built CSS under `.next/static/`, neither `--font-sans` nor `--font-heading` refers to itself. The `font-sans` and `font-heading` utilities resolve to `var(--font-inter)` and `var(--font-barlow-condensed)`, and next/font's CSS defines those as stacks starting with `Inter` and `Barlow Condensed`.
 - **No one-off values in screen code:** no `[` arbitrary values in the classes written for this change, except `h-[50svh]` in `PitchLayout`. No hex colors in `src/` outside `globals.css` and `icon.svg`. No palette classes like `lime-` or `slate-`.
-- **The layout at these sizes, from `npm run dev`:** 360 × 640, 390 × 844, 844 × 390 (phone landscape), 768 × 1024, 1280 × 800 and 1280 × 500. At each: the grey ends at half the screen height (unless the screen is under about 300 px tall), the pitch is whole, centered, with equal space above it and between it and the card, and it doesn't touch the card.
+- **The layout at these sizes, from `npm run dev`:** 360 × 640, 390 × 844, 844 × 390 (phone landscape), 768 × 1024, 1280 × 800 and 1280 × 500. At each: the grey ends at half the screen height, except at 844 × 390 and 1280 × 500, where it grows just enough to keep the pitch about 96 px tall. The pitch is whole, centered, with equal space above it and between it and the card, and it doesn't touch the card. Check 844 × 390 on a real iPhone in Safari too.
 - **Screenshots** at 390 px and 1280 px for the PR. This machine has no browser an agent can already drive, so unless one turns up, the owner captures them from a local run or the preview (as `AGENTS.md` allows). The layout check above then also falls to the owner, on the preview.
 
 ## Left to the builder
