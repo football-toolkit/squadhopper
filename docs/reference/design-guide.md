@@ -87,7 +87,7 @@ export default function Page() {
 
 Leave out `header` for a page without one, such as the login screen. `AppHeader` shows the `Wordmark` and takes actions (such as a Log out button) as children.
 
-`PitchLayout` uses one bracket value, `h-[50svh]`, because Tailwind has no class for "half the screen height". It lives only in that component. It uses `svh`, not `dvh`, so the band and the pitch don't jump while a phone's address bar slides. Screens never write it.
+`PitchLayout` uses one bracket value, `min-h-[50svh]`, because Tailwind has no class for "at least half the screen height". It lives only in that component. It's a minimum, not a fixed height, so the surface can grow on short screens in every browser, Safari included. It uses `svh`, not `dvh`, so the band and the pitch don't jump while a phone's address bar slides. Screens never write it.
 
 ## Do and don't
 

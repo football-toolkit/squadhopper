@@ -65,3 +65,19 @@ test("the band keeps room for a pitch at least 96 px tall", () => {
   // min-h-44 = 96 px pitch + 16 px above + 64 px below.
   expect(renderBand().band).toContain("min-h-44");
 });
+
+test("the surface is at least half the screen, and grows when the band needs it", () => {
+  // Safari doesn't let min-h-min beat a fixed height, so the surface has only a
+  // minimum: h-[50svh] would keep it at half while the band overflowed below it.
+  const { container } = render(
+    <PitchLayout>
+      <p>Card</p>
+    </PitchLayout>,
+  );
+  const surface =
+    container.querySelector("svg")?.parentElement?.parentElement?.parentElement;
+  const classes = surface?.className.split(" ") ?? [];
+  expect(classes).toContain("min-h-[50svh]");
+  expect(classes).not.toContain("h-[50svh]");
+  expect(classes).not.toContain("min-h-min");
+});
