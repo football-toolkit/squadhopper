@@ -26,8 +26,10 @@ test("the header shows the app name", () => {
   expect(screen.getByRole("banner").textContent).toBe(APP_NAME);
 });
 
-test("Coming soon is gone, and there are no links", () => {
+test("Coming soon is gone, and the only link goes home", () => {
   render(<Page />);
   expect(screen.queryByText("Coming soon")).toBeNull();
-  expect(screen.queryByRole("link")).toBeNull();
+  const links = screen.getAllByRole("link");
+  expect(links).toHaveLength(1);
+  expect(links[0].getAttribute("href")).toBe("/");
 });
