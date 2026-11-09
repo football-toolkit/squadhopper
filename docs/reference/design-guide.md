@@ -27,6 +27,15 @@ Use these through their Tailwind classes. Never write the value itself in a scre
 | `ring` | `#9AA4B2` | `ring-ring`, `outline-ring` | Focus rings. Grey, so focus is visible without using volt |
 | `destructive` | `oklch(0.704 0.191 22.216)` | `text-destructive`, `bg-destructive` | Errors and destructive actions |
 
+### Hex values outside the theme
+
+Two files write palette values directly, because they can't read CSS variables. If `--surface` or `--primary` changes in `globals.css`, change these too, in the same pull request. Screens still never write hex values.
+
+| File | Values | Why |
+| --- | --- | --- |
+| `src/app/icon.svg` (the favicon) | `#141A22` (surface), `#C8FF2E` (primary) | An SVG file served as an icon can't read the page's CSS variables |
+| `src/app/layout.tsx` (`viewport.themeColor`) | `#141A22` (surface) | The `theme-color` meta tag, which colors the bar above the page in phone browsers that support it, takes a color value, not a CSS variable |
+
 ### Fonts
 
 | Token | Font | Tailwind class | When to use it |
@@ -85,7 +94,7 @@ export default function Page() {
 }
 ```
 
-Leave out `header` for a page without one, such as the login screen. `AppHeader` shows the `Wordmark` and takes actions (such as a Log out button) as children.
+Leave out `header` for a page without one, such as the login screen. `AppHeader` shows the `Wordmark` as a link to the home page and takes actions (such as a Log out button) as children.
 
 `PitchLayout` uses one bracket value, `min-h-[50svh]`, because Tailwind has no class for "at least half the screen height". It lives only in that component. It's a minimum, not a fixed height, so the surface can grow on short screens in every browser, Safari included. It uses `svh`, not `dvh`, so the band and the pitch don't jump while a phone's address bar slides. Screens never write it.
 
@@ -98,7 +107,7 @@ Leave out `header` for a page without one, such as the login screen. `AppHeader`
 | `p-6`, `gap-4` | `p-[22px]` | Spacing comes from the 4 px scale |
 | `rounded-2xl` on cards | `rounded-[20px]` | Radius comes from the theme's scale |
 | `border-border` or `border-divider` | `border-primary` | Volt is only for pitch lines, highlighted words and the main button |
-| `text-foreground underline` for links | `text-primary` for links | Same rule: links aren't one of volt's three uses |
+| `text-foreground underline` for links | `text-primary` for links | Same rule: links aren't one of volt's three uses. The header's wordmark is the one link without an underline: it looks like the logo, and keyboard focus shows the grey `ring` |
 | `font-heading italic font-extrabold` | `font-heading` alone | Only the extra-bold italic is loaded; anything else is faked by the browser |
 | `<PitchLayout>` for a page's frame | Rebuilding the band and overlap in a screen | One component keeps every page's layout the same |
 
