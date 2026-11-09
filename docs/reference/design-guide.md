@@ -102,6 +102,18 @@ Leave out `header` for a page without one, such as the login screen. `AppHeader`
 | `font-heading italic font-extrabold` | `font-heading` alone | Only the extra-bold italic is loaded; anything else is faked by the browser |
 | `<PitchLayout>` for a page's frame | Rebuilding the band and overlap in a screen | One component keeps every page's layout the same |
 
+## App icons
+
+The icon is a surface square with a small pitch in volt lines. Next.js finds three files in `src/app/` and adds their `<link>` tags itself:
+
+| File | Used by |
+| --- | --- |
+| `icon.svg` | Browser tabs, in browsers that show SVG favicons. It's the source the other two are drawn from |
+| `favicon.ico` | Browsers that don't show SVG favicons, such as Safari before version 26, and anything that asks for `/favicon.ico`. It holds 16, 32 and 48 px images |
+| `apple-icon.png` | "Add to Home Screen" on iPhone and iPad, at 180 × 180 px. It's a full square with no rounded corners or transparency, because iOS rounds the corners itself and turns transparent pixels black |
+
+If `icon.svg` changes, redraw the other two from it in the same pull request, for example with `sharp`, which Next.js already installs. `src/app/__tests__/icons.test.ts` checks their sizes.
+
 ## Need a new value?
 
 If a screen needs a color, font or other value the tokens don't cover, add it as a token to `src/app/globals.css` and add a row to this guide, in the same pull request. Don't write the value into the screen.
