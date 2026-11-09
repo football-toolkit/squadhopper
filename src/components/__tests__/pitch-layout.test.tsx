@@ -31,3 +31,15 @@ test("the pitch drawing is hidden from screen readers", () => {
     "true",
   );
 });
+
+test("the band's own size ignores the pitch, so the pitch shrinks to fit the band", () => {
+  // Without size containment, the surface's min-h-min measures the pitch at its
+  // width-derived height, and the grey grows past half the screen instead.
+  const { container } = render(
+    <PitchLayout>
+      <p>Card</p>
+    </PitchLayout>,
+  );
+  const band = container.querySelector("svg")?.parentElement;
+  expect(band?.className.split(" ")).toContain("contain-size");
+});

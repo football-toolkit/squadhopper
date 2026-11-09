@@ -11,12 +11,15 @@ type PitchLayoutProps = {
 // svh, not dvh, so the band doesn't jump while a phone's address bar slides.
 // The band's bottom padding is its top padding plus the overlap, so the space
 // above the pitch equals the space between the pitch and the card.
+// contain-size makes the band's own size ignore the pitch, so min-h-min on the
+// surface counts only the header and the band's minimum, and the pitch shrinks
+// to fit the band instead of pushing the grey past half the screen.
 export function PitchLayout({ header, children }: PitchLayoutProps) {
   return (
     <div className="flex min-h-svh flex-col">
       <div className="flex h-[50svh] min-h-min shrink-0 flex-col bg-surface">
         {header}
-        <div className="flex min-h-20 flex-1 items-center justify-center border-b border-divider px-5 pt-4 pb-16">
+        <div className="flex min-h-20 flex-1 items-center justify-center border-b border-divider px-5 pt-4 pb-16 contain-size">
           <Pitch className="block size-full max-h-57 max-w-92" />
         </div>
       </div>
