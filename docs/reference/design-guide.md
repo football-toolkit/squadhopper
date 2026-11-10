@@ -24,7 +24,7 @@ Use these through their Tailwind classes. Never write the value itself in a scre
 | `border`, `input` | `#263040` | `border-border`, `border-input` | Card and input borders |
 | `divider` | `#1B2430` | `border-divider` | The lines under the header and the pitch band |
 | `accent` | `#1B2430` | `bg-accent` | Hover and focus backgrounds (shadcn/ui's meaning of "accent", not volt) |
-| `ring` | `#9AA4B2` | `ring-ring`, `outline-ring` | Focus rings. Grey, so focus is visible without using volt |
+| `ring` | `#F2F5F7` | `ring-ring`, `outline-ring` | Focus rings. Light and neutral, never volt. shadcn/ui draws it at half strength (`ring-ring/50`), which must measure at least 3:1 against `background` and `surface` (WCAG 2.2 SC 1.4.11); `src/app/__tests__/globals.test.ts` checks it |
 | `destructive` | `oklch(0.704 0.191 22.216)` | `text-destructive`, `bg-destructive` | Errors and destructive actions |
 
 ### Hex values outside the theme
@@ -102,7 +102,7 @@ Leave out `header` for a page without one, such as the login screen. `AppHeader`
 
 ## Main button
 
-The main button is a page's one main action, such as "Back to home" on the 404 page. It's volt, one of volt's three uses, so a page has at most one. It comes from shadcn/ui's Button (`src/components/ui/button.tsx`), whose default variant gives the volt background (`bg-primary`), dark text (`text-primary-foreground`), the theme's `rounded-lg` and a grey focus ring. On top of that, add these classes:
+The main button is a page's one main action, such as "Back to home" on the 404 page. It's volt, one of volt's three uses, so a page has at most one. It comes from shadcn/ui's Button (`src/components/ui/button.tsx`), whose default variant gives the volt background (`bg-primary`), dark text (`text-primary-foreground`), the theme's `rounded-lg` and a light focus ring. On top of that, add these classes:
 
 ```
 h-12 w-full px-8 font-heading text-xl font-extrabold italic uppercase md:w-auto
@@ -141,7 +141,7 @@ When it does something on the same page, such as submitting a form, it's a real 
 | `p-6`, `gap-4` | `p-[22px]` | Spacing comes from the 4 px scale |
 | `rounded-2xl` on cards | `rounded-[20px]` | Radius comes from the theme's scale |
 | `border-border` or `border-divider` | `border-primary` | Volt is only for pitch lines, highlighted words and the main button |
-| `text-foreground underline` for links | `text-primary` for links | Same rule: links aren't one of volt's three uses. The header's wordmark is the one link without an underline: it looks like the logo, and keyboard focus shows the grey `ring` |
+| `text-foreground underline` for links | `text-primary` for links | Same rule: links aren't one of volt's three uses. The header's wordmark is the one link without an underline: it looks like the logo, and keyboard focus shows the light `ring` |
 | `font-heading italic font-extrabold` | `font-heading` alone | Only the extra-bold italic is loaded; anything else is faked by the browser |
 | `<Link className={cn(buttonVariants(), …)}>` for a link that looks like a button | `<Button render={<Link />} nativeButton={false}>` | Base UI's Button always sets `role="button"`, which hides that it's a link from screen readers |
 | `<PitchLayout>` for a page's frame | Rebuilding the band and overlap in a screen | One component keeps every page's layout the same |

@@ -23,7 +23,7 @@ test("the wordmark links to the home page, named after the app", () => {
   expect(link.textContent).toBe(APP_NAME);
 });
 
-test("the wordmark link shows a grey focus ring, never volt", () => {
+test("the wordmark link shows a light focus ring, never volt", () => {
   render(<AppHeader />);
   const link = screen.getByRole("link", { name: `${APP_NAME} home` });
   expect(link.className).toContain("focus-visible:outline-ring");
