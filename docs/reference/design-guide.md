@@ -100,6 +100,38 @@ Leave out `header` for a page without one, such as the login screen. `AppHeader`
 
 `PitchLayout` uses one bracket value, `min-h-[50svh]`, because Tailwind has no class for "at least half the screen height". It lives only in that component. It's a minimum, not a fixed height, so the surface can grow on short screens in every browser, Safari included. It uses `svh`, not `dvh`, so the band and the pitch don't jump while a phone's address bar slides. Screens never write it.
 
+## Main button
+
+The main button is a page's one main action, such as "Back to home" on the 404 page. It's volt, one of volt's three uses, so a page has at most one. It comes from shadcn/ui's Button (`src/components/ui/button.tsx`), whose default variant gives the volt background (`bg-primary`), dark text (`text-primary-foreground`), the theme's `rounded-lg` and a grey focus ring. On top of that, add these classes:
+
+```
+h-12 w-full px-8 font-heading text-xl font-extrabold italic uppercase md:w-auto
+```
+
+It's full width on phones, so it's easy to tap, and fits its text from 768 px up.
+
+When it goes to another page, it's a link: style a Next.js `<Link>` with `buttonVariants()`, joined with `cn()`:
+
+```tsx
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+<Link
+  href="/"
+  className={cn(
+    buttonVariants(),
+    "h-12 w-full px-8 font-heading text-xl font-extrabold italic uppercase md:w-auto",
+  )}
+>
+  Back to home
+</Link>;
+```
+
+Use `cn(buttonVariants(), "…")`, not `buttonVariants({ className: "…" })`. `buttonVariants` adds a `className` after its own classes without removing the ones it replaces, so the link would get both `h-8` and `h-12`, and both `text-sm` and `text-xl`. `cn()` keeps only the last of each.
+
+When it does something on the same page, such as submitting a form, it's a real button: `<Button className="h-12 w-full px-8 …">`, with the same classes.
+
 ## Do and don't
 
 | Do | Don't | Why |
@@ -111,6 +143,7 @@ Leave out `header` for a page without one, such as the login screen. `AppHeader`
 | `border-border` or `border-divider` | `border-primary` | Volt is only for pitch lines, highlighted words and the main button |
 | `text-foreground underline` for links | `text-primary` for links | Same rule: links aren't one of volt's three uses. The header's wordmark is the one link without an underline: it looks like the logo, and keyboard focus shows the grey `ring` |
 | `font-heading italic font-extrabold` | `font-heading` alone | Only the extra-bold italic is loaded; anything else is faked by the browser |
+| `<Link className={cn(buttonVariants(), …)}>` for a link that looks like a button | `<Button render={<Link />} nativeButton={false}>` | Base UI's Button always sets `role="button"`, which hides that it's a link from screen readers |
 | `<PitchLayout>` for a page's frame | Rebuilding the band and overlap in a screen | One component keeps every page's layout the same |
 
 ## App icons
