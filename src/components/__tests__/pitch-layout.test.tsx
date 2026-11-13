@@ -120,3 +120,13 @@ test("the surface is at least half the screen, and grows when the band needs it"
   expect(surface).not.toContain("h-[50svh]");
   expect(surface).not.toContain("min-h-min");
 });
+
+test("the band and the pitch have test ids for the end-to-end tests", () => {
+  render(
+    <PitchLayout>
+      <p>Card</p>
+    </PitchLayout>,
+  );
+  expect(classesOf(screen.getByTestId("pitch-band"))).toContain("bg-surface");
+  expect(screen.getByTestId("pitch").tagName.toLowerCase()).toBe("svg");
+});
