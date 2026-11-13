@@ -92,31 +92,34 @@ for (const { name, path } of pages) {
         expect
           .soft(
             scrollWidth,
-            `page width ${scrollWidth} vs screen ${clientWidth}`,
+            `no sideways scrolling: page width ${scrollWidth} vs screen ${clientWidth}`,
           )
           .toBeLessThanOrEqual(clientWidth + TOLERANCE);
       });
 
       await test.step("the pitch is whole", () => {
         expect
-          .soft(pitch.left, `pitch left ${pitch.left} vs screen left 0`)
+          .soft(
+            pitch.left,
+            `the pitch is whole: pitch left ${pitch.left} vs screen left 0`,
+          )
           .toBeGreaterThanOrEqual(-TOLERANCE);
         expect
           .soft(
             pitch.right,
-            `pitch right ${pitch.right} vs screen right ${viewport.width}`,
+            `the pitch is whole: pitch right ${pitch.right} vs screen right ${viewport.width}`,
           )
           .toBeLessThanOrEqual(viewport.width + TOLERANCE);
         expect
           .soft(
             pitch.top,
-            `pitch top ${pitch.top} vs header bottom ${headerBottom}`,
+            `the pitch is whole: pitch top ${pitch.top} vs header bottom ${headerBottom}`,
           )
           .toBeGreaterThanOrEqual(headerBottom - TOLERANCE);
         expect
           .soft(
             pitch.bottom,
-            `pitch bottom ${pitch.bottom} vs surface bottom ${band.bottom}`,
+            `the pitch is whole: pitch bottom ${pitch.bottom} vs surface bottom ${band.bottom}`,
           )
           .toBeLessThanOrEqual(band.bottom + TOLERANCE);
       });
@@ -125,7 +128,7 @@ for (const { name, path } of pages) {
         expect
           .soft(
             pitch.bottom,
-            `pitch bottom ${pitch.bottom} vs card top ${cardTop}`,
+            `the pitch doesn't touch the card: pitch bottom ${pitch.bottom} vs card top ${cardTop}`,
           )
           .toBeLessThan(cardTop - TOLERANCE);
       });
@@ -136,7 +139,7 @@ for (const { name, path } of pages) {
           expect
             .soft(
               Math.abs(band.bottom - half),
-              `surface bottom ${band.bottom} vs half the screen ${half}`,
+              `the surface ends at half the screen: surface bottom ${band.bottom} vs half the screen ${half}`,
             )
             .toBeLessThanOrEqual(TOLERANCE);
         });
@@ -145,7 +148,7 @@ for (const { name, path } of pages) {
           expect
             .soft(
               band.bottom,
-              `surface bottom ${band.bottom} vs half the screen ${half}`,
+              `the surface grows past half the screen: surface bottom ${band.bottom} vs half the screen ${half}`,
             )
             .toBeGreaterThan(half + TOLERANCE);
         });

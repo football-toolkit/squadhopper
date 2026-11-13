@@ -91,7 +91,7 @@ The end-to-end tests in `e2e/` open the production build in real browsers, Chrom
 
 ### Read a failed run
 
-1. On the pull request, open the failed `checks` run. Each failed test shows as an annotation, with the file, the test name and the assertion that failed. The layout tests name the rule that broke, such as "the pitch doesn't touch the card", and the measured positions.
+1. On the pull request, open the failed `checks` run. Each failed test shows as an annotation, with the file, the test name and the assertion that failed. The layout tests start each failure message with the rule that broke, such as "the pitch doesn't touch the card", followed by the measured positions.
 2. For more, open the run's summary page and download the `playwright-report` artifact. It's kept for 14 days.
 3. Unzip it, and open the report:
 
