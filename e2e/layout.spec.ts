@@ -41,8 +41,8 @@ function boxOf(locator: Locator): Promise<Box> {
 }
 
 async function measure(page: Page): Promise<Layout> {
-  // The fonts wait before showing text (display: block), so the card's height
-  // is only final once they've loaded.
+  // Measure only once the fonts have loaded, so text can't still change size,
+  // and with it the page's width, after the measurements are taken.
   await page.evaluate(async () => {
     await document.fonts.ready;
   });
@@ -107,9 +107,9 @@ for (const { name, path } of pages) {
         expect
           .soft(
             pitch.right,
-            `the pitch is whole: pitch right ${pitch.right} vs screen right ${viewport.width}`,
+            `the pitch is whole: pitch right ${pitch.right} vs page width ${clientWidth}`,
           )
-          .toBeLessThanOrEqual(viewport.width + TOLERANCE);
+          .toBeLessThanOrEqual(clientWidth + TOLERANCE);
         expect
           .soft(
             pitch.top,
