@@ -66,17 +66,17 @@ The issue is accurate and up to date.
 - `workers: process.env.CI ? 1 : undefined`, as the CI docs recommend.
 - Reporters: in CI, `github` (failures show as annotations on the PR's files) and `html` with `open: "never"`. Locally, `list` and `html` with `open: "never"`.
 - `use.baseURL: "http://localhost:3100"`, and `use.trace: "retain-on-failure"`. A trace is kept only for a failed test, and the HTML report embeds it, so one artifact holds both.
-- `globalTimeout` in CI: 10 minutes, below the job timeout (see CI).
+- `globalTimeout` in CI: 8 minutes, below the job's 11-minute timeout, so a hung run still uploads its report (the owner's change before merge).
 - Two projects:
   - `chromium`, using `devices["Desktop Chrome"]`
   - `webkit`, using `devices["Desktop Safari"]`
 - `webServer`:
-  - `command: "npm run build && npm run start -- --port 3100"`, as the issue says: a production build, then the production server.
+  - `command`: locally `npm run build && npm run start -- --port 3100`, as the issue says: a production build, then the production server. In CI, only `npm run start -- --port 3100`, because the Build step has already built the app (the owner's change before merge).
   - `url: "http://localhost:3100"`
   - `reuseExistingServer: !process.env.CI`
   - `timeout: 120_000`, to leave room for the build.
 
-  My call: port 3100 instead of Next.js's default 3000. If `npm run dev` is running on 3000, a local run would otherwise reuse the dev server and test development code instead of the production build. In CI, the build step before it means this builds twice. The build takes 4 s, so that's cheaper than CI-only config.
+  My call: port 3100 instead of Next.js's default 3000. If `npm run dev` is running on 3000, a local run would otherwise reuse the dev server and test development code instead of the production build.
 
 ### Vitest (`vitest.config.mts`)
 
@@ -110,10 +110,10 @@ One file per area. Every test runs in both projects.
 | 1280 × 800 | a laptop | yes |
 | 2560 × 1440 | a large monitor | yes |
 
-The last column is written in the table, not worked out by the test, so the test doesn't copy `PitchLayout`'s sums. At each size, the test sets the viewport, opens the page, and waits for `document.fonts.ready` (the fonts use `display: block`, so text, and with it the card's height, isn't final before then). Then it checks, with a 1 px tolerance:
+The last column is written in the table, not worked out by the test, so the test doesn't copy `PitchLayout`'s sums. At each size, the test sets the viewport, opens the page, and waits for `document.fonts.ready`, so text can't still change size, and with it the page's width, after the measurements are taken. Then it checks, with a 1 px tolerance:
 
 1. **No sideways scrolling:** `document.documentElement.scrollWidth` is at most its `clientWidth`.
-2. **The pitch is whole:** the drawn pitch is inside the viewport's width, below the header (`banner`), and inside the surface band. "Drawn" means the bounds of the lines inside the svg (for example the svg's content group's `getBoundingClientRect()`), not the svg box, which can be larger than the drawing.
+2. **The pitch is whole:** the drawn pitch is inside the page's width (`clientWidth`), below the header (`banner`), and inside the surface band. "Drawn" means the bounds of the lines inside the svg (for example the svg's content group's `getBoundingClientRect()`), not the svg box, which can be larger than the drawing.
 3. **The pitch doesn't touch the card:** the drawn pitch's bottom is above the card's top.
 4. **The surface ends at half the screen:** where the table says yes, the band's bottom is half the viewport height. Where it says no, the band's bottom is below half.
 
@@ -134,13 +134,13 @@ In the existing `checks` job, after `Build`:
 
 1. **Install Playwright browsers:** `npx playwright install --with-deps chromium webkit`.
 2. **End-to-end tests:** `npm run test:e2e`.
-3. **Upload Playwright report:** `actions/upload-artifact` pinned to `cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2`, with `if: failure()`. It uploads `playwright-report/` and `test-results/` as one artifact named `playwright-report`, with `retention-days: 14`.
+3. **Upload Playwright report:** `actions/upload-artifact` pinned to `cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2`, with `if: failure() && steps.e2e.outcome == 'failure'` (the end-to-end step has `id: e2e`). It uploads `playwright-report/` and `test-results/` as one artifact named `playwright-report`, with `retention-days: 14`.
 
 My calls:
 
-- `if: failure()` rather than the docs' `!cancelled()`: the issue asks for the report on failure, and a green run has nothing to look at.
+- Only when the end-to-end step failed, rather than the docs' `!cancelled()`: the issue asks for the report on failure, a green run has nothing to look at, and an earlier failing step (such as lint) leaves no report to upload.
 - 14 days' retention: long enough to look at a failure during a review. The repo's default is 90 days, which is more storage than this needs.
-- `timeout-minutes` goes from 10 to 15, above Playwright's 10-minute `globalTimeout`. The final number gets set from the measured CI run time (see Running the tests while building). The PR body reports the job time before (58 s) and after.
+- `timeout-minutes` goes from 10 to 15 at first, then gets set from the measured CI run time (see Running the tests while building). It ended at 11, above Playwright's 8-minute `globalTimeout`. The PR body reports the job time before (58 s) and after.
 - No browser cache, as the docs advise.
 
 ### ADR
@@ -202,3 +202,13 @@ The owner's OK is asked once, before step 1, for this whole sequence. Any push o
 - How the layout spec is laid out (a loop over pages × sizes, `test.describe` blocks, helper functions).
 - Whether `Pitch` takes a `data-testid` prop or spreads extra props.
 - Unit tests: `PitchLayout`'s test checks the two test ids exist, so removing one breaks a unit test before it breaks the end-to-end tests.
+
+## Outcome
+
+Recorded after the PR's CI runs, for the record. The details are in PR #60 and ADR 0015.
+
+- **Bug A** (the surface stuck at half) isn't caught: Playwright's WebKit is a newer build than iOS Safari and doesn't have that behavior. The unit test pinning `min-h-[50svh]` still guards that exact change.
+- **Bug B** (the pitch outside its positioned box) is caught in both browsers, through the surface growing past half instead of the pitch spilling under the card.
+- **Phone emulation** wasn't tried (the owner's decision): it changes viewport and touch behavior, not how WebKit calculates heights. The phone sizes stay on the desktop Safari profile.
+- **Consequence:** the end-to-end tests don't replace a check on a real iPhone. For screen changes, the owner's phone check on the preview stays part of the review.
+- **Job time:** 58 s before, 100–153 s after. `timeout-minutes` is 11.

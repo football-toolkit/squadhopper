@@ -25,7 +25,7 @@
 
 Without a local run, these are the most likely ways the first CI run breaks or misleads. Each one is pinned by a step below.
 
-1. **Fonts not loaded before measuring:** the card's height changes when Barlow Condensed arrives, so measurements must come after `document.fonts.ready` (Task 2, the `measure` helper).
+1. **Fonts not loaded before measuring:** text can change size when the fonts arrive, and with it the page's width, so measurements must come after `document.fonts.ready` (Task 2, the `measure` helper).
 2. **The svg box measured instead of the drawing:** with `preserveAspectRatio` "meet", the svg box can be wider or taller than the lines, which hides cropping. The helper measures the svg's first `<g>` (Task 2).
 3. **Vitest running the specs:** Vitest's default `include` matches `*.spec.ts`. Checked locally with `npm test` after the specs exist (Task 2, step 6).
 4. **A typo in a test name or a missing project:** checked locally with `npx playwright test --list`, which must print exactly 28 tests (Task 2, step 7).
@@ -80,10 +80,10 @@ test("the band and the pitch have test ids for the end-to-end tests", () => {
 - [ ] **Step 2: `playwright.config.ts`**, with these values from the design:
   - `testDir: "./e2e"`, `forbidOnly: !!process.env.CI`, `retries: 0`, `workers: process.env.CI ? 1 : undefined`
   - `reporter`: in CI `[["github"], ["html", { open: "never" }]]`, otherwise `[["list"], ["html", { open: "never" }]]`
-  - `globalTimeout`: `10 * 60 * 1000` in CI, otherwise `undefined`
+  - `globalTimeout`: `8 * 60 * 1000` in CI, otherwise `undefined` (changed from 10 minutes before merge, so it stays under the job's 11)
   - `use: { baseURL: "http://localhost:3100", trace: "retain-on-failure" }`
   - `projects`: `{ name: "chromium", use: { ...devices["Desktop Chrome"] } }` and `{ name: "webkit", use: { ...devices["Desktop Safari"] } }`
-  - `webServer: { command: "npm run build && npm run start -- --port 3100", url: "http://localhost:3100", reuseExistingServer: !process.env.CI, timeout: 120_000 }`
+  - `webServer: { command: isCI ? "npm run start -- --port 3100" : "npm run build && npm run start -- --port 3100", url: "http://localhost:3100", reuseExistingServer: !process.env.CI, timeout: 120_000 }`
   - A short comment on why the port is 3100 (so a dev server on 3000 is never tested by mistake) and why there are no retries (the flaky-test rule).
 
 - [ ] **Step 3: `vitest.config.mts` and `.gitignore`.** Import `configDefaults` from `vitest/config` and add `exclude: [...configDefaults.exclude, "e2e/**"]` to `test`. In `.gitignore`, add a `# Playwright` block with `/test-results/`, `/playwright-report/`, `/blob-report/` and `/playwright/.cache/`.
@@ -122,7 +122,7 @@ test("the band and the pitch have test ids for the end-to-end tests", () => {
 
   One test per page and size, named `` `${page.name} at ${width} × ${height}` ``, so 10 tests. Each one sets the viewport with `page.setViewportSize`, opens the page, calls `measure`, and checks the four rules. Each rule is a `test.step` whose name is the rule, so the report says which rule broke (my call: one test per page and size instead of one per rule, which keeps the run at 28 tests instead of 88). Use `expect.soft`, so one failing rule doesn't hide the others:
   1. Step `no sideways scrolling`: `scrollWidth <= clientWidth + TOLERANCE`.
-  2. Step `the pitch is whole`: `pitch.left >= -TOLERANCE`, `pitch.right <= viewport.width + TOLERANCE`, `pitch.top >= headerBottom - TOLERANCE`, `pitch.bottom <= band.bottom + TOLERANCE`.
+  2. Step `the pitch is whole`: `pitch.left >= -TOLERANCE`, `pitch.right <= clientWidth + TOLERANCE`, `pitch.top >= headerBottom - TOLERANCE`, `pitch.bottom <= band.bottom + TOLERANCE`.
   3. Step `the pitch doesn't touch the card`: `pitch.bottom < cardTop - TOLERANCE`.
   4. If `endsAtHalf`, step `the surface ends at half the screen`: `Math.abs(band.bottom - viewport.height / 2) <= TOLERANCE`. Otherwise, step `the surface grows past half the screen`: `band.bottom > viewport.height / 2 + TOLERANCE`.
 
@@ -154,10 +154,11 @@ test("the band and the pitch have test ids for the end-to-end tests", () => {
         run: npx playwright install --with-deps chromium webkit
 
       - name: End-to-end tests
+        id: e2e
         run: npm run test:e2e
 
       - name: Upload Playwright report
-        if: failure()
+        if: failure() && steps.e2e.outcome == 'failure'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report
@@ -201,6 +202,6 @@ test("the band and the pitch have test ids for the end-to-end tests", () => {
 - [ ] **Step 4: Bug A.** Change the surface's `min-h-[50svh]` to `h-[50svh] min-h-min` in `pitch-layout.tsx`. Commit `test: temporarily bring back the surface stuck at half` and push. Wait for the run to finish, then record which browser and which step failed, with the run link. Expected: WebKit, `home at 844 × 390` and `404 page at 844 × 390`, on `the surface grows past half the screen` or `the pitch doesn't touch the card`. Then `git revert --no-edit HEAD`, push, and wait for green.
 - [ ] **Step 5: Bug B.** Remove the absolutely positioned box, so `<Pitch className="block size-full max-w-240" data-testid="pitch" />` sits straight in the pitch area. Commit `test: temporarily bring back the pitch height bug`, push, record the results the same way, then revert, push, and wait for green.
 - [ ] **Step 6: If desktop WebKit missed a bug:** stop and ask the owner before the fallback push (WebKit phone sizes with `isMobile: true` and `hasTouch: true`, then repeat that bug's check). Otherwise skip.
-- [ ] **Step 7: Timeout.** From the green runs' `checks` job times (`gh run view <id> --json jobs`), set `timeout-minutes` to about three times the longest run, rounded up to a whole number of minutes and at least 11 (above `globalTimeout`). If it's still 15, skip the commit. Otherwise commit `ci: set the checks job timeout from measured runs` and push.
+- [ ] **Step 7: Timeout.** From the green runs' `checks` job times (`gh run view <id> --json jobs`), set `timeout-minutes` to about three times the longest run, rounded up to a whole number of minutes and above `globalTimeout` (it ended at 11, with `globalTimeout` at 8). If it's still 15, skip the commit. Otherwise commit `ci: set the checks job timeout from measured runs` and push.
 - [ ] **Step 8: Fill in the ADR's phone-profile sentence** from the proof results. Commit `docs: record the phone profile the end-to-end tests use` and push.
 - [ ] **Step 9: Finish the PR.** The body gets the bug results (browser, test, step, run link, for each bug), the job time before (58 s) and after, and how each "Done when" item was checked. Tick the met items in issue #58 with `gh issue edit 58 --body-file …`. Then `gh pr ready`. Tell the owner the PR is ready. It changes nothing the app shows, so it needs no preview review.
