@@ -16,7 +16,8 @@ export default defineConfig({
   reporter: isCI
     ? [["github"], ["html", { open: "never" }]]
     : [["list"], ["html", { open: "never" }]],
-  globalTimeout: isCI ? 10 * 60 * 1000 : undefined,
+  // Below the CI job's 11-minute timeout, so a hung run still uploads its report.
+  globalTimeout: isCI ? 8 * 60 * 1000 : undefined,
   use: {
     baseURL,
     trace: "retain-on-failure",
@@ -26,7 +27,10 @@ export default defineConfig({
     { name: "webkit", use: { ...devices["Desktop Safari"] } },
   ],
   webServer: {
-    command: "npm run build && npm run start -- --port 3100",
+    // CI's Build step has already built the app, so CI only starts it.
+    command: isCI
+      ? "npm run start -- --port 3100"
+      : "npm run build && npm run start -- --port 3100",
     url: baseURL,
     reuseExistingServer: !isCI,
     timeout: 120_000,
