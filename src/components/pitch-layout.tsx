@@ -37,7 +37,12 @@ export function PitchLayout({ header, children }: PitchLayoutProps) {
         <div className="flex min-h-44 flex-1 flex-col border-b border-divider">
           <div className="min-h-4 grow" />
           <div className="relative min-h-24 grow-8">
-            <Pitch data-testid="pitch" className="block size-full max-w-240" />
+            <div className="absolute inset-x-5 inset-y-0 flex items-center justify-center">
+              <Pitch
+                data-testid="pitch"
+                className="block size-full max-w-240"
+              />
+            </div>
           </div>
           <div className="min-h-4 grow" />
           <div className="h-12 shrink-0" />

@@ -56,7 +56,7 @@ function renderBand() {
   };
 }
 
-test.skip("the pitch sits in a box positioned over the pitch area", () => {
+test("the pitch sits in a box positioned over the pitch area", () => {
   // Safari doesn't resolve the pitch's height: 100% inside a flex band, so the
   // pitch fills an absolutely positioned box, whose size is always definite.
   const { box, area, band } = renderBand();
@@ -81,7 +81,7 @@ test("the pitch is at most 960 px wide", () => {
   expect(pitch).not.toContain("max-w-92");
 });
 
-test.skip("the band splits its height between two equal spaces and the pitch area", () => {
+test("the band splits its height between two equal spaces and the pitch area", () => {
   // Grow 1 : 8 : 1, so the pitch area takes about 80% of the free height and
   // the space above the pitch equals the space between it and the card. The
   // last 48 px sit under the card.
@@ -105,14 +105,14 @@ test.skip("the band splits its height between two equal spaces and the pitch are
   expect(overlap).toEqual(expect.arrayContaining(["h-12", "shrink-0"]));
 });
 
-test.skip("the band keeps room for a pitch at least 96 px tall", () => {
+test("the band keeps room for a pitch at least 96 px tall", () => {
   // min-h-44 = 16 px above + 96 px pitch + 16 px below + 48 px overlap.
   const { band, area } = renderBand();
   expect(band).toContain("min-h-44");
   expect(area).toContain("min-h-24");
 });
 
-test.skip("the surface is at least half the screen, and grows when the band needs it", () => {
+test("the surface is at least half the screen, and grows when the band needs it", () => {
   // Safari doesn't let min-h-min beat a fixed height, so the surface has only a
   // minimum: h-[50svh] would keep it at half while the band overflowed below it.
   const { surface } = renderBand();
