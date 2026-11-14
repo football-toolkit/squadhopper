@@ -37,10 +37,14 @@ Chosen option: **"Playwright in CI, with Chromium and WebKit"**, because it is t
 
 ### Consequences
 
-- Good, because WebKit layout bugs show up on the pull request, before review.
+- Good, because layout and navigation bugs that show in a real browser, Chromium or WebKit, show up on the pull request, before review.
 - Good, because the report and traces of a failed run are uploaded, so anyone can see what the page looked like when it failed.
-- Bad, because every run installs the browsers and their system libraries, which adds time to the `checks` job. Caching them saves little, as the Playwright docs say.
-- Bad, because WebKit on Linux isn't Safari on an iPhone: it has the same layout engine, but not the same device, so some phone-only bugs can still get through. TODO(#58): which profile the phone sizes use, and which old bugs it catches, filled in from the bug proof in CI before the PR is ready.
+- Bad, because every run installs the browsers and their system libraries, which adds time to the `checks` job: it went from 58 s to between 100 s and 153 s. Caching them saves little, as the Playwright docs say.
+- Bad, because Playwright's WebKit isn't Safari on an iPhone: it's a newer WebKit build, on Linux. When the tests were added, each old bug was brought back in CI to check what they catch:
+  - **The surface stuck at half** (a fixed `h-[50svh]` with `min-h-min`) isn't caught. Playwright's WebKit doesn't have the behavior iOS Safari had, and lets the surface grow, like Chrome. The unit test in `src/components/__tests__/pitch-layout.test.tsx` that pins `min-h-[50svh]` still guards that exact change.
+  - **The pitch outside its positioned box** is caught, in both browsers. It shows as the surface growing past half the screen, not as the pitch spilling under the card, as it did on the iPhone.
+  - So the end-to-end tests don't replace a check on a real iPhone. For screen changes, the owner's phone check on the preview stays part of the review.
+  - The phone sizes run on the desktop Safari profile. Phone emulation (`isMobile`, `hasTouch`) wasn't added: it changes viewport and touch behavior, not how WebKit calculates heights.
 
 ### Confirmation
 
