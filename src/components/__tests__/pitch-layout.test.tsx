@@ -112,7 +112,7 @@ test("the band keeps room for a pitch at least 96 px tall", () => {
   expect(area).toContain("min-h-24");
 });
 
-test.skip("the surface is at least half the screen, and grows when the band needs it", () => {
+test("the surface is at least half the screen, and grows when the band needs it", () => {
   // Safari doesn't let min-h-min beat a fixed height, so the surface has only a
   // minimum: h-[50svh] would keep it at half while the band overflowed below it.
   const { surface } = renderBand();

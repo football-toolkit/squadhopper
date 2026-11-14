@@ -31,7 +31,7 @@ export function PitchLayout({ header, children }: PitchLayoutProps) {
     <div className="flex min-h-svh flex-col">
       <div
         data-testid="pitch-band"
-        className="flex h-[50svh] min-h-min shrink-0 flex-col bg-surface"
+        className="flex min-h-[50svh] shrink-0 flex-col bg-surface"
       >
         {header}
         <div className="flex min-h-44 flex-1 flex-col border-b border-divider">
