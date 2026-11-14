@@ -9,9 +9,10 @@ The app is built with Next.js on Node 24. Setup steps are in `README.md`.
 - `npm run dev`: start the app at http://localhost:3000
 - `npm run build`: build the app for production
 - `npm test`: run the unit tests once
-- `npm run lint`: lint `src/` and the config files
+- `npm run test:e2e`: run the end-to-end tests in Chromium and WebKit against the production build. It needs the Playwright browsers (see the [how-to guide](docs/how-to/development-workflow.md#end-to-end-tests)). CI always runs them.
+- `npm run lint`: lint `src/`, `e2e/` and the config files
 - `npm run typecheck`: check the TypeScript types
-- `npm run format`: format `src/` and the config files
+- `npm run format`: format `src/`, `e2e/` and the config files
 - `npm run format:check`: check the formatting without changing files
 
 Before committing, run `npm test`, `npm run lint`, `npm run typecheck`, `npm run format:check` and `npm run build`. All must pass.
@@ -95,6 +96,8 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 - Follow the conventions already in the surrounding code.
 - Add or update tests with every behavior change.
 - Put unit tests in a `__tests__/` folder next to the code they test, named after the file, e.g. `src/app/__tests__/page.test.tsx` for `src/app/page.tsx`.
+- Put end-to-end tests in `e2e/`, one spec per area, e.g. `e2e/header.spec.ts`. Find elements as a user would, by role and name. Use a test id only for a decorative part that has no role, never a CSS class.
+- CI is where the end-to-end tests always run. A flaky test, one that fails and then passes with no change, is fixed or gets an issue right away. Never re-run it until it passes.
 - Next.js changes fast. Before writing Next.js code, check the docs for the installed version in `node_modules/next/dist/docs/`.
 - Style with Tailwind classes and the theme variables in `src/app/globals.css`, with no one-off colors, fonts or spacing. Add a shadcn/ui component with `npx shadcn add <name>` when a screen first needs it, then run `npm run format`. The `cn()` helper lives at `@/lib/utils`.
 - Update `README.md` and `AGENTS.md` when setup steps or conventions change.

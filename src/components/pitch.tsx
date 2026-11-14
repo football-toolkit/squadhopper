@@ -2,15 +2,17 @@ import { cn } from "@/lib/utils";
 
 type PitchProps = {
   className?: string;
+  "data-testid"?: string;
 };
 
 // A football pitch seen from above. The viewBox fits the drawing exactly, so it
 // scales down whole; overflow-visible keeps the outer half of the lines.
-export function Pitch({ className }: PitchProps) {
+export function Pitch({ className, "data-testid": testId }: PitchProps) {
   return (
     <svg
       viewBox="11 7 368 228"
       aria-hidden="true"
+      data-testid={testId}
       className={cn("overflow-visible", className)}
     >
       <g className="fill-none stroke-primary/70" strokeWidth={2}>

@@ -18,6 +18,7 @@ Every important choice in this repo, **why** it was made, and which alternatives
 | [0008](0008-stage-files-by-explicit-path.md) | Stage files by explicit path |
 | [0010](0010-merge-dependabot-prs-without-an-issue.md) | Merge Dependabot PRs without an issue |
 | [0013](0013-design-screens-in-code.md) | Design screens in code, reviewed on the preview |
+| [0015](0015-test-screens-end-to-end-with-playwright-in-ci.md) | Test screens end to end with Playwright in CI |
 
 ### Stack and architecture
 

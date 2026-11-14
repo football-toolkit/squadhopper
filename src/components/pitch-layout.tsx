@@ -29,13 +29,19 @@ type PitchLayoutProps = {
 export function PitchLayout({ header, children }: PitchLayoutProps) {
   return (
     <div className="flex min-h-svh flex-col">
-      <div className="flex min-h-[50svh] shrink-0 flex-col bg-surface">
+      <div
+        data-testid="pitch-band"
+        className="flex min-h-[50svh] shrink-0 flex-col bg-surface"
+      >
         {header}
         <div className="flex min-h-44 flex-1 flex-col border-b border-divider">
           <div className="min-h-4 grow" />
           <div className="relative min-h-24 grow-8">
             <div className="absolute inset-x-5 inset-y-0 flex items-center justify-center">
-              <Pitch className="block size-full max-w-240" />
+              <Pitch
+                data-testid="pitch"
+                className="block size-full max-w-240"
+              />
             </div>
           </div>
           <div className="min-h-4 grow" />

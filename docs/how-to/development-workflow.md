@@ -43,7 +43,7 @@ flowchart TD
 6. **Commit.** Write the message as a Conventional Commit (see the Commits section of [AGENTS.md](../../AGENTS.md)).
 7. **Open the pull request.** Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason. Ask the owner before pushing and before opening it. Use the pull request template, and link the issue with `Closes #<issue-number>`. For a Feature that adds or changes screens, attach the first screenshots when opening the pull request (see [Screen design](#screen-design)). A later Task adds a CI check that the branch, the Superpowers folder and the OpenSpec change all use the issue's key.
 8. **Review the preview, if the app changed.** When a pull request changes what the app shows or does, the owner reviews its Vercel preview before merging. The Vercel bot comments the preview link on the pull request. Open it, log in to Vercel, and check that the change works as it will in production. The preview needs the owner's Vercel login, which an agent doesn't have, so an agent can't do this step and never claims it's done. Docs-only and workflow pull requests skip it. See [Set up Vercel](set-up-vercel.md).
-9. **Squash-merge** once CI is green, the owner has reviewed the preview if the app changed, and the pull request checklist is complete. CI runs typecheck, lint, format check, tests and build on every pull request into `main`, and the `main` ruleset blocks merging until they pass and the branch is up to date. Merging deploys `main` to production (unless production is rolled back, see [Set up Vercel](set-up-vercel.md#roll-back-production)), and the issue closes on its own.
+9. **Squash-merge** once CI is green, the owner has reviewed the preview if the app changed, and the pull request checklist is complete. CI runs typecheck, lint, format check, tests, build and the [end-to-end tests](#end-to-end-tests) on every pull request into `main`, and the `main` ruleset blocks merging until they pass and the branch is up to date. Merging deploys `main` to production (unless production is rolled back, see [Set up Vercel](set-up-vercel.md#roll-back-production)), and the issue closes on its own.
 
 ## Feature, Task and Bug
 
@@ -84,6 +84,37 @@ If `gh pr edit` fails, `gh pr comment <number> --attach …` adds them in a comm
 `--attach` only appends, so running it again leaves the old screenshots in place. To replace one, edit the pull request body so the old image becomes a reference to the new local file, such as `![Screen at phone width](./screen-phone.png)`. Then run `gh pr edit <number> --body-file body.md --attach ./screen-phone.png`, and gh points the reference at the upload. If the screenshots are in a comment, edit or replace that comment instead.
 
 A local run and the preview build the same code at the same commit, apart from data and environment settings. So the screenshots are a record, and the owner's review on the preview stays the check.
+
+## End-to-end tests
+
+The end-to-end tests in `e2e/` open the production build in real browsers, Chromium and WebKit (Safari's engine), and check the pages' layout and navigation. CI runs them on every pull request, in the `checks` job, after the build. Why: [ADR 0015](../explanation/decisions/0015-test-screens-end-to-end-with-playwright-in-ci.md).
+
+### Read a failed run
+
+1. On the pull request, open the failed `checks` run. Each failed test shows as an annotation, with the file, the test name and the assertion that failed. The layout tests start each failure message with the rule that broke, such as "the pitch doesn't touch the card", followed by the measured positions.
+2. For more, open the run's summary page and download the `playwright-report` artifact. It's kept for 14 days.
+3. Unzip it, and open the report:
+
+   ```bash
+   npx playwright show-report <unzipped-folder>/playwright-report
+   ```
+
+4. Open a failed test, then its trace. The trace shows each step, the page as it looked at that moment, the console and the network requests. You can also drop the test's `trace.zip` (in the `test-results/` folder) onto https://trace.playwright.dev, which opens it in the browser without uploading it.
+
+### Run them locally (optional)
+
+CI always runs the end-to-end tests, so running them locally is never required. WebKit needs system libraries, which the first command installs with apt:
+
+```bash
+npx playwright install --with-deps chromium webkit
+npm run test:e2e
+```
+
+The tests build the app and start it on port 3100, so a running `npm run dev` doesn't get in the way. Run one browser with `npm run test:e2e -- --project=webkit`.
+
+### Flaky tests
+
+A flaky test fails and then passes with no change. Fix it, or open an issue for it right away. Never re-run CI until it passes: that hides a real problem, in the test or in the app. That's also why the tests have no retries.
 
 ## The change key
 
@@ -135,6 +166,7 @@ Split the work when it has more than one independently useful outcome, won't fit
 - 💡 Why business specs with OpenSpec: [ADR 0007](../explanation/decisions/0007-write-business-specs-with-openspec.md)
 - 💡 Why Dependabot PRs skip the issue: [ADR 0010](../explanation/decisions/0010-merge-dependabot-prs-without-an-issue.md)
 - 💡 Why screens are designed in code: [ADR 0013](../explanation/decisions/0013-design-screens-in-code.md)
+- 💡 Why end-to-end tests with Playwright in CI: [ADR 0015](../explanation/decisions/0015-test-screens-end-to-end-with-playwright-in-ci.md)
 - 🛠️ Deploys and previews: [Set up Vercel](set-up-vercel.md)
 - 📚 The look and its tokens: [Design guide](../reference/design-guide.md)
 - ⬆️ [How-to guides](README.md)

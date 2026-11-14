@@ -11,6 +11,12 @@
 CLAUDE.local.md
 .claude/CLAUDE.local.md
 
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # Next.js and Node
 /node_modules
 /.pnp
