@@ -24,8 +24,8 @@ export default defineConfig({
   reporter: isCI
     ? [["github"], ["html", { open: "never" }]]
     : [["list"], ["html", { open: "never" }]],
-  // Below the CI job's 16-minute timeout, so a hung run still uploads its report.
-  globalTimeout: isCI ? 12 * 60 * 1000 : undefined,
+  // Below the CI job's 10-minute timeout, so a hung run still uploads its report.
+  globalTimeout: isCI ? 8 * 60 * 1000 : undefined,
   // Creates the test user when the tests run against Supabase.
   globalSetup: "./e2e/global-setup.ts",
   use: {
