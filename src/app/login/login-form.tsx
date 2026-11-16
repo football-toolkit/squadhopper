@@ -1,6 +1,6 @@
 "use client";
 
-import { LogIn } from "lucide-react";
+import { CircleAlert, LogIn } from "lucide-react";
 import { unstable_isUnrecognizedActionError } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import type { FormEvent } from "react";
@@ -87,13 +87,22 @@ export function LoginForm() {
           disabled={busy}
           aria-invalid={errors.email ? true : undefined}
           aria-describedby={errors.email ? "email-error" : undefined}
+          className="aria-invalid:ring-0 dark:aria-invalid:border-destructive"
           onChange={(e) => {
             setEmail(e.target.value);
             setErrors((prev) => ({ ...prev, email: undefined }));
           }}
         />
         {errors.email && (
-          <p id="email-error" className="text-sm text-destructive">
+          <p
+            id="email-error"
+            className="flex items-center gap-1.5 text-xs text-destructive"
+          >
+            <CircleAlert
+              data-testid="field-error-icon"
+              aria-hidden="true"
+              className="size-3.5"
+            />
             {authMessages[errors.email]}
           </p>
         )}
@@ -110,13 +119,22 @@ export function LoginForm() {
           disabled={busy}
           aria-invalid={errors.password ? true : undefined}
           aria-describedby={errors.password ? "password-error" : undefined}
+          className="aria-invalid:ring-0 dark:aria-invalid:border-destructive"
           onChange={(e) => {
             setPassword(e.target.value);
             setErrors((prev) => ({ ...prev, password: undefined }));
           }}
         />
         {errors.password && (
-          <p id="password-error" className="text-sm text-destructive">
+          <p
+            id="password-error"
+            className="flex items-center gap-1.5 text-xs text-destructive"
+          >
+            <CircleAlert
+              data-testid="field-error-icon"
+              aria-hidden="true"
+              className="size-3.5"
+            />
             {authMessages[errors.password]}
           </p>
         )}

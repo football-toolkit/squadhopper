@@ -56,6 +56,28 @@ test("both empty: shows both messages, marks the fields and focuses Email", asyn
   expect(document.activeElement).toBe(email());
 });
 
+test("a field error has a decorative icon and small-print text", () => {
+  render(<LoginForm />);
+  click(button());
+  const msg = screen.getByText(authMessages.emailMissing);
+  expect(msg.classList.contains("text-xs")).toBe(true);
+  expect(msg.classList.contains("text-destructive")).toBe(true);
+  const icon = msg.querySelector('[data-testid="field-error-icon"]');
+  expect(icon).not.toBeNull();
+  expect(icon?.getAttribute("aria-hidden")).toBe("true");
+  expect(screen.getAllByTestId("field-error-icon")).toHaveLength(2);
+});
+
+test("an invalid field shows a full-strength 1 px border and no ring", () => {
+  render(<LoginForm />);
+  click(button());
+  const classes = Array.from(email().classList);
+  expect(classes).toContain("aria-invalid:ring-0");
+  expect(classes).toContain("dark:aria-invalid:border-destructive");
+  expect(classes).not.toContain("dark:aria-invalid:border-destructive/50");
+  expect(classes).not.toContain("aria-invalid:ring-3");
+});
+
 test("an email without a domain shows only the invalid-email message", async () => {
   render(<LoginForm />);
   type(email(), "ana.example");

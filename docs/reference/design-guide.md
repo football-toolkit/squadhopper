@@ -142,11 +142,24 @@ The header's Log out button is shadcn/ui's Button with `variant="outline" size="
 
 ## Field error
 
-An invalid field gets `aria-invalid`, which the Input draws as a `border-destructive` border and a faint destructive ring (`aria-invalid:border-destructive`, `aria-invalid:ring-destructive/20`). Its message goes right under the field, in `text-sm text-destructive`, and the field's `aria-describedby` points to it. Typing in the field clears that field's message. On submit, focus moves to the first invalid field.
+An invalid field gets `aria-invalid`, which the Input draws as a 1 px border in the error color and no ring. The generated Input adds a ring and, under `.dark`, a half-strength border, so the field adds `aria-invalid:ring-0 dark:aria-invalid:border-destructive` to cancel them (tailwind-merge drops the generated classes). The label, the field and the message form a column with `gap-2` (8 px). The message goes right under the field: `flex items-center gap-1.5 text-xs text-destructive`, with a decorative `CircleAlert` icon (`size-3.5`, `aria-hidden`) before the text. The field's `aria-describedby` points to the message. Typing in the field clears that field's message. On submit, focus moves to the first invalid field.
 
 ```tsx
-<Input aria-invalid={error ? true : undefined} aria-describedby={error ? "email-error" : undefined} />
-{error && <p id="email-error" className="text-sm text-destructive">{error}</p>}
+<div className="flex flex-col gap-2">
+  <Label htmlFor="email">Email</Label>
+  <Input
+    id="email"
+    className="aria-invalid:ring-0 dark:aria-invalid:border-destructive"
+    aria-invalid={error ? true : undefined}
+    aria-describedby={error ? "email-error" : undefined}
+  />
+  {error && (
+    <p id="email-error" className="flex items-center gap-1.5 text-xs text-destructive">
+      <CircleAlert aria-hidden="true" className="size-3.5" />
+      {error}
+    </p>
+  )}
+</div>
 ```
 
 ## Spinner
