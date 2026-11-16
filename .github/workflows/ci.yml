@@ -18,7 +18,7 @@ jobs:
   # The main ruleset requires this job by name. Renaming it breaks the required check.
   checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 11
+    timeout-minutes: 16
     steps:
       - name: Check out the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -30,6 +30,23 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+
+      - name: Set up the Supabase CLI
+        uses: supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13 # v3.2.0
+        with:
+          version: 3.1.0
+
+      # A temporary Supabase for the end-to-end tests. It starts in the
+      # background, so its start overlaps the next steps, and records its exit
+      # status for "Wait for Supabase". Only Postgres, auth and the API gateway
+      # run.
+      - name: Start Supabase
+        run: |
+          (
+            status=0
+            supabase start -x realtime,storage-api,imgproxy,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor || status=$?
+            echo "$status" > "$RUNNER_TEMP/supabase-start.exit"
+          ) > "$RUNNER_TEMP/supabase-start.log" 2>&1 &
 
       - name: Install dependencies
         run: npm ci
@@ -51,6 +68,21 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium webkit
+
+      # The keys are the local stack's fixed development keys, not secrets.
+      - name: Wait for Supabase
+        timeout-minutes: 5
+        run: |
+          until [ -f "$RUNNER_TEMP/supabase-start.exit" ]; do sleep 2; done
+          cat "$RUNNER_TEMP/supabase-start.log"
+          test "$(cat "$RUNNER_TEMP/supabase-start.exit")" = 0
+          eval "$(supabase status -o env)"
+          {
+            echo "SUPABASE_URL=$API_URL"
+            echo "SUPABASE_PUBLISHABLE_KEY=$PUBLISHABLE_KEY"
+            echo "SUPABASE_SECRET_KEY=$SECRET_KEY"
+            echo "APP_ENV=test"
+          } >> "$GITHUB_ENV"
 
       - name: End-to-end tests
         id: e2e
