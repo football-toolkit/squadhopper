@@ -77,11 +77,11 @@ flowchart TD
 - **One message for a wrong email and a wrong password.** Saying which was wrong would let anyone find out who uses the app.
 - **The email stays, the password is cleared** after wrong details, so a user who mistyped their password only retypes that.
 - **One message for every failed check** (service down, paused, too many attempts): the user can do the same thing in each case, wait and try again. All visitors share the login service's limit on attempts, so one person's failed tries can show this message to others.
-- **Error popups stay until closed.** An error the user didn't have time to read is worse than one more click.
+- **Error popups stay until closed, or until the user tries again the action that caused them.** An error the user didn't have time to read is worse than one more click.
 - **A new login attempt closes the previous error popup**, so popups don't pile up while the user tries again.
 - **No success or "logged out" message.** The screen the user lands on already says it worked.
 - **"Sign-ups are closed." under the card**, as on the boards, so someone without an account knows not to look for a sign-up link.
-- **Logging out always ends the session on this device**, even if the login service can't be reached at that moment. The user asked to leave, and the device forgets them either way. *(Assumption, not on the issue; the owner confirms it in review.)*
+- **Logging out always ends the session on this device**, even if the login service can't be reached at that moment. The user asked to leave, and the device forgets them either way.
 - **The texts are the app's own.** The screen never shows the login service's wording, so every message reads the same and gives nothing away.
 
 ## Edge cases
@@ -90,7 +90,7 @@ flowchart TD
 - **Back button after logging out:** the home page doesn't come back; the login screen shows instead.
 - **Logged in on several devices:** logging out on one leaves the others logged in.
 - **Double clicks:** the Log in and Log out buttons ignore clicks while they wait.
-- **Spaces around the email:** an email typed with a space before or after it is treated as the same email. *(Assumption; makes a pasted email work.)*
+- **Spaces around the email:** an email typed with a space before or after it is treated as the same email, so a pasted email works.
 - **Reduced motion:** the spinner shows but doesn't spin.
 
 ## Risks / Trade-offs

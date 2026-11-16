@@ -22,7 +22,7 @@ Anyone who opens the app sees everything in it. The teams' matches are meant onl
 - `access`: who can see the app: only logged-in users see its pages; everyone else sees the login screen.
 - `login`: the login screen, its field checks, the waiting state, and what happens on success, wrong credentials or a failed check.
 - `logout`: the Log out button, its waiting state, and ending the session on this device.
-- `error-popup`: the popup that shows an error message until the user closes it, and is announced to screen readers.
+- `error-popup`: the popup that shows an error message until the user closes it or tries again, and is announced to screen readers.
 
 ### Modified Capabilities
 

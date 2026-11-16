@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Shows the user an error message over the page, in one consistent place and look, and keeps it there until they close it. Login uses it first; later features reuse it for their errors.
+Shows the user an error message over the page, in one consistent place and look, and keeps it there until they close it or try again what caused it. Login uses it first; later features reuse it for their errors.
 
 ## ADDED Requirements
 
@@ -20,9 +20,9 @@ The error popup SHALL appear over the page, at the top right on desktop and acro
 - **WHEN** an error popup appears on a screen 390 px wide
 - **THEN** it spans the top of the screen, over the page
 
-### Requirement: An error popup stays until the user closes it
+### Requirement: An error popup stays until the user closes it or tries again
 
-An error popup SHALL stay on screen until the user closes it with its close button. It SHALL NOT go away by itself.
+An error popup SHALL stay on screen until the user closes it with its close button, or until the user tries again the action that caused it. It SHALL NOT go away by itself.
 
 #### Scenario: User waits
 
@@ -33,6 +33,11 @@ An error popup SHALL stay on screen until the user closes it with its close butt
 
 - **WHEN** the user clicks the popup's close button
 - **THEN** the popup goes away
+
+#### Scenario: User tries the action again
+
+- **WHEN** an error popup is on screen and the user tries again the action that caused it
+- **THEN** the popup goes away, and only the new attempt's result shows
 
 ### Requirement: Screen readers announce the popup
 

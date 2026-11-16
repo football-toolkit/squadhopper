@@ -5,7 +5,7 @@ Each task is a user-visible outcome. It's done when every scenario it lists pass
 ## 1. Error popup
 
 - [ ] 1.1 An error popup shows over the page, top right on desktop and across the top on phones, with the error icon, the message and a close button in the error color. Verified by `error-popup` scenarios "Popup on desktop" and "Popup on a phone".
-- [ ] 1.2 An error popup stays until the user closes it, by mouse or keyboard, and screen readers announce it. Verified by `error-popup` scenarios "User waits", "User closes the popup", "Popup appears with a screen reader on" and "Keyboard user closes the popup".
+- [ ] 1.2 An error popup stays until the user closes it, by mouse or keyboard, or tries again the action that caused it, and screen readers announce it. Verified by `error-popup` scenarios "User waits", "User closes the popup", "User tries the action again", "Popup appears with a screen reader on" and "Keyboard user closes the popup".
 
 ## 2. Login screen
 
