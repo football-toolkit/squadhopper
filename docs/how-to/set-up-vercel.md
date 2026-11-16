@@ -11,7 +11,7 @@ Vercel builds the app from GitHub. Every merge to `main` deploys to production, 
 
 1. **Sign up.** Sign up for Vercel Hobby with the owner's GitHub account, and turn on two-factor authentication.
 2. **Install the GitHub app.** Install the Vercel GitHub app on the organization. Under repository access, pick only this repository.
-3. **Import the repository.** Vercel detects Next.js. Keep the default settings, and don't add a `vercel.json`. Importing deploys the current `main` to production.
+3. **Import the repository.** Vercel detects Next.js. Keep the default settings. The repo's `vercel.json` runs the functions in Frankfurt (`fra1`), as decided in [ADR 0017](../explanation/decisions/0017-run-in-the-eu-in-frankfurt.md). Importing deploys the current `main` to production.
 4. **Add the environment variable.** Add `NEXT_TELEMETRY_DISABLED` with the value `1`, type Config (it isn't secret), for all environments. You can add it on the import screen, under Environment Variables, before the first deploy. If you add it later, in the project's Settings → Environment Variables, redeploy production, because a change only applies to new deployments.
 5. **Protect the previews.** In Settings → Deployment Protection, pick Standard Protection with Vercel Authentication. Previews then need a Vercel login, and production stays public, because the app's login page will live there.
 6. **Pick the Node.js version.** In Settings → Build and Deployment → Node.js Version, pick 24.x, to match `engines` in `package.json`. If the two differ, `engines` wins, so production runs on Node 24 either way. The setting just keeps the dashboard in line with it. The upgrade to Node 26 is tracked in #35.
@@ -45,5 +45,6 @@ On Hobby you can only go back to the production deployment just before the curre
 
 - 💡 Why Vercel: [ADR 0011](../explanation/decisions/0011-host-the-app-on-vercel.md)
 - 🛠️ From idea to merge: [Development workflow](development-workflow.md)
+- 🛠️ The login's users and passwords: [Set up Supabase](set-up-supabase.md)
 - ⬆️ [How-to guides](README.md)
 - 🏠 [Docs home](../README.md)

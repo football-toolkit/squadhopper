@@ -6,6 +6,8 @@ decision-makers: repository owner
 
 # 0011: Host the app on Vercel
 
+Amended by [0017](0017-run-in-the-eu-in-frankfurt.md): adds `vercel.json` for the function region.
+
 ## Context and problem statement
 
 The app is a Next.js app ([0009](0009-build-with-nextjs.md)) in a public repository in a GitHub organization ([0003](0003-public-repo-in-an-organization.md)). v0.1's login needs it running on a real host, with every merge to `main` deployed and every pull request viewable before it merges. The project has no budget, and one person runs it. Where should the app run?

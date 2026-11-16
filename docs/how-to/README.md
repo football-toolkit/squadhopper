@@ -8,6 +8,7 @@
 | --- | --- |
 | [Development workflow](development-workflow.md) | How to take a change from an idea to a merged pull request |
 | [Set up Vercel](set-up-vercel.md) | How to deploy the app to Vercel, and how to roll back |
+| [Set up Supabase](set-up-supabase.md) | How to set up the Supabase project the login uses, and the two values Vercel needs |
 
 ## Where next
 
