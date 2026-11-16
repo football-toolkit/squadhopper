@@ -118,3 +118,80 @@ test("the popup slides in from the top using theme utilities only", () => {
   expect(toastClasses).not.toContain("[");
   expect(contentClasses).not.toContain("[");
 });
+
+test("the popup is a centred, one-line row on the surface color", () => {
+  render(<ErrorToaster />);
+  show("One line.");
+  const root = popup()!;
+  const rootClasses = Array.from(root.classList);
+  for (const c of [
+    "bg-surface",
+    "border",
+    "border-destructive",
+    "rounded-xl",
+    "shadow-2xl",
+  ]) {
+    expect(rootClasses).toContain(c);
+  }
+  for (const c of ["bg-card", "rounded-2xl", "shadow-lg", "bg-popover"]) {
+    expect(rootClasses).not.toContain(c);
+  }
+  const content = Array.from(
+    root.querySelector('[data-slot="toast-content"]')!.classList,
+  );
+  for (const c of ["flex", "items-center", "gap-3", "py-1", "pr-1", "pl-4"]) {
+    expect(content).toContain(c);
+  }
+  expect(content).not.toContain("items-start");
+  expect(
+    screen.getByTestId("error-toast-icon").getAttribute("class"),
+  ).toContain("size-5");
+  const message = root.querySelector('[data-slot="toast-description"]')!;
+  for (const c of ["flex-1", "text-sm", "font-semibold", "text-foreground"]) {
+    expect(Array.from(message.classList)).toContain(c);
+  }
+  expect(Array.from(message.classList)).not.toContain("text-muted-foreground");
+  focusPopup();
+  const close = Array.from(closeButton().classList);
+  for (const c of [
+    "size-11",
+    "text-muted-foreground",
+    "hover:text-foreground",
+  ]) {
+    expect(close).toContain(c);
+  }
+  expect(close).not.toContain("size-8");
+  expect(closeButton().querySelector("svg")?.getAttribute("class")).toContain(
+    "size-4.5",
+  );
+});
+
+test("the popup sits 12 px from the top on phones and 24 px top right from md up", () => {
+  render(<ErrorToaster />);
+  show("Placed.");
+  const viewport = Array.from(
+    document.querySelector('[data-slot="toast-viewport"]')!.classList,
+  );
+  for (const c of [
+    "top-3",
+    "inset-x-3",
+    "bottom-auto",
+    "md:top-6",
+    "md:right-6",
+    "md:left-auto",
+    "md:w-100",
+  ]) {
+    expect(viewport).toContain(c);
+  }
+  // The generated bottom, max-width and sm: placement must be gone.
+  for (const c of [
+    "bottom-4",
+    "max-w-sm",
+    "sm:right-4",
+    "sm:w-full",
+    "inset-x-4",
+  ]) {
+    expect(viewport).not.toContain(c);
+  }
+  expect(viewport.filter((c) => c.includes("["))).toEqual([]);
+});
