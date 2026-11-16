@@ -86,7 +86,7 @@ flowchart TD
 
 ## Edge cases
 
-- **Session ends while the user is on a page** (it runs out, or the owner removes the user): the next address they open shows the login screen.
+- **Session ends while the user is on a page:** when it runs out, the next address they open shows the login screen. A user the owner removes keeps access until their session runs out, up to an hour, then sees the login screen (owner's decision, 2026-11-16). The first feature that shows a player's own data checks with the login service next to that data, so a removed user sees none of it.
 - **Back button after logging out:** the home page doesn't come back; the login screen shows instead.
 - **Logged in on several devices:** logging out on one leaves the others logged in.
 - **Double clicks:** the Log in and Log out buttons ignore clicks while they wait.
