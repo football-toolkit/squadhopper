@@ -14,6 +14,15 @@ export default async function globalSetup(): Promise<void> {
     );
   }
 
+  // The test user's password is public, so never create it on a real project,
+  // even if a developer's .env.local points at one.
+  const { hostname } = new URL(url);
+  if (hostname !== "127.0.0.1" && hostname !== "localhost") {
+    throw new Error(
+      `Refusing to create the test user on ${hostname}: only a local Supabase (127.0.0.1 or localhost) is allowed`,
+    );
+  }
+
   const supabase = createClient(url, secretKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
