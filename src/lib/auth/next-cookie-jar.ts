@@ -1,5 +1,6 @@
 import { cookies, headers } from "next/headers";
 import { createAuthService } from "@/lib/auth";
+import { isSecureRequest } from "@/lib/auth/is-secure-request";
 import type { AuthService, CookieJar } from "@/lib/auth/types";
 
 // Builds the auth service for the current request, with its cookies. A Server
@@ -7,7 +8,7 @@ import type { AuthService, CookieJar } from "@/lib/auth/types";
 // the proxy already sends no-store.
 export async function authServiceForRequest(): Promise<AuthService> {
   const cookieStore = await cookies();
-  const secure = (await headers()).get("x-forwarded-proto") === "https";
+  const secure = isSecureRequest(await headers());
   const jar: CookieJar = {
     getAll: () =>
       cookieStore.getAll().map(({ name, value }) => ({ name, value })),

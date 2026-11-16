@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAuthService } from "@/lib/auth";
+import { isSecureRequest } from "@/lib/auth/is-secure-request";
 import type { CookieToSet } from "@/lib/auth/types";
 
 export function routeFor(input: {
@@ -27,7 +28,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         extraHeaders = { ...extraHeaders, ...headers };
       },
     },
-    { secure: request.nextUrl.protocol === "https:" },
+    { secure: isSecureRequest(request.headers, request.nextUrl) },
   );
 
   const signedIn = await auth.hasSession();

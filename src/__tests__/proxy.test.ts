@@ -117,4 +117,15 @@ describe("proxy", () => {
     expect(calls[0][1]).toEqual({ secure: true });
     expect(calls[1][1]).toEqual({ secure: false });
   });
+
+  it("also asks for secure cookies when a proxy forwarded https", async () => {
+    signedIn = true;
+    await proxy(
+      new NextRequest("http://localhost/", {
+        headers: { "x-forwarded-proto": "https" },
+      }),
+    );
+    const calls = vi.mocked(createAuthService).mock.calls;
+    expect(calls[0][1]).toEqual({ secure: true });
+  });
 });
