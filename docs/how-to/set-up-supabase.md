@@ -24,7 +24,7 @@ Supabase stores the app's users and checks their passwords. This guide sets up t
    - Inside the **Email** provider, set the minimum password length to **12**. Leave the character requirements at their default, and leave the Email provider on.
 4. **Add the two values to Vercel.** In the Vercel project's Settings → Environment Variables, add these two, for the **Production** environment only. Previews and local runs will use a mock, which the login Feature adds. Leave the type at the default, **Secret**.
 
-   > **Keep the names exactly `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.** Supabase's Next.js snippet uses `NEXT_PUBLIC_` names, and Vercel warns about them. Don't add the `NEXT_PUBLIC_` prefix, and don't click **Change to Config**. As Vercel's warning says, Config keeps the `NEXT_PUBLIC_` name, so the value would still be built into the browser code. We keep both values on the server.
+   > **Keep the names exactly `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.** Supabase's Next.js snippet uses `NEXT_PUBLIC_` names, and Vercel warns about them. Don't add the `NEXT_PUBLIC_` prefix, and don't click **Change to Config**. Vercel's warning offers Config only "if it's safe to expose". Config doesn't rename the variable, so a `NEXT_PUBLIC_` value would still be built into the browser code. We keep both values on the server.
 
    | Name | Value | Where to find it |
    | --- | --- | --- |
