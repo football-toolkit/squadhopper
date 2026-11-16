@@ -87,7 +87,7 @@ export function LoginForm() {
           disabled={busy}
           aria-invalid={errors.email ? true : undefined}
           aria-describedby={errors.email ? "email-error" : undefined}
-          className="aria-invalid:ring-0 dark:aria-invalid:border-destructive"
+          className="aria-invalid:ring-0 aria-invalid:focus-visible:ring-3 aria-invalid:focus-visible:ring-ring/50 dark:aria-invalid:border-destructive dark:aria-invalid:focus-visible:ring-ring/50"
           onChange={(e) => {
             setEmail(e.target.value);
             setErrors((prev) => ({ ...prev, email: undefined }));
@@ -119,7 +119,7 @@ export function LoginForm() {
           disabled={busy}
           aria-invalid={errors.password ? true : undefined}
           aria-describedby={errors.password ? "password-error" : undefined}
-          className="aria-invalid:ring-0 dark:aria-invalid:border-destructive"
+          className="aria-invalid:ring-0 aria-invalid:focus-visible:ring-3 aria-invalid:focus-visible:ring-ring/50 dark:aria-invalid:border-destructive dark:aria-invalid:focus-visible:ring-ring/50"
           onChange={(e) => {
             setPassword(e.target.value);
             setErrors((prev) => ({ ...prev, password: undefined }));

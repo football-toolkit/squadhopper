@@ -76,6 +76,10 @@ test("an invalid field shows a full-strength 1 px border and no ring", () => {
   expect(classes).toContain("dark:aria-invalid:border-destructive");
   expect(classes).not.toContain("dark:aria-invalid:border-destructive/50");
   expect(classes).not.toContain("aria-invalid:ring-3");
+  // Keyboard focus keeps the normal light ring, never the red one.
+  expect(classes).toContain("aria-invalid:focus-visible:ring-3");
+  expect(classes).toContain("aria-invalid:focus-visible:ring-ring/50");
+  expect(classes).toContain("dark:aria-invalid:focus-visible:ring-ring/50");
 });
 
 test("an email without a domain shows only the invalid-email message", async () => {

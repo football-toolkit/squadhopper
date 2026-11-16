@@ -142,14 +142,14 @@ The header's Log out button is shadcn/ui's Button with `variant="outline" size="
 
 ## Field error
 
-An invalid field gets `aria-invalid`, which the Input draws as a 1 px border in the error color and no ring. The generated Input adds a ring and, under `.dark`, a half-strength border, so the field adds `aria-invalid:ring-0 dark:aria-invalid:border-destructive` to cancel them (tailwind-merge drops the generated classes). The label, the field and the message form a column with `gap-2` (8 px). The message goes right under the field: `flex items-center gap-1.5 text-xs text-destructive`, with a decorative `CircleAlert` icon (`size-3.5`, `aria-hidden`) before the text. The field's `aria-describedby` points to the message. Typing in the field clears that field's message. On submit, focus moves to the first invalid field.
+An invalid field gets `aria-invalid`, which the Input draws as a 1 px border in the error color and no red ring. The generated Input adds a red ring and, under `.dark`, a half-strength border, so the field adds `aria-invalid:ring-0 dark:aria-invalid:border-destructive` to cancel them (tailwind-merge drops the generated classes). The keyboard focus ring stays: `aria-invalid:focus-visible:ring-3 aria-invalid:focus-visible:ring-ring/50 dark:aria-invalid:focus-visible:ring-ring/50` give a focused invalid field the normal light ring, never the red one. The `dark:` one is needed because the generated `dark:aria-invalid:ring-destructive/40` has higher specificity. The label, the field and the message form a column with `gap-2` (8 px). The message goes right under the field: `flex items-center gap-1.5 text-xs text-destructive`, with a decorative `CircleAlert` icon (`size-3.5`, `aria-hidden`) before the text. The field's `aria-describedby` points to the message. Typing in the field clears that field's message. On submit, focus moves to the first invalid field.
 
 ```tsx
 <div className="flex flex-col gap-2">
   <Label htmlFor="email">Email</Label>
   <Input
     id="email"
-    className="aria-invalid:ring-0 dark:aria-invalid:border-destructive"
+    className="aria-invalid:ring-0 aria-invalid:focus-visible:ring-3 aria-invalid:focus-visible:ring-ring/50 dark:aria-invalid:border-destructive dark:aria-invalid:focus-visible:ring-ring/50"
     aria-invalid={error ? true : undefined}
     aria-describedby={error ? "email-error" : undefined}
   />
