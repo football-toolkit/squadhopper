@@ -45,7 +45,8 @@ jobs:
           (
             status=0
             supabase start -x realtime,storage-api,imgproxy,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor || status=$?
-            echo "$status" > "$RUNNER_TEMP/supabase-start.exit"
+            echo "$status" > "$RUNNER_TEMP/supabase-start.exit.tmp"
+            mv "$RUNNER_TEMP/supabase-start.exit.tmp" "$RUNNER_TEMP/supabase-start.exit"
           ) > "$RUNNER_TEMP/supabase-start.log" 2>&1 &
 
       - name: Install dependencies
@@ -76,7 +77,9 @@ jobs:
           until [ -f "$RUNNER_TEMP/supabase-start.exit" ]; do sleep 2; done
           cat "$RUNNER_TEMP/supabase-start.log"
           test "$(cat "$RUNNER_TEMP/supabase-start.exit")" = 0
-          eval "$(supabase status -o env)"
+          env_out="$(supabase status -o env)"
+          eval "$env_out"
+          test -n "$API_URL"
           {
             echo "SUPABASE_URL=$API_URL"
             echo "SUPABASE_PUBLISHABLE_KEY=$PUBLISHABLE_KEY"
