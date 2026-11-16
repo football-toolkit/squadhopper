@@ -33,7 +33,7 @@ Supabase stores the app's users and checks their passwords. This guide sets up t
 
    Don't use the Connect dialog: it didn't match Supabase's docs. Don't use the Vercel Marketplace integration either: it copies more values than these two.
 
-   If you add or change the values after the code that reads them is live, redeploy production, because a change only applies to new deployments. This time the merge deploys anyway.
+   If you add or change the values after the code that reads them is live, redeploy production, because a change only applies to new deployments.
 
 ## Check it works
 

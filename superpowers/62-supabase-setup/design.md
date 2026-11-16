@@ -83,7 +83,7 @@ Same shape as `set-up-vercel.md`:
      - Production only
      - no Marketplace integration
      - a warning box: keep the names exactly `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`. Supabase's Next.js snippet uses `NEXT_PUBLIC_` names, and Vercel warns about them. Don't add the `NEXT_PUBLIC_` prefix, and don't click **Change to Config**. In the owner's words, written as Vercel's warning puts it: Config keeps the `NEXT_PUBLIC_` name, so the value would still be built into the browser code, and we keep both values on the server.
-     - if the values are added or changed after the code that reads them is live, redeploy production, because a change only applies to new deployments. This time the merge deploys anyway.
+     - if the values are added or changed after the code that reads them is live, redeploy production, because a change only applies to new deployments.
 - **Check it works:**
   - Project Settings → General shows `eu-central-1`
   - the auth settings show sign-ups off and 12

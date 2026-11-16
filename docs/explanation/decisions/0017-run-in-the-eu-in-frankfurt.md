@@ -27,7 +27,7 @@ The app runs on Vercel ([0011](0011-host-the-app-on-vercel.md)), and its login u
 
 Chosen option: **"Frankfurt for both"**, because both providers offer it, it's in the EU, and of the EU cities both offer it's the nearest to Italy.
 
-- **Supabase:** the project is in Central EU (Frankfurt), picked under "Specific regions". Supabase's "General regions" deploy to "*an* available AWS region within that broader area, which may not match a specific jurisdiction" ([regions](https://supabase.com/docs/guides/platform/regions)). On the form, "Europe" can land in London or Zurich, which are outside the EU.
+- **Supabase:** the project is in Central EU (Frankfurt), picked under "Specific regions". Supabase's "General regions" deploy to "*an* available AWS region within that broader area, which may not match a specific jurisdiction" ([regions](https://supabase.com/docs/guides/platform/regions)). The same page says: "For example, the "Europe" general region includes London and Zurich, which are not EU member states."
 - **Vercel:** `vercel.json` sets `"regions": ["fra1"]`. Vercel's docs say this "overrides the Vercel Function Region in Project Settings" ([vercel.json](https://vercel.com/docs/project-configuration/vercel-json)), so the repo is the single source.
 
 This changes one point of [0011](0011-host-the-app-on-vercel.md): its Confirmation says "No `vercel.json` in the repo". The region could be set in the dashboard instead, but a dashboard setting isn't reviewed or versioned, and someone could change it without a pull request. So the repo now has a `vercel.json`, holding only the region. Hosting on Vercel still stands, so 0011 is amended, not superseded.
