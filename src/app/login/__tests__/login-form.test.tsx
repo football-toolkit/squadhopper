@@ -8,10 +8,11 @@ vi.mock("@/components/error-toaster", () => ({
 }));
 vi.mock("@/lib/navigation", () => ({ goTo: vi.fn(), reloadPage: vi.fn() }));
 
+import { UnrecognizedActionError } from "next/dist/client/components/unrecognized-action-error";
 import { LoginForm } from "../login-form";
 import { logIn } from "../actions";
 import { closeError, showError } from "@/components/error-toaster";
-import { goTo } from "@/lib/navigation";
+import { goTo, reloadPage } from "@/lib/navigation";
 import { authMessages } from "@/lib/messages/auth";
 
 const email = () =>
@@ -28,6 +29,7 @@ beforeEach(() => {
   vi.mocked(showError).mockReset().mockReturnValue("t1");
   vi.mocked(closeError).mockReset();
   vi.mocked(goTo).mockReset();
+  vi.mocked(reloadPage).mockReset();
 });
 
 test("the form is built for browsers and password managers", () => {
@@ -169,6 +171,16 @@ test("a thrown action is treated as unavailable", async () => {
     expect(showError).toHaveBeenCalledWith(authMessages.errors.unavailable),
   );
   expect(password().value).toBe("secret");
+});
+
+test("a login page from an older build reloads instead of showing a popup", async () => {
+  vi.mocked(logIn).mockRejectedValue(new UnrecognizedActionError("old build"));
+  render(<LoginForm />);
+  type(email(), "ana@example.com");
+  type(password(), "secret");
+  click(button());
+  await waitFor(() => expect(reloadPage).toHaveBeenCalledTimes(1));
+  expect(showError).not.toHaveBeenCalled();
 });
 
 test("Enter in the password field submits once", async () => {

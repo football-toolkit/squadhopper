@@ -1,6 +1,7 @@
 "use client";
 
 import { LogIn } from "lucide-react";
+import { unstable_isUnrecognizedActionError } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import type { FormEvent } from "react";
 import { closeError, showError } from "@/components/error-toaster";
@@ -11,7 +12,7 @@ import { Spinner } from "@/components/ui/spinner";
 import type { LoginFieldErrors } from "@/lib/auth/validate-login";
 import { validateLogin } from "@/lib/auth/validate-login";
 import { authMessages } from "@/lib/messages/auth";
-import { goTo } from "@/lib/navigation";
+import { goTo, reloadPage } from "@/lib/navigation";
 import { logIn } from "./actions";
 
 export function LoginForm() {
@@ -52,7 +53,14 @@ export function LoginForm() {
           password: checked.password,
         });
         code = result.ok ? null : result.code;
-      } catch {
+      } catch (e) {
+        if (unstable_isUnrecognizedActionError(e)) {
+          // This page is from an older build, so the server doesn't know its
+          // action. A reload gets the current one; trying again never would.
+          setDone(true);
+          reloadPage();
+          return;
+        }
         code = "unavailable";
       }
       if (code === null) {
