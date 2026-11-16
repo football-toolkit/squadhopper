@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
 import { TEST_USER } from "../../src/lib/auth/test-user";
 import { authMessages } from "../../src/lib/messages/auth";
 
@@ -12,5 +12,7 @@ export async function logIn(page: Page): Promise<void> {
     .getByLabel(authMessages.passwordLabel, { exact: true })
     .fill(TEST_USER.password);
   await page.getByRole("button", { name: authMessages.logIn }).click();
-  await expect(page).toHaveURL("/");
+  // Wait for home's load event, not just the URL: its scripts run before load,
+  // so a click right after this (such as on Log out) reaches React.
+  await page.waitForURL("/");
 }
