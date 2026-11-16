@@ -104,7 +104,7 @@ test("the whole popup slides down from above, on the root only", () => {
   for (const c of [
     "origin-top",
     "not-data-limited:data-starting-style:transform-none",
-    "not-data-expanded:not-data-limited:not-data-swipe-direction:data-ending-style:transform-none",
+    "not-data-limited:not-data-swipe-direction:data-ending-style:transform-none!",
     "data-starting-style:-translate-y-full",
     "data-starting-style:opacity-0",
     "data-ending-style:-translate-y-full",
@@ -120,6 +120,11 @@ test("the whole popup slides down from above, on the root only", () => {
   expect(content.className).not.toMatch(/translate/);
   expect(content.className).not.toContain("group-data-");
   expect(content.className).not.toContain("transition-all");
+  // The exit override must not depend on the toast being collapsed: Base UI
+  // sets data-expanded while the mouse is over the viewport (as when Close is clicked).
+  expect(rootClasses).not.toContain(
+    "not-data-expanded:not-data-limited:not-data-swipe-direction:data-ending-style:transform-none",
+  );
   // No bracket values in the classes this project adds.
   expect(toastClasses).not.toContain("[");
   expect(contentClasses).not.toContain("[");

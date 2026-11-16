@@ -36,11 +36,14 @@ export function closeError(id: string): void {
 // property that comes after plain utilities. The slide itself runs on the root's
 // `translate` property, which the generated transform never touches. It sits on
 // the root because Base UI waits only for the root's animations before it
-// unmounts the popup, so the exit slide gets to play.
+// unmounts the popup, so the exit slide gets to play. The exit override ends in
+// `!` because the generated exit rule has the same specificity and comes later in
+// the CSS; it has no data-expanded condition, so the exit also slides up while
+// the mouse is over the viewport (as when Close is clicked).
 export const toastClasses = [
   "top-0 bottom-auto h-auto origin-top rounded-xl border-destructive bg-surface text-foreground shadow-2xl",
   "not-data-limited:data-starting-style:transform-none",
-  "not-data-expanded:not-data-limited:not-data-swipe-direction:data-ending-style:transform-none",
+  "not-data-limited:not-data-swipe-direction:data-ending-style:transform-none!",
   "data-starting-style:-translate-y-full data-starting-style:opacity-0",
   "data-ending-style:-translate-y-full data-ending-style:opacity-0",
   "not-data-limited:transition-all not-data-limited:duration-300 not-data-limited:ease-out not-data-limited:motion-reduce:transition-none",
