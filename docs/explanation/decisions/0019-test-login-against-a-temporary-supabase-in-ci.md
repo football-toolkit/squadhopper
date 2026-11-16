@@ -28,7 +28,7 @@ The end-to-end tests ([0015](0015-test-screens-end-to-end-with-playwright-in-ci.
 
 Chosen option: **"A temporary Supabase in the job"**, because it runs the same Auth service as production, costs nothing, and disappears with the job.
 
-- **The CLI in CI.** The `checks` job installs the Supabase CLI with `supabase/setup-cli` (CLI 3.1.0, the action pinned to its commit) and runs `supabase start`. The default stack takes about 85 seconds to answer, so `-x` leaves out every service except Postgres, auth and the API gateway (Realtime, storage, image proxy, mail, PostgREST, Postgres Meta, Studio, edge functions, logs, vector and the pooler). Leaving out PostgREST also matches production, where the Data API is off ([0016](0016-use-supabase-for-authentication.md)). It starts in the background, early in the job, so its start overlaps `npm ci` and the build, and the "Wait for Supabase" step waits for it.
+- **The CLI in CI.** The `checks` job installs the Supabase CLI with `supabase/setup-cli` (CLI 3.1.0, the action pinned to its commit) and runs `supabase start`. The default stack takes about 85 seconds to answer (measured when this was designed; see the [setup-cli action](https://github.com/supabase/setup-cli)), so `-x` leaves out every service except Postgres, auth and the API gateway (Realtime, storage, image proxy, mail, PostgREST, Postgres Meta, Studio, edge functions, logs, vector and the pooler). Leaving out PostgREST also matches production, where the Data API is off ([0016](0016-use-supabase-for-authentication.md)). It starts in the background, early in the job, so its start overlaps `npm ci` and the build, and the "Wait for Supabase" step waits for it.
 - **`supabase/config.toml` mirrors production.** It was created with `supabase init` and sets `enable_signup = false` and `minimum_password_length = 12`, the same as production. `sign_in_sign_ups` is 150 per 5 minutes per IP, matching production's token limit in 0016. The template's 30 is too low for a full test run's logins. `project_id` is `app`, because the project's name appears only in `README.md` and `src/lib/app-name.ts`.
 - **The keys.** `supabase status -o env` prints the URL and the keys of the local stack, which the job maps to `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` and `SUPABASE_SECRET_KEY`, with `APP_ENV=test`. They are the CLI's fixed development keys, not secrets. The app never reads `SUPABASE_SECRET_KEY`: only the Playwright global setup does.
 - **The user is created by the global setup.** When `APP_ENV=test`, `e2e/global-setup.ts` creates the test user from `src/lib/auth/test-user.ts` through the admin API, already confirmed ([0018](0018-pick-the-auth-service-with-app-env.md)). It treats "already exists" as success and fails loudly on anything else. The setup uses the admin API, which isn't a sign-up, so `enable_signup = false` stays the same as in production.
@@ -60,7 +60,7 @@ The official pages behind this: the Supabase [CLI start reference](https://supab
 ### A second hosted Supabase project
 
 - Good, because it is a real hosted service.
-- Bad, because the Free plan allows two active projects ([0016](0016-use-supabase-for-authentication.md)), it would be paused after a week without use, and it keeps state between runs.
+- Bad, because the Free plan allows two active projects ([pricing](https://supabase.com/pricing)), it would be paused after a week without use ([0016](0016-use-supabase-for-authentication.md)), and it keeps state between runs.
 
 ### The mock only
 

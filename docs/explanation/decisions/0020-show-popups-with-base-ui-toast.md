@@ -26,7 +26,7 @@ Login needs an error popup that stays until the user closes it, and later Featur
 Chosen option: **"Base UI Toast"**. The owner chose it over Sonner on 2026-11-16, and the issue was updated to say so.
 
 - **shadcn/ui points here.** shadcn's Sonner page redirects Base UI projects to its [Base UI Toast](https://ui.shadcn.com/docs/components/base/toast), added with `npx shadcn add toast`.
-- **It announces urgently.** With the installed `@base-ui/react` 1.9.0, a toast with `timeout: 0` "will prevent the toast from being dismissed automatically", and `priority: 'high'` is "announced urgently" (rendered as `role="alert"`). Sonner announces only politely.
+- **It announces urgently.** With the installed `@base-ui/react` 1.9.0, a toast with `timeout: 0` "will prevent the toast from being dismissed automatically", and `priority: 'high'` is "announced urgently" (announced through an alert region). Sonner announces only politely.
 - **No extra dependencies.** `@base-ui/react` is already installed. shadcn's Sonner wrapper pulls in `sonner` and `next-themes`, and the project has one theme ([0014](0014-ship-one-dark-theme.md)), so `next-themes` would do nothing.
 - **Our wrapper.** `src/components/error-toaster.tsx` has `showError(message)`, which adds an error toast with `timeout: 0` and `priority: "high"` and returns its id, and `closeError(id)`, which closes it. The look is in the [design guide](../../reference/design-guide.md#error-popup).
 
