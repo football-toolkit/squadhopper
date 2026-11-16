@@ -6,11 +6,17 @@ export const MOCK_SESSION_COOKIE = "mock-session";
 
 export function createMockAuthService(
   jar: CookieJar,
-  opts: { appEnv: string | undefined; secure: boolean },
+  opts: {
+    appEnv: string | undefined;
+    vercelEnv: string | undefined;
+    secure: boolean;
+  },
 ): AuthService {
-  if (opts.appEnv === "production") {
+  // APP_ENV decides the backend. VERCEL_ENV is only a safety stop, in case
+  // APP_ENV is wrong on a production deployment.
+  if (opts.appEnv === "production" || opts.vercelEnv === "production") {
     throw new Error(
-      "The mock auth service can't run when APP_ENV is production.",
+      "The mock auth service can't run when APP_ENV or VERCEL_ENV is production.",
     );
   }
 

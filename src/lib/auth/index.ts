@@ -11,6 +11,7 @@ export function createAuthService(
   if (pickAuthBackend(env.APP_ENV) === "mock") {
     return createMockAuthService(jar, {
       appEnv: env.APP_ENV,
+      vercelEnv: env.VERCEL_ENV,
       secure: opts.secure,
     });
   }

@@ -6,7 +6,11 @@ import { createMemoryJar } from "./memory-jar";
 
 function setup() {
   const jar = createMemoryJar();
-  const auth = createMockAuthService(jar, { appEnv: "local", secure: false });
+  const auth = createMockAuthService(jar, {
+    appEnv: "local",
+    vercelEnv: undefined,
+    secure: false,
+  });
   return { jar, auth };
 }
 
@@ -83,10 +87,34 @@ test("the mock refuses to run in production", () => {
   expect(() =>
     createMockAuthService(createMemoryJar(), {
       appEnv: "production",
+      vercelEnv: undefined,
       secure: true,
     }),
   ).toThrow(/production/);
 });
+
+test("the mock refuses to run when Vercel says it's production", () => {
+  expect(() =>
+    createMockAuthService(createMemoryJar(), {
+      appEnv: "preview",
+      vercelEnv: "production",
+      secure: true,
+    }),
+  ).toThrow(/production/);
+});
+
+test.each(["preview", "development", undefined])(
+  "the mock runs when VERCEL_ENV is %s",
+  (vercelEnv) => {
+    expect(() =>
+      createMockAuthService(createMemoryJar(), {
+        appEnv: "preview",
+        vercelEnv,
+        secure: true,
+      }),
+    ).not.toThrow();
+  },
+);
 
 test("the test user's password is at least 12 characters", () => {
   expect(TEST_USER.password.length).toBeGreaterThanOrEqual(12);

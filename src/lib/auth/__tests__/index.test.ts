@@ -19,6 +19,16 @@ describe("createAuthService", () => {
     });
   });
 
+  it("refuses the mock when VERCEL_ENV is production", () => {
+    expect(() =>
+      createAuthService(
+        createMemoryJar(),
+        { secure: true },
+        { APP_ENV: "preview", VERCEL_ENV: "production" },
+      ),
+    ).toThrow(/production/);
+  });
+
   it.each([{ APP_ENV: "production" }, {}])(
     "uses Supabase for %j",
     async (env) => {
