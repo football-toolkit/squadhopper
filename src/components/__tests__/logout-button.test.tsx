@@ -72,22 +72,27 @@ test("after logOut rejects it goes to /login without raising an error", async ()
   const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
   const onError = vi.fn();
   window.addEventListener("error", onError);
-  vi.mocked(logOut).mockRejectedValue(new Error("boom"));
-  render(
-    <Boundary>
-      <LogoutButton />
-    </Boundary>,
-  );
-  await act(async () => {
-    fireEvent.click(screen.getByRole("button", { name: authMessages.logOut }));
-  });
-  expect(goTo).toHaveBeenCalledWith("/login");
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 10));
-  });
-  expect(screen.queryByText("boundary fallback")).toBeNull();
-  window.removeEventListener("error", onError);
-  expect(onError).not.toHaveBeenCalled();
-  expect(consoleError).not.toHaveBeenCalled();
-  consoleError.mockRestore();
+  try {
+    vi.mocked(logOut).mockRejectedValue(new Error("boom"));
+    render(
+      <Boundary>
+        <LogoutButton />
+      </Boundary>,
+    );
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole("button", { name: authMessages.logOut }),
+      );
+    });
+    expect(goTo).toHaveBeenCalledWith("/login");
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
+    expect(screen.queryByText("boundary fallback")).toBeNull();
+    expect(onError).not.toHaveBeenCalled();
+    expect(consoleError).not.toHaveBeenCalled();
+  } finally {
+    window.removeEventListener("error", onError);
+    consoleError.mockRestore();
+  }
 });
