@@ -29,20 +29,24 @@ export function closeError(id: string): void {
 }
 
 // The generated Toast moves with a transform that starts and ends 150% below its
-// place. The not-* variants below add specificity, so these transform-none rules
-// beat those generated ones. The slide itself then runs on the content's
-// translate property, which the generated transform never touches.
+// place, and a transition on `transform`, `opacity` and `height`. The not-*
+// variants below add specificity, so these rules beat those generated ones: the
+// transform-none rules cancel the generated transform, and the not-data-limited
+// transition rules replace the generated transition, which is an arbitrary
+// property that comes after plain utilities. The slide itself runs on the root's
+// `translate` property, which the generated transform never touches. It sits on
+// the root because Base UI waits only for the root's animations before it
+// unmounts the popup, so the exit slide gets to play.
 export const toastClasses = [
   "top-0 bottom-auto h-auto origin-top rounded-xl border-destructive bg-surface text-foreground shadow-2xl",
   "not-data-limited:data-starting-style:transform-none",
   "not-data-expanded:not-data-limited:not-data-swipe-direction:data-ending-style:transform-none",
+  "data-starting-style:-translate-y-full data-starting-style:opacity-0",
+  "data-ending-style:-translate-y-full data-ending-style:opacity-0",
+  "not-data-limited:transition-all not-data-limited:duration-300 not-data-limited:ease-out not-data-limited:motion-reduce:transition-none",
 ].join(" ");
 
-export const contentClasses = [
-  "items-center py-1 pr-1 pl-4 transition-all duration-300 ease-out motion-reduce:transition-none",
-  "group-data-starting-style/toast:-translate-y-full group-data-starting-style/toast:opacity-0",
-  "group-data-ending-style/toast:-translate-y-full group-data-ending-style/toast:opacity-0",
-].join(" ");
+export const contentClasses = "items-center py-1 pr-1 pl-4";
 
 // The generated viewport sits at the bottom, at most max-w-sm wide, and from sm:
 // up at the right with w-full. tailwind-merge drops each generated class that

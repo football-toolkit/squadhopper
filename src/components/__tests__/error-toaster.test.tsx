@@ -96,24 +96,30 @@ test("the popup has a destructive border and icon", () => {
   ).toContain("text-destructive");
 });
 
-test("the popup slides in from the top using theme utilities only", () => {
+test("the whole popup slides down from above, on the root only", () => {
   render(<ErrorToaster />);
   show("From the top.");
   const root = popup()!;
+  const rootClasses = Array.from(root.classList);
   for (const c of [
     "origin-top",
     "not-data-limited:data-starting-style:transform-none",
     "not-data-expanded:not-data-limited:not-data-swipe-direction:data-ending-style:transform-none",
+    "data-starting-style:-translate-y-full",
+    "data-starting-style:opacity-0",
+    "data-ending-style:-translate-y-full",
+    "data-ending-style:opacity-0",
+    "not-data-limited:transition-all",
+    "not-data-limited:duration-300",
+    "not-data-limited:ease-out",
+    "not-data-limited:motion-reduce:transition-none",
   ]) {
-    expect(root.className).toContain(c);
+    expect(rootClasses).toContain(c);
   }
   const content = root.querySelector('[data-slot="toast-content"]')!;
-  expect(content.className).toContain(
-    "group-data-starting-style/toast:-translate-y-full",
-  );
-  expect(content.className).toContain(
-    "group-data-ending-style/toast:-translate-y-full",
-  );
+  expect(content.className).not.toMatch(/translate/);
+  expect(content.className).not.toContain("group-data-");
+  expect(content.className).not.toContain("transition-all");
   // No bracket values in the classes this project adds.
   expect(toastClasses).not.toContain("[");
   expect(contentClasses).not.toContain("[");
