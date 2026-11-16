@@ -1,7 +1,9 @@
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import Page from "../page";
 import { APP_NAME } from "@/lib/app-name";
+
+vi.mock("@/app/actions/log-out", () => ({ logOut: vi.fn() }));
 
 test("the home page has the heading, with one place. in volt", () => {
   render(<Page />);
@@ -21,9 +23,10 @@ test("the home page shows the lead text", () => {
   ).toBeDefined();
 });
 
-test("the header shows the app name", () => {
+test("the header shows the app name and a Log out button", () => {
   render(<Page />);
-  expect(screen.getByRole("banner").textContent).toBe(APP_NAME);
+  expect(screen.getByRole("banner").textContent).toContain(APP_NAME);
+  expect(screen.getByRole("button", { name: "Log out" })).toBeDefined();
 });
 
 test("Coming soon is gone, and the only link goes home", () => {

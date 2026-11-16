@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
+import { BfcacheReload } from "@/components/bfcache-reload";
 import { ErrorToaster } from "@/components/error-toaster";
 import { APP_NAME } from "@/lib/app-name";
 import { cn } from "@/lib/utils";
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         {children}
         <ErrorToaster />
+        <BfcacheReload />
       </body>
     </html>
   );
