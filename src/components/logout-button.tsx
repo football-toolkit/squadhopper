@@ -19,10 +19,12 @@ export function LogoutButton() {
     startTransition(async () => {
       try {
         await logOut();
-      } finally {
-        setDone(true);
-        goTo("/login");
+      } catch {
+        // Nothing to show here: the login gate decides, and /login loads
+        // either way. Rethrowing would put up Next's error page.
       }
+      setDone(true);
+      goTo("/login");
     });
   }
 
