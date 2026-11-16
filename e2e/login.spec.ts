@@ -72,6 +72,31 @@ test("a wrong password shows a popup that stays until closed", async ({
   await expect(popup).toBeHidden();
 });
 
+test("the popup's Close button works with the keyboard", async ({ page }) => {
+  await page.goto("/login");
+  await emailField(page).fill(TEST_USER.email);
+  await passwordField(page).fill(`${TEST_USER.password}-wrong`);
+  await logInButton(page).click();
+
+  const popup = page.getByRole("alertdialog", { includeHidden: true });
+  await expect(popup).toContainText(authMessages.errors.invalid_credentials);
+
+  // Tab from the page until focus lands on Close inside the popup. The popup
+  // can come before or after the form in the tab order, so allow a few presses.
+  const close = popup.getByRole("button", {
+    name: authMessages.close,
+    includeHidden: true,
+  });
+  for (let presses = 0; presses < 10; presses++) {
+    if (await close.evaluate((el) => el === document.activeElement)) break;
+    await page.keyboard.press("Tab");
+  }
+  await expect(close).toBeFocused();
+
+  await page.keyboard.press("Enter");
+  await expect(popup).toBeHidden();
+});
+
 test("correct details open the home page", async ({ page }) => {
   await logIn(page);
   await expect(page).toHaveURL("/");
