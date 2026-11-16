@@ -30,6 +30,9 @@ Every important choice in this repo, **why** it was made, and which alternatives
 | [0014](0014-ship-one-dark-theme.md) | Ship one dark theme |
 | [0016](0016-use-supabase-for-authentication.md) | Use Supabase for authentication |
 | [0017](0017-run-in-the-eu-in-frankfurt.md) | Run in the EU, in Frankfurt |
+| [0018](0018-pick-the-auth-service-with-app-env.md) | Pick the auth service with `APP_ENV`, and a mock outside production |
+| [0019](0019-test-login-against-a-temporary-supabase-in-ci.md) | Test login against a temporary Supabase in CI |
+| [0020](0020-show-popups-with-base-ui-toast.md) | Show popups with Base UI Toast |
 
 ## Writing a new ADR
 

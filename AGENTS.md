@@ -9,7 +9,7 @@ The app is built with Next.js on Node 24. Setup steps are in `README.md`.
 - `npm run dev`: start the app at http://localhost:3000
 - `npm run build`: build the app for production
 - `npm test`: run the unit tests once
-- `npm run test:e2e`: run the end-to-end tests in Chromium and WebKit against the production build. It needs the Playwright browsers (see the [how-to guide](docs/how-to/development-workflow.md#end-to-end-tests)). CI always runs them.
+- `npm run test:e2e`: run the end-to-end tests in Chromium and WebKit against the production build. It needs the Playwright browsers (see the [how-to guide](docs/how-to/development-workflow.md#end-to-end-tests)) and, locally, an `.env.local` copied from `.env.example`. CI always runs them.
 - `npm run lint`: lint `src/`, `e2e/` and the config files
 - `npm run typecheck`: check the TypeScript types
 - `npm run format`: format `src/`, `e2e/` and the config files

@@ -13,12 +13,14 @@ Vercel builds the app from GitHub. Every merge to `main` deploys to production, 
 2. **Install the GitHub app.** Install the Vercel GitHub app on the organization. Under repository access, pick only this repository.
 3. **Import the repository.** Vercel detects Next.js. Keep the default settings. The repo's `vercel.json` runs the functions in Frankfurt (`fra1`), as decided in [ADR 0017](../explanation/decisions/0017-run-in-the-eu-in-frankfurt.md). Importing deploys the current `main` to production.
 4. **Add the environment variable.** Add `NEXT_TELEMETRY_DISABLED` with the value `1`, type Config (it isn't secret), for all environments. You can add it on the import screen, under Environment Variables, before the first deploy. If you add it later, in the project's Settings → Environment Variables, redeploy production, because a change only applies to new deployments.
-5. **Protect the previews.** In Settings → Deployment Protection, pick Standard Protection with Vercel Authentication. Previews then need a Vercel login, and production stays public, because the app's login page will live there.
-6. **Pick the Node.js version.** In Settings → Build and Deployment → Node.js Version, pick 24.x, to match `engines` in `package.json`. If the two differ, `engines` wins, so production runs on Node 24 either way. The setting just keeps the dashboard in line with it. The upgrade to Node 26 is tracked in #35.
+5. **Pick the auth backend for each environment.** Add `APP_ENV`, type Config (it isn't secret): the value `preview` for Preview only, and the value `production` for Production only. Do this before the first preview review. The app uses a mock login on a preview, and the real Supabase in production, as decided in [ADR 0018](../explanation/decisions/0018-pick-the-auth-service-with-app-env.md). Without it, a preview picks Supabase, which has no variables there, so logging in shows "Can't log in right now". The mock's test user is in `src/lib/auth/test-user.ts`, so nothing else is needed. A change only applies to new deployments, so redeploy after adding it.
+6. **Protect the previews.** In Settings → Deployment Protection, pick Standard Protection with Vercel Authentication. Previews then need a Vercel login, and production stays public, because the app's login page will live there.
+7. **Pick the Node.js version.** In Settings → Build and Deployment → Node.js Version, pick 24.x, to match `engines` in `package.json`. If the two differ, `engines` wins, so production runs on Node 24 either way. The setting just keeps the dashboard in line with it. The upgrade to Node 26 is tracked in #35.
 
 ## Check it works
 
-- Open the production URL in a private browser window. It shows the app with no login.
+- Open the production URL in a private browser window. It shows the login screen.
+- In Settings → Environment Variables, `APP_ENV` is `preview` for Preview and `production` for Production.
 - On a pull request, open the preview link the Vercel bot comments in a private browser window. It asks for a Vercel login.
 
 ## What deploys

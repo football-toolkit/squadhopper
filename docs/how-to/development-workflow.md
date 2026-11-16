@@ -87,7 +87,7 @@ A local run and the preview build the same code at the same commit, apart from d
 
 ## End-to-end tests
 
-The end-to-end tests in `e2e/` open the production build in real browsers, Chromium and WebKit (Safari's engine), and check the pages' layout and navigation. CI runs them on every pull request, in the `checks` job, after the build. Why: [ADR 0015](../explanation/decisions/0015-test-screens-end-to-end-with-playwright-in-ci.md).
+The end-to-end tests in `e2e/` open the production build in real browsers, Chromium and WebKit (Safari's engine), and check the pages' layout, navigation, logging in and logging out. CI runs them on every pull request, in the `checks` job, after the build. Why: [ADR 0015](../explanation/decisions/0015-test-screens-end-to-end-with-playwright-in-ci.md).
 
 ### Read a failed run
 
@@ -109,6 +109,8 @@ CI always runs the end-to-end tests, so running them locally is never required. 
 npx playwright install --with-deps chromium webkit
 npm run test:e2e
 ```
+
+Locally, the tests read `.env.local` (copy `.env.example` to create it), so `APP_ENV=local` and they log in against the mock. In CI they log in against a temporary Supabase, started from `supabase/config.toml` ([ADR 0019](../explanation/decisions/0019-test-login-against-a-temporary-supabase-in-ci.md)).
 
 The tests build the app and start it on port 3100, so a running `npm run dev` doesn't get in the way. Run one browser with `npm run test:e2e -- --project=webkit`.
 
