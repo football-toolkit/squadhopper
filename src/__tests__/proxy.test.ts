@@ -54,7 +54,16 @@ describe("routeFor", () => {
 });
 
 describe("config.matcher", () => {
-  it.each(["/", "/login", "/does-not-exist", "/a/b/c"])("runs on %s", (url) => {
+  it.each([
+    "/",
+    "/login",
+    "/does-not-exist",
+    "/a/b/c",
+    "/icon.svgx",
+    "/favicon.ico/x",
+    "/apple-icon.png/secret",
+    "/_next/staticfoo",
+  ])("runs on %s", (url) => {
     expect(unstable_doesMiddlewareMatch({ config, url })).toBe(true);
   });
 
