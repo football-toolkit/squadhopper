@@ -14,7 +14,7 @@
 
 - **Versions:** `@supabase/ssr` exactly `0.12.7`, `@supabase/supabase-js` exactly `2.119.0` (`.npmrc` has `save-exact=true`); Supabase CLI `3.1.0` through `supabase/setup-cli` v3.2.0, pinned to its commit.
 - **No `NEXT_PUBLIC_` variables.** Supabase only from the server: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`. The app never reads `SUPABASE_SECRET_KEY`; only the Playwright global setup does.
-- **`APP_ENV` decides the backend**, read at request time only: `local` and `preview` → mock; `test`, `production`, missing or unknown → Supabase. Never `NODE_ENV` or `VERCEL_ENV` for this. The mock throws if `APP_ENV` is `production`.
+- **`APP_ENV` decides the backend**, read at request time only: `local` and `preview` → mock; `test`, `production`, missing or unknown → Supabase. Never `NODE_ENV` or `VERCEL_ENV` for this. The mock throws if `APP_ENV` is `production`, and also if `VERCEL_ENV` is `production`: a safety stop only, `APP_ENV` still decides the backend (owner's decision, 2026-11-16).
 - **Texts** live only in `src/lib/messages/auth.ts`; screens and tests import them. The server returns only the codes `invalid_credentials` and `unavailable`, never Supabase's text.
 - **The test user** lives only in `src/lib/auth/test-user.ts`: invented, public, its password 12+ characters. No real credentials anywhere.
 - **Session cookies:** `httpOnly: true`, `sameSite: "lax"`, `path: "/"`, `secure` only when the request came over HTTPS.

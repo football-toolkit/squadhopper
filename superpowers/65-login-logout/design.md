@@ -24,7 +24,7 @@ From the issue: sign-up, password reset, "show password", logging out on every d
 
 Also:
 
-- **No data access layer yet.** The pages show no per-user data, so the gate is the only check needed today. The first Feature that reads user data adds a check next to the data, as Next.js's [authentication guide](../../node_modules/next/dist/docs/01-app/02-guides/authentication.md) recommends ("Proxy … should not be your only line of defense in protecting your data").
+- **No data access layer yet.** The pages show no per-user data, so the gate is the only check needed today. The first Feature that reads user data adds a check next to the data, as Next.js's [authentication guide](../../node_modules/next/dist/docs/01-app/02-guides/authentication.md) recommends ("Proxy … should not be your only line of defense in protecting your data"). Until then, a removed user keeps access for up to an hour, because the gate checks the token locally; the owner accepted this on 2026-11-16. The first Feature that reads per-user data adds a check next to the data that asks Supabase directly, so a removed user sees no data.
 - **No browser-side Supabase client.** Supabase is reached only from the server, so no `NEXT_PUBLIC_` variables and no Supabase code in the browser bundle.
 - **No end-to-end test of the "Can't log in right now" popup against real Supabase.** It can't be caused on demand in CI. Unit tests cover the mapping, and the mock lets anyone see it locally and on the preview.
 
@@ -135,7 +135,7 @@ function createAuthService(jar: CookieJar, env = process.env): AuthService;
 - `unavailable@example.com`, with any password, returns `unavailable`, so the "Can't log in right now" popup can be seen locally and on the preview.
 - Anything else returns `invalid_credentials`.
 - `signOut()` deletes the cookie. `hasSession()` checks that the cookie is there.
-- The constructor throws if `APP_ENV` is `production`.
+- The constructor throws if `APP_ENV` is `production`, and also if `VERCEL_ENV` is `production`. That is a safety stop only: `APP_ENV` still decides the backend (owner's decision, 2026-11-16).
 - *My call:* the cookie's value isn't signed. The mock only runs locally and on previews behind Vercel's login, where the test user is public anyway.
 
 ### The gate (`src/proxy.ts`)

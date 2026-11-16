@@ -36,7 +36,7 @@ Chosen option: **"`APP_ENV`"**, because it is ours: its values mean what we say 
 | missing or unknown | Supabase |
 
 - **The safe side is Supabase.** A missing or misspelled value picks Supabase, never the mock. On a preview without `APP_ENV`, logging in then shows "Can't log in right now", which is why [Set up Vercel](../../how-to/set-up-vercel.md) has the owner add it before the first preview review.
-- **The mock refuses production.** Creating it throws when `APP_ENV` is `production`, so even a wrong table row could not open production to the mock.
+- **The mock refuses production.** Creating it throws when `APP_ENV` is `production`, so even a wrong table row could not open production to the mock. It also refuses to start when `VERCEL_ENV` is `production`: `APP_ENV` still decides the backend, and `VERCEL_ENV` is only a safety stop (owner's decision, 2026-11-16).
 - **The test user lives in code**, in `src/lib/auth/test-user.ts`: an invented, public account whose password has 12 or more characters, matching production's minimum. The mock, the end-to-end tests and the CI setup all import it. The owner chose this on 2026-11-16 over an environment variable, because Vercel doesn't read `.env.example`: a variable would have to be added by hand in Vercel, and the only value that is needed there is `APP_ENV`. `.env.example` points to the file.
 - **Why not the platform's own variables.** `NODE_ENV` is `production` for every `next build` and `next start`, including the preview and the CI run, so it can't tell them apart. `VERCEL_ENV` ([system environment variables](https://vercel.com/docs/environment-variables/system-environment-variables)) exists only on Vercel, so local runs and CI would need a second rule.
 - `APP_ENV` is read only in the proxy and the Server Actions, at request time. It has no `NEXT_PUBLIC_` prefix, so it isn't built into the browser code.
@@ -46,6 +46,7 @@ Chosen option: **"`APP_ENV`"**, because it is ours: its values mean what we say 
 - Good, because the owner reviews real logins on every preview without any Supabase setup there.
 - Good, because the mock can't reach production: unknown values pick Supabase, and the mock refuses `production`.
 - Good, because the test user is defined once, in a reviewed file, with no secret to manage.
+- Bad, because a removed user keeps access until their session token expires, up to an hour (Supabase's default `jwt_expiry`, 3600 s), since the gate checks the token locally. The first Feature that reads per-user data adds a check next to the data that asks Supabase directly, so a removed user sees no data.
 - Bad, because the owner must add one Vercel variable, and forgetting it makes previews say "Can't log in right now".
 - Bad, because a preview doesn't exercise Supabase. CI does ([0019](0019-test-login-against-a-temporary-supabase-in-ci.md)).
 - Bad, because the mock's cookie isn't signed. It runs only locally and on previews behind Vercel's login, where the test user is public anyway.
