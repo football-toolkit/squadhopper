@@ -31,7 +31,7 @@ Also:
 ## Anti-goals
 
 - **Never show Supabase's own error text.** The server returns only our codes; the screen turns a code into one of our messages.
-- **The mock never runs in production**, even if `APP_ENV` is misconfigured: a missing or unknown value picks Supabase, and the mock itself refuses to start when `APP_ENV` is `production`.
+- **The mock never runs in production**, even if `APP_ENV` is misconfigured: a missing or unknown value picks Supabase, and the mock itself refuses to start when `APP_ENV` is `production`, or when `VERCEL_ENV` is `production` (a safety stop only: `APP_ENV` still decides the backend).
 - **No real credentials anywhere**: not in the repo, the PR, screenshots or tests. The test user is invented and public.
 - **No flaky tests.** Every end-to-end test is deterministic in both browsers; no test relies on behavior Playwright documents as unsupported.
 - **No one-off colors, fonts or spacing** in the screens we write (AGENTS.md, Screen design).

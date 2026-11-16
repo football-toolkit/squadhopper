@@ -53,7 +53,7 @@ Chosen option: **"`APP_ENV`"**, because it is ours: its values mean what we say 
 
 ### Confirmation
 
-- Unit tests cover every row of the table, including a missing and an unknown value, and the mock's refusal to start when `APP_ENV` is `production`.
+- Unit tests cover every row of the table, including a missing and an unknown value, and the mock's refusal to start when `APP_ENV` or `VERCEL_ENV` is `production` (`src/lib/auth/__tests__/mock.test.ts`).
 - Vercel lists `APP_ENV` as `preview` for Preview and `production` for Production.
 
 ## Pros and cons of the options
