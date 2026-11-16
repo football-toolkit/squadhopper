@@ -1,6 +1,12 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, test, vi } from "vitest";
-import { closeError, ErrorToaster, showError } from "../error-toaster";
+import {
+  closeError,
+  contentClasses,
+  ErrorToaster,
+  showError,
+  toastClasses,
+} from "../error-toaster";
 import { authMessages } from "@/lib/messages/auth";
 
 afterEach(() => {
@@ -88,4 +94,27 @@ test("the popup has a destructive border and icon", () => {
   expect(
     screen.getByTestId("error-toast-icon").getAttribute("class"),
   ).toContain("text-destructive");
+});
+
+test("the popup slides in from the top using theme utilities only", () => {
+  render(<ErrorToaster />);
+  show("From the top.");
+  const root = popup()!;
+  for (const c of [
+    "origin-top",
+    "not-data-limited:data-starting-style:transform-none",
+    "not-data-expanded:not-data-limited:not-data-swipe-direction:data-ending-style:transform-none",
+  ]) {
+    expect(root.className).toContain(c);
+  }
+  const content = root.querySelector('[data-slot="toast-content"]')!;
+  expect(content.className).toContain(
+    "group-data-starting-style/toast:-translate-y-full",
+  );
+  expect(content.className).toContain(
+    "group-data-ending-style/toast:-translate-y-full",
+  );
+  // No bracket values in the classes this project adds.
+  expect(toastClasses).not.toContain("[");
+  expect(contentClasses).not.toContain("[");
 });

@@ -28,16 +28,28 @@ export function closeError(id: string): void {
   toast.close(id);
 }
 
+// The generated Toast moves with a transform that starts and ends 150% below its
+// place. The not-* variants below add specificity, so these transform-none rules
+// beat those generated ones. The slide itself then runs on the content's
+// translate property, which the generated transform never touches.
+export const toastClasses = [
+  "top-0 bottom-auto h-auto origin-top border-destructive bg-card text-foreground",
+  "not-data-limited:data-starting-style:transform-none",
+  "not-data-expanded:not-data-limited:not-data-swipe-direction:data-ending-style:transform-none",
+].join(" ");
+
+export const contentClasses = [
+  "items-start transition-all duration-300 ease-out motion-reduce:transition-none",
+  "group-data-starting-style/toast:-translate-y-full group-data-starting-style/toast:opacity-0",
+  "group-data-ending-style/toast:-translate-y-full group-data-ending-style/toast:opacity-0",
+].join(" ");
+
 function ErrorList() {
   const { toasts } = useToastManager();
 
   return toasts.map((item) => (
-    <Toast
-      key={item.id}
-      toast={item}
-      className="top-0 bottom-auto h-auto origin-top border-destructive bg-card text-foreground transition-[transform,opacity] duration-300 ease-out [transform:none] data-ending-style:-translate-y-full data-ending-style:opacity-0 data-starting-style:-translate-y-full data-starting-style:opacity-0 motion-reduce:transition-none"
-    >
-      <ToastContent className="items-start">
+    <Toast key={item.id} toast={item} className={toastClasses}>
+      <ToastContent className={contentClasses}>
         <CircleAlert
           data-testid="error-toast-icon"
           aria-hidden="true"
