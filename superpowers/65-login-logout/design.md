@@ -157,7 +157,7 @@ function createAuthService(jar: CookieJar, env = process.env): AuthService;
   - **On submit:**
     1. Close any open login popup, on every click of Log in, even when the field check then stops the attempt. The spec says a new click closes the earlier popup. After a wrong password, the password field is empty, so the very next click fails the field check, and the popup shouldn't stay next to "Enter your password".
     2. Trim the email, then check the fields: empty email → "Enter your email"; an email that doesn't match `^[^\s@]+@[^\s@]+\.[^\s@]+$` → "Enter a valid email address"; empty password → "Enter your password".
-    3. An invalid field gets `aria-invalid` (the Input's `aria-invalid:border-destructive` draws the outline) and `aria-describedby` pointing to its message, shown under it in `text-destructive`. *My call:* focus moves to the first invalid field.
+    3. An invalid field gets `aria-invalid` (the Input draws a 1 px `border-destructive` border and no red ring; the light keyboard focus ring stays) and `aria-describedby` pointing to its message, shown under it in `text-xs text-destructive` with a decorative `CircleAlert` icon before the text. *My call:* focus moves to the first invalid field.
     4. If both fields are valid, call the `logIn` Server Action inside `useTransition`.
   - **Typing** in a field clears only that field's message.
   - **While pending:** both inputs are disabled; the button is disabled and dimmed, and shows the Spinner and "Logging in…". A second click does nothing, because the button is disabled and the submit handler returns early.
@@ -194,8 +194,8 @@ Three layers, so no single browser behavior is relied on:
 
 - The shadcn Toast's provider and viewport go in the root layout.
 - A small `showError(message)` helper adds a toast with `timeout: 0`, `priority: "high"` and type `error`, and returns its id so the login form can close it on the next attempt. `closeError(id)` closes it.
-- **Look**, ported from the boards to the theme: `bg-card`, a `border-destructive` border, the `CircleAlert` icon in `text-destructive`, the message in `text-foreground`, and an `X` close button with `aria-label="Close"`.
-- **Place:** top right from `md:` up, and across the top with the page's side margins on phones.
+- **Look**, ported from the boards to the theme: `bg-surface`, a 1 px `border-destructive` border, `rounded-xl` and `shadow-2xl`, all in one vertically centred row: the `CircleAlert` icon in `text-destructive`, the message in `text-foreground`, and an `X` close button with `aria-label="Close"`. The whole popup slides down and fades in when it appears, and slides back up and fades out when it closes (off under reduced motion, `motion-reduce:transition-none`).
+- **Place:** top right from `md:` up (24 px from the top and right, 400 px wide), and across the top, 12 px from the top and each side, on phones.
 - `destructive` is used only for errors (design guide).
 
 ### Spinner
