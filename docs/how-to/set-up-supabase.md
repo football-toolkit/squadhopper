@@ -22,7 +22,9 @@ Supabase stores the app's users and checks their passwords. This guide sets up t
 3. **Set up sign-in.** In **Authentication → Sign In / Providers**:
    - Turn **Allow new users to sign up** off. v0.1 has no sign-up page, so the owner adds each user by hand, in **Authentication → Users**.
    - Inside the **Email** provider, set the minimum password length to **12**. Leave the character requirements at their default, and leave the Email provider on.
-4. **Add the two values to Vercel.** In the Vercel project's Settings → Environment Variables, add these two, for the **Production** environment only. Previews and local runs use a mock. Leave the type at the default, **Secret**.
+4. **Add the two values to Vercel.** In the Vercel project's Settings → Environment Variables, add these two, for the **Production** environment only. Previews and local runs will use a mock, which the login Feature adds. Leave the type at the default, **Secret**.
+
+   > **Keep the names exactly `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.** Supabase's Next.js snippet uses `NEXT_PUBLIC_` names, and Vercel warns about them. Don't add the `NEXT_PUBLIC_` prefix, and don't click **Change to Config**. As Vercel's warning says, Config keeps the `NEXT_PUBLIC_` name, so the value would still be built into the browser code. We keep both values on the server.
 
    | Name | Value | Where to find it |
    | --- | --- | --- |
@@ -30,8 +32,6 @@ Supabase stores the app's users and checks their passwords. This guide sets up t
    | `SUPABASE_PUBLISHABLE_KEY` | the publishable key, `sb_publishable_…`, not the secret key | Project Settings → API Keys |
 
    Don't use the Connect dialog: it didn't match Supabase's docs. Don't use the Vercel Marketplace integration either: it copies more values than these two.
-
-   > **Keep the names exactly `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.** Supabase's Next.js snippet uses `NEXT_PUBLIC_` names, and Vercel warns about them. Don't add the `NEXT_PUBLIC_` prefix, and don't click **Change to Config**. As Vercel's warning says, Config keeps the `NEXT_PUBLIC_` name, so the value would still be built into the browser code. We keep both values on the server.
 
    If you add or change the values after the code that reads them is live, redeploy production, because a change only applies to new deployments. This time the merge deploys anyway.
 
