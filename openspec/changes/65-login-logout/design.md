@@ -26,7 +26,7 @@ The look was agreed with the owner on design boards attached to the issue: the l
 
 | Screen | Who sees it | What's on it |
 | --- | --- | --- |
-| Login | Anyone not logged in, at any address | The wordmark and tagline in the pitch band, a card with Email, Password and the Log in button, and the small print "Sign-ups are closed." No header |
+| Login | Anyone not logged in, at any address | A card in the pitch band's overlap with the wordmark, the tagline, Email, Password and the Log in button, and the small print "Sign-ups are closed." under the card. No header |
 | Home | Logged-in users | As today, plus a Log out button at the right of the header |
 | Page not found | Logged-in users, at an address that doesn't exist | As today, plus a Log out button at the right of the header |
 | Error popup | Over any screen, when something fails | Error icon, message, close (×) button |
