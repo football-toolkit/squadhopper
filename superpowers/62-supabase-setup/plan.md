@@ -18,7 +18,7 @@
 - ADR index rows, at the end of the "Stack and architecture" table:
   - `| [0016](0016-use-supabase-for-authentication.md) | Use Supabase for authentication |`
   - `| [0017](0017-run-in-the-eu-in-frankfurt.md) | Run in the EU, in Frankfurt |`
-- ADR 0011 gets exactly one new line, a paragraph directly under its `# 0011: …` title: `Amended by [0017](0017-run-in-the-eu-in-frankfurt.md): adds \`vercel.json\` for the function region.` Nothing else in 0011 changes, including its "No `vercel.json` in the repo." line. No other accepted ADR is edited.
+- ADR 0011 gets exactly one new line, a paragraph directly under its `# 0011: …` title: ``Amended by [0017](0017-run-in-the-eu-in-frankfurt.md): adds `vercel.json` for the function region.`` Nothing else in 0011 changes, including its "No `vercel.json` in the repo." line. No other accepted ADR is edited.
 - Guide file: `docs/how-to/set-up-supabase.md`, title `# How to set up Supabase`.
 - Exact copy for the guide's warning box (a `>` blockquote, starting with a bold line): keep the names exactly `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`. Supabase's Next.js snippet uses `NEXT_PUBLIC_` names, and Vercel warns about them. "Don't add the `NEXT_PUBLIC_` prefix, and don't click **Change to Config**." The reason, as Vercel's warning gives it: Config keeps the `NEXT_PUBLIC_` name, so the value would still be built into the browser code, and we keep both values on the server. Don't describe what the button does internally.
 - Redeploy rule in the guide: if the values are added or changed after the code that reads them is live, redeploy production, because a change only applies to new deployments. This time the merge deploys anyway.
@@ -77,7 +77,7 @@ git commit -m "docs: design and plan the Supabase setup"
   - Confirmation: `vercel.json`; Project Settings → General shows `eu-central-1`; the PR preview's functions show `fra1`.
   - More information: links to both setup guides and to 0011.
 - [ ] **Step 6:** Add the 0011 line and the 0017 index row from Global Constraints.
-- [ ] **Step 7:** In `set-up-vercel.md` step 3, replace "Keep the default settings, and don't add a `vercel.json`." with "Keep the default settings. The repo's `vercel.json` runs the functions in Frankfurt (`fra1`), as decided in [ADR 0017](../explanation/decisions/0017-run-in-the-eu-in-frankfurt.md)."
+- [ ] **Step 7:** In `set-up-vercel.md` step 3, replace "Keep the default settings, and don't add a `vercel.json`." with ``Keep the default settings. The repo's `vercel.json` runs the functions in Frankfurt (`fra1`), as decided in [ADR 0017](../explanation/decisions/0017-run-in-the-eu-in-frankfurt.md).``
 - [ ] **Step 8:** Verify:
 
 ```bash

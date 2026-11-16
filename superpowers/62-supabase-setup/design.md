@@ -133,7 +133,7 @@ Add a row for "Set up Supabase".
 
 ### ADR 0011
 
-One line under the title, linked to 0017: "Amended by [0017](0017-run-in-the-eu-in-frankfurt.md): adds `vercel.json` for the function region." Nothing else changes. Putting it under the title, where readers see it first, is my call.
+One line under the title, linked to 0017: ``Amended by [0017](0017-run-in-the-eu-in-frankfurt.md): adds `vercel.json` for the function region.`` Nothing else changes. Putting it under the title, where readers see it first, is my call.
 
 ### ADR index
 
