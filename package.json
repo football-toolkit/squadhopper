@@ -13,8 +13,8 @@
     "test:e2e": "playwright test",
     "lint": "eslint src eslint.config.mjs next.config.ts postcss.config.mjs vitest.config.mts vitest.setup.ts e2e playwright.config.ts",
     "typecheck": "next typegen && tsc --noEmit",
-    "format": "prettier --write src components.json eslint.config.mjs next.config.ts postcss.config.mjs vitest.config.mts vitest.setup.ts e2e playwright.config.ts tsconfig.json package.json .prettierrc.json",
-    "format:check": "prettier --check src components.json eslint.config.mjs next.config.ts postcss.config.mjs vitest.config.mts vitest.setup.ts e2e playwright.config.ts tsconfig.json package.json .prettierrc.json"
+    "format": "prettier --write src components.json eslint.config.mjs next.config.ts postcss.config.mjs vitest.config.mts vitest.setup.ts e2e playwright.config.ts tsconfig.json package.json .prettierrc.json vercel.json",
+    "format:check": "prettier --check src components.json eslint.config.mjs next.config.ts postcss.config.mjs vitest.config.mts vitest.setup.ts e2e playwright.config.ts tsconfig.json package.json .prettierrc.json vercel.json"
   },
   "dependencies": {
     "@base-ui/react": "1.9.0",
