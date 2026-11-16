@@ -45,5 +45,6 @@ On Hobby you can only go back to the production deployment just before the curre
 
 - 💡 Why Vercel: [ADR 0011](../explanation/decisions/0011-host-the-app-on-vercel.md)
 - 🛠️ From idea to merge: [Development workflow](development-workflow.md)
+- 🛠️ The login's users and passwords: [Set up Supabase](set-up-supabase.md)
 - ⬆️ [How-to guides](README.md)
 - 🏠 [Docs home](../README.md)
