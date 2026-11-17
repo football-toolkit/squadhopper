@@ -24,11 +24,25 @@ test("the home page isn't stored by the browser", async ({ page }) => {
   expect(await response?.headerValue("cache-control")).toContain("no-store");
 });
 
-test("Log out shows the login screen", async ({ page }) => {
-  await logIn(page);
-  await logOutButton(page).click();
-  await expectLoginScreen(page);
-});
+// Every page that has the Log out button. Logging out must work from each:
+// on the preview, Log out from the 404 page once left the session in place.
+const pagesWithLogOut = [
+  { name: "the home page", path: "/" },
+  { name: "the 404 page", path: "/does-not-exist" },
+];
+
+for (const { name, path } of pagesWithLogOut) {
+  test(`log out from ${name} shows the login screen`, async ({ page }) => {
+    await logIn(page);
+    // goto waits for load, so the click reaches React.
+    await page.goto(path);
+    await logOutButton(page).click();
+    await expectLoginScreen(page);
+    // The session is really gone: home now sends us to the login screen too.
+    await page.goto("/");
+    await expectLoginScreen(page);
+  });
+}
 
 test("Back after logging out shows the login screen", async ({ page }) => {
   await logIn(page);
