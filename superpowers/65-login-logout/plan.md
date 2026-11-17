@@ -288,6 +288,8 @@ Delivers OpenSpec 2.1–2.5.
 
 Delivers OpenSpec 4.1–4.3.
 
+> **Changed after the owner's preview review (2026-11-17).** The `logOut` Server Action below was replaced by a Route Handler, `src/app/logout/route.ts`, that exports only `POST`: it calls `authServiceForRequest().signOut()` and answers `204` with `Cache-Control: private, no-store`; any other method gets Next.js's `405`. `LogoutButton` now sends `fetch("/logout", { method: "POST" })`, then `goTo("/login")`. `src/app/actions/log-out.ts` and its test are gone; the tests are `src/app/logout/__tests__/route.test.ts` (signs out once, 204, no-store, only `POST` exported) and `logout-button.test.tsx` with a stubbed `fetch`. Why: on Vercel, Log out from the 404 page left the session in place — the prerendered 404 most likely answers a POST to an unknown address with static HTML, so the action never ran (CI's `next start` doesn't show it). See the design's "Why a route and not a Server Action". The steps below are kept as they were run.
+
 **Files:**
 - Create: `src/app/actions/log-out.ts`, `src/components/logout-button.tsx`, `src/components/bfcache-reload.tsx`
 - Modify: `src/app/page.tsx`, `src/app/not-found.tsx` (pass `<LogoutButton />` to `AppHeader`), `src/app/layout.tsx` (render `<BfcacheReload />`)
@@ -358,6 +360,7 @@ Delivers OpenSpec 5.1, and the end-to-end proof of 2.2, 2.4, 2.5, 3.1, 3.2 and 4
     - Enter in Password logs in (Review Focus 5).
     - After logging in, `page.goto("/login")` ends on `/`.
   - `logout.spec.ts`, each test calling `logIn` first:
+    - *(Added after the preview review, 2026-11-17: Log out runs from every page that has the button — home and the 404 page — and opening `/` afterwards still shows the login screen; `GET /logout` answers 405 and the user stays logged in.)*
     - `/` has `cache-control` containing `no-store`.
     - Log out → URL `/login`.
     - Log out, then `page.goBack()` → the login screen (URL `/login`, Log in button visible).
