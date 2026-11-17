@@ -92,7 +92,8 @@ interface AuthService {
 }
 
 // How a service reads and writes cookies: built from the request and response
-// in the proxy, and from next/headers cookies() in Server Actions.
+// in the proxy, and from next/headers cookies() in Server Actions and the
+// /logout Route Handler.
 interface CookieJar {
   getAll(): { name: string; value: string }[];
   setAll(
@@ -114,7 +115,7 @@ function createAuthService(jar: CookieJar, env = process.env): AuthService;
 | `production` | Supabase |
 | missing or unknown | Supabase |
 
-`APP_ENV` is read at request time only (proxy and Server Actions), never during the build, so one build works in every environment. `NODE_ENV` and `VERCEL_ENV` aren't used for this.
+`APP_ENV` is read at request time only (the proxy, the `logIn` Server Action and the `/logout` route), never during the build, so one build works in every environment. `NODE_ENV` and `VERCEL_ENV` aren't used for this.
 
 **Supabase adapter.**
 
@@ -175,10 +176,12 @@ All texts come from `src/lib/messages/auth.ts`, which the screens and the tests 
 ### Log out (`src/components/logout-button.tsx`)
 
 - **The button:** a Client Component, a shadcn `Button` with `variant="outline"` and `size="sm"` (as on the boards), with the `LogOut` icon and "Log out".
-- **On click:** inside `useTransition`, it calls the `logOut` Server Action. While pending, it's disabled and dimmed, and shows the Spinner and "Logging out…".
-- **After the action resolves or throws:** `window.location.assign("/login")`. The device is already logged out by then, because `signOut` clears the cookies first.
+- **On click:** inside `useTransition`, it sends `fetch("/logout", { method: "POST" })`. While pending, it's disabled and dimmed, and shows the Spinner and "Logging out…".
+- **After the request answers or fails:** `goTo("/login")` (`window.location.assign`), staying pending while the page goes. The failure is swallowed, not rethrown, so Next's error page never shows; the gate decides what `/login` shows.
 - **Where it shows:** `AppHeader` gets it as a child on `src/app/page.tsx` and `src/app/not-found.tsx`. `not-found.tsx` stays synchronous; a Client Component child doesn't change that.
-- **The `logOut` action** (`"use server"`) calls `createAuthService(cookieJarFromNext()).signOut()`.
+- **The route, `src/app/logout/route.ts`:** a Route Handler that exports only `POST`. It calls `authServiceForRequest().signOut()` (scope local, so this device's cookies are cleared even when Supabase can't be reached; the cleared cookies go on its response) and answers `204` with `Cache-Control: private, no-store`. Next.js answers any other method with `405 Method Not Allowed` (`node_modules/next/dist/docs/01-app/01-getting-started/15-route-handlers.md`), so a link, a typed address or a prefetch can't end the session. A signed-out `POST /logout` gets the gate's redirect to `/login`, which is harmless.
+
+**Why a route and not a Server Action** (changed after the owner's preview review, 2026-11-17). The first build used a `logOut` Server Action. On the Vercel preview, Log out from the 404 page showed the spinner, then landed on home, still logged in; from home it worked. A Server Action is a POST to the page's own address. Locally, `next start` runs the action from an unknown address too: it answers 404 with a component payload and clears the cookie. Next.js's client accepts an action's answer only as `text/x-component` and throws on anything else, which the empty `catch` hid. The likely cause, inferred but not observed (the preview sits behind Vercel's login): on Vercel the 404 page is prerendered, and a POST to an unknown address most likely gets that static HTML instead of running the action, so the cookie stayed and the gate sent the user home. CI's `next start` doesn't show it, so the end-to-end test that logs out from the 404 page guards against regressions, and the owner checks the fix on the preview. A Route Handler lives at one fixed address that exists on every deployment, so logging out no longer depends on which page the button is on.
 
 **Why a full page load and not the router.** Next.js keeps its own copy of visited pages and reuses it on Back and Forward. A router navigation to `/login` would leave the home page in that copy, and Back would show it without asking the server. A full page load starts a new document and throws the copy away. For the same reason, logging in uses `location.replace("/")`, so the logged-out document is gone too.
 
@@ -237,7 +240,8 @@ Test first, from each task's scenarios. Each test names the scenario it proves.
 | `logIn` action: validates again and returns only codes | 2.5 |
 | Error popup: shows the icon, message and close button named "Close"; `role="alert"`; still there after 60 s with fake timers; the close button and Enter close it; closing it by id | 1.1, 1.2 |
 | Spinner usage carries `motion-reduce:animate-none` | 2.3, 4.2 |
-| `LogoutButton`: pending state, ignores a second click, `location.assign("/login")` after success and after a thrown action | 4.2, 4.3 |
+| `LogoutButton`: pending state, ignores a second click, `location.assign("/login")` after the `POST /logout` answers and after it fails | 4.2, 4.3 |
+| `POST /logout` route: signs out once, answers 204 with `Cache-Control: private, no-store`, and the file exports only `POST` (so `GET` gets 405) | 4.3 |
 | `BfcacheReload`: `pageshow` with `persisted: true` reloads; `persisted: false` doesn't | 4.3 |
 | Home and 404 headers show Log out (update the existing page tests) | 4.1 |
 | Login page: the wordmark, the fields, "Sign-ups are closed.", no sign-up or reset link | 2.1 |
@@ -254,6 +258,7 @@ Test first, from each task's scenarios. Each test names the scenario it proves.
   - The login screen layout at 390 px and 1280 px, measured like the existing layout tests.
 - **`logout.spec.ts`:** each test logs in fresh, because logging out revokes that session, and a shared one would break other tests.
   - **Log out from every page that has the button** (the home page and the 404 page) shows the login screen, and opening `/` afterwards still shows it, so the session is really gone. Added after the owner's preview review found Log out from the 404 page leaving the session in place on Vercel. CI runs `next start`, where that case worked, so this test guards against regressions; the owner checks the fix on the preview.
+  - **`GET /logout`** answers 405, and the user is still logged in afterwards.
   - **Back after logging out** shows the login screen.
   - **Simulated restore:** two pages in one context on the home page; log out in the second; on the first, dispatch `new PageTransitionEvent("pageshow", { persisted: true })`; the first page reloads into the login screen.
   - **Two devices:** two browser contexts, both logged in; one logs out; the other reloads and still sees home.
@@ -302,7 +307,7 @@ All at 390 px and 1280 px, with the invented test user only.
 | 2.4, 2.5 | `LoginForm`, `logIn`, adapters, messages |
 | 3.1, 3.2 | Proxy, `routeFor`, `pickAuthBackend` |
 | 4.1, 4.2 | `LogoutButton` in `AppHeader` |
-| 4.3 | `logOut`, `signOut` scope, full page load, `no-store`, `BfcacheReload` |
+| 4.3 | `POST /logout` route, `signOut` scope, full page load, `no-store`, `BfcacheReload` |
 | 5.1 | CI Supabase, global setup, end-to-end specs |
 | 5.2 | Layout end-to-end tests, screenshots, the owner's preview review |
 
