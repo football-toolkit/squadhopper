@@ -39,7 +39,7 @@ Chosen option: **"`APP_ENV`"**, because it is ours: its values mean what we say 
 - **The mock refuses production.** Creating it throws when `APP_ENV` is `production`, so even a wrong table row could not open production to the mock. It also refuses to start when `VERCEL_ENV` is `production`: `APP_ENV` still decides the backend, and `VERCEL_ENV` is only a safety stop (owner's decision, 2026-11-16).
 - **The test user lives in code**, in `src/lib/auth/test-user.ts`: an invented, public account whose password has 12 or more characters, matching production's minimum. The mock, the end-to-end tests and the CI setup all import it. The owner chose this on 2026-11-16 over an environment variable, because Vercel doesn't read `.env.example`: a variable would have to be added by hand in Vercel, and the only value that is needed there is `APP_ENV`. `.env.example` points to the file.
 - **Why not the platform's own variables.** `NODE_ENV` is `production` for every `next build` and `next start`, including the preview and the CI run, so it can't tell them apart. `VERCEL_ENV` ([system environment variables](https://vercel.com/docs/environment-variables/system-environment-variables)) exists only on Vercel, so local runs and CI would need a second rule.
-- `APP_ENV` is read only in the proxy and the Server Actions, at request time. It has no `NEXT_PUBLIC_` prefix, so it isn't built into the browser code.
+- `APP_ENV` is read only in the proxy, the `logIn` Server Action and the `/logout` route, at request time. It has no `NEXT_PUBLIC_` prefix, so it isn't built into the browser code.
 
 ### Consequences
 
