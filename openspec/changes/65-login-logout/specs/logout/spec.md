@@ -43,6 +43,11 @@ Logging out SHALL end the user's session on the device they're using and show th
 - **WHEN** the user clicks Log out and logging out finishes
 - **THEN** they see the login screen, with no "logged out" message
 
+#### Scenario: User logs out from the "page not found" page
+
+- **WHEN** a logged-in user on the "page not found" page clicks Log out
+- **THEN** they see the login screen
+
 #### Scenario: User goes back after logging out
 
 - **WHEN** the user has logged out and then goes back to the home page, by the browser's Back button or by its address

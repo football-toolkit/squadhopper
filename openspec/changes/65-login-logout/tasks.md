@@ -24,7 +24,7 @@ Each task is a user-visible outcome. It's done when every scenario it lists pass
 
 - [x] 4.1 The home page and the "page not found" page show a Log out button in their header. Verified by `logout` scenarios "Home page" and "Page not found".
 - [x] 4.2 While logging out, the button is dimmed with the spinner and "Logging out…" and ignores more clicks. Verified by `logout` scenarios "User clicks Log out" and "User clicks again while waiting".
-- [x] 4.3 Logging out ends the session on this device only, even when the login service can't be reached, and shows the login screen; going back doesn't bring the home page back. Verified by `logout` scenarios "User logs out", "User goes back after logging out", "The login service can't be reached" and "User is logged in on two devices".
+- [ ] 4.3 Logging out ends the session on this device only, from every page that has the button, even when the login service can't be reached, and shows the login screen; going back doesn't bring the home page back. Verified by `logout` scenarios "User logs out", "User logs out from the "page not found" page", "User goes back after logging out", "The login service can't be reached" and "User is logged in on two devices".
 
 ## 5. Whole journey
 
