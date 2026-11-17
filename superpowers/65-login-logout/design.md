@@ -253,7 +253,7 @@ Test first, from each task's scenarios. Each test names the scenario it proves.
   - A logged-in user at `/login` lands on `/`.
   - The login screen layout at 390 px and 1280 px, measured like the existing layout tests.
 - **`logout.spec.ts`:** each test logs in fresh, because logging out revokes that session, and a shared one would break other tests.
-  - Log out shows the login screen.
+  - **Log out from every page that has the button** (the home page and the 404 page) shows the login screen, and opening `/` afterwards still shows it, so the session is really gone. Added after the owner's preview review found Log out from the 404 page leaving the session in place on Vercel. CI runs `next start`, where that case worked, so this test guards against regressions; the owner checks the fix on the preview.
   - **Back after logging out** shows the login screen.
   - **Simulated restore:** two pages in one context on the home page; log out in the second; on the first, dispatch `new PageTransitionEvent("pageshow", { persisted: true })`; the first page reloads into the login screen.
   - **Two devices:** two browser contexts, both logged in; one logs out; the other reloads and still sees home.
