@@ -1,9 +1,7 @@
-import { expect, test, vi } from "vitest";
+import { expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
 import NotFound, { metadata } from "../not-found";
 import { APP_NAME } from "@/lib/app-name";
-
-vi.mock("@/app/actions/log-out", () => ({ logOut: vi.fn() }));
 
 test("the 404 page has the heading, with 404 in volt", () => {
   render(<NotFound />);

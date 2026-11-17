@@ -2,7 +2,6 @@
 
 import { LogOut } from "lucide-react";
 import { useState, useTransition } from "react";
-import { logOut } from "@/app/actions/log-out";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { authMessages } from "@/lib/messages/auth";
@@ -10,7 +9,7 @@ import { goTo } from "@/lib/navigation";
 
 export function LogoutButton() {
   const [isPending, startTransition] = useTransition();
-  // After the action the page is about to be replaced: stay pending.
+  // After logging out the page is about to be replaced: stay pending.
   const [done, setDone] = useState(false);
   const busy = isPending || done;
 
@@ -18,7 +17,9 @@ export function LogoutButton() {
     if (busy) return;
     startTransition(async () => {
       try {
-        await logOut();
+        // A route at one fixed address, so it works from every page,
+        // the 404 page included (see src/app/logout/route.ts).
+        await fetch("/logout", { method: "POST" });
       } catch {
         // Nothing to show here: the login gate decides, and /login loads
         // either way. Rethrowing would put up Next's error page.

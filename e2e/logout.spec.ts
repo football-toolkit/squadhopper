@@ -44,6 +44,19 @@ for (const { name, path } of pagesWithLogOut) {
   });
 }
 
+// Only a POST logs out: a link, a typed address or a prefetch must not.
+test("GET /logout answers 405 and keeps the user logged in", async ({
+  page,
+}) => {
+  await logIn(page);
+  // page.request shares the page's cookies, so it carries the session.
+  const response = await page.request.get("/logout", { maxRedirects: 0 });
+  expect(response.status()).toBe(405);
+  await page.goto("/");
+  await expect(page).toHaveURL("/");
+  await expect(logOutButton(page)).toBeVisible();
+});
+
 test("Back after logging out shows the login screen", async ({ page }) => {
   await logIn(page);
   await logOutButton(page).click();

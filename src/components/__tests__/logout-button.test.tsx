@@ -1,11 +1,9 @@
 import { Component, type ReactNode } from "react";
-import { beforeEach, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 
-vi.mock("@/app/actions/log-out", () => ({ logOut: vi.fn() }));
 vi.mock("@/lib/navigation", () => ({ goTo: vi.fn(), reloadPage: vi.fn() }));
 
-import { logOut } from "@/app/actions/log-out";
 import { authMessages } from "@/lib/messages/auth";
 import { goTo } from "@/lib/navigation";
 import { LogoutButton } from "../logout-button";
@@ -20,10 +18,20 @@ class Boundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   }
 }
 
+// Logging out is a POST to the /logout route, so stub the browser's fetch.
+const fetchMock = vi.fn<typeof fetch>();
+
 beforeEach(() => {
-  vi.mocked(logOut).mockReset();
+  fetchMock.mockReset();
+  vi.stubGlobal("fetch", fetchMock);
   vi.mocked(goTo).mockReset();
 });
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+const loggedOut = () => new Response(null, { status: 204 });
 
 test("it is an outline button with the Log out icon", () => {
   render(<LogoutButton />);
@@ -34,9 +42,9 @@ test("it is an outline button with the Log out icon", () => {
 
 test("while pending it is disabled, shows the spinner, and ignores a second click", async () => {
   let finish: () => void = () => {};
-  vi.mocked(logOut).mockReturnValue(
-    new Promise<void>((resolve) => {
-      finish = resolve;
+  fetchMock.mockReturnValue(
+    new Promise<Response>((resolve) => {
+      finish = () => resolve(loggedOut());
     }),
   );
   render(<LogoutButton />);
@@ -49,17 +57,18 @@ test("while pending it is disabled, shows the spinner, and ignores a second clic
     screen.getByRole("status", { hidden: true }).getAttribute("class"),
   ).toContain("motion-reduce:animate-none");
   fireEvent.click(button);
-  expect(logOut).toHaveBeenCalledTimes(1);
+  expect(fetchMock).toHaveBeenCalledTimes(1);
   // Let the transition end, so it can't affect the tests after this one.
   await act(async () => finish());
 });
 
-test("after logOut resolves it goes to /login, keeping the pending state", async () => {
-  vi.mocked(logOut).mockResolvedValue(undefined);
+test("it logs out with a POST to /logout, then goes to /login, keeping the pending state", async () => {
+  fetchMock.mockResolvedValue(loggedOut());
   render(<LogoutButton />);
   await act(async () => {
     fireEvent.click(screen.getByRole("button", { name: authMessages.logOut }));
   });
+  expect(fetchMock).toHaveBeenCalledWith("/logout", { method: "POST" });
   expect(goTo).toHaveBeenCalledWith("/login");
   expect(
     screen
@@ -68,12 +77,12 @@ test("after logOut resolves it goes to /login, keeping the pending state", async
   ).toBe(true);
 });
 
-test("after logOut rejects it goes to /login without raising an error", async () => {
+test("when the request fails it still goes to /login without raising an error", async () => {
   const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
   const onError = vi.fn();
   window.addEventListener("error", onError);
   try {
-    vi.mocked(logOut).mockRejectedValue(new Error("boom"));
+    fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
     render(
       <Boundary>
         <LogoutButton />
