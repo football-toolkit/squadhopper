@@ -18,7 +18,10 @@ jobs:
   # The main ruleset requires this job by name. Renaming it breaks the required check.
   checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Above the end-to-end step's latest start (3 min 41 s measured) plus
+    # Playwright's 7-minute globalTimeout, so a hang stops Playwright first and
+    # its report still uploads. See ADR 0019.
+    timeout-minutes: 12
     steps:
       - name: Check out the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
