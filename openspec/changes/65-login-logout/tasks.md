@@ -29,7 +29,7 @@ Each task is a user-visible outcome. It's done when every scenario it lists pass
 ## 5. Whole journey
 
 - [x] 5.1 Logging in, empty fields, a wrong password and logging out work end to end, in the browsers the project tests in, against a real login service with an invented test user. Verified by the end-to-end run in CI.
-- [ ] 5.2 The login screen, the home page and the "page not found" page, in each of their states, match the design boards at phone (390 px) and desktop (1280 px) widths. Verified by screenshots in the pull request and the owner's review of the preview.
+- [ ] 5.2 The login screen, the home page and the "page not found" page, in each of their states, match the design boards at phone (390 px) and desktop (1280 px) widths. Verified by the owner's review of the preview at 390 and 1280 px against the boards attached to #65 (owner's decision, 2026-11-18: no screenshots in the pull request).
 
 ## Workflow follow-up
 
