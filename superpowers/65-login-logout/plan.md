@@ -426,6 +426,7 @@ Delivers OpenSpec 5.2, and the ticks for every task.
 - [ ] **Step 4: Push and watch CI** (`gh run watch`). Expected: green. Handle failures as in Task 8, Step 8.
 - [ ] **Step 5: Timeout.** From the green runs' `checks` job times (`gh run view <id> --json jobs`), set `timeout-minutes` to about three times the longest run, rounded up, and above `globalTimeout`. Fill the job time before (the last `main` run) and after into ADR 0019. Commit `ci: set the checks job timeout from measured runs` and push.
   > **Changed after the owner's review (2026-11-18).** "About three times the longest run" set `timeout-minutes` to 10 with `globalTimeout` at 8, but the end-to-end step starts up to 3 min 41 s into the job, so a hang hit the job limit first and lost the report. The rule is now: the step's latest start plus `globalTimeout` stays below `timeout-minutes`. They are 12 and 7 minutes (`df588b9`).
+  > **Changed by the owner's decision (2026-11-18):** screenshots skipped. The owner reviewed the preview at 390 and 1280 px against the boards attached to #65; the PR body says so. The rule changes in a follow-up Task.
 - [ ] **Step 6: Screenshots.** The owner captures them from the preview (owner's decision); install nothing.
   - At 390 px and 1280 px: login, home and 404, plus the login screen with field errors and with the wrong-password popup.
   - No spinner states; the unit tests prove them.
