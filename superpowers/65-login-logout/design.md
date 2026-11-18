@@ -267,6 +267,8 @@ Test first, from each task's scenarios. Each test names the scenario it proves.
 
 ### Screenshots
 
+> **Changed by the owner's decision (2026-11-18):** no screenshots in the PR. The approved look is the boards attached to #65, and the owner reviewed the preview at 390 and 1280 px. The rule changes in a follow-up Task.
+
 From `npm run dev` with Playwright, which the repo already has, for the PR:
 - the login screen: empty, with field errors, logging in, and the wrong-details popup
 - home: with Log out, and logging out
@@ -309,7 +311,7 @@ All at 390 px and 1280 px, with the invented test user only.
 | 4.1, 4.2 | `LogoutButton` in `AppHeader` |
 | 4.3 | `POST /logout` route, `signOut` scope, full page load, `no-store`, `BfcacheReload` |
 | 5.1 | CI Supabase, global setup, end-to-end specs |
-| 5.2 | Layout end-to-end tests, screenshots, the owner's preview review |
+| 5.2 | Layout end-to-end tests, the owner's preview review against #65's boards |
 
 ## Settled with the owner (2026-11-16)
 
