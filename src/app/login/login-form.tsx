@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
+import type { AuthErrorCode } from "@/lib/auth/types";
 import type { LoginFieldErrors } from "@/lib/auth/validate-login";
 import { validateLogin } from "@/lib/auth/validate-login";
 import { authMessages } from "@/lib/messages/auth";
@@ -46,7 +47,7 @@ export function LoginForm() {
     setErrors({});
 
     startTransition(async () => {
-      let code: "invalid_credentials" | "unavailable" | null;
+      let code: AuthErrorCode | null;
       try {
         const result = await logIn({
           email: checked.email,

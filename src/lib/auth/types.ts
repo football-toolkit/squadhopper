@@ -1,4 +1,6 @@
-import type { AuthErrorCode } from "@/lib/messages/auth";
+// What a failed sign-in reports. The server returns only these codes, never
+// the login service's own text; the screen turns each into its message.
+export type AuthErrorCode = "invalid_credentials" | "unavailable";
 
 export type CookieOptions = {
   httpOnly?: boolean;

@@ -1,7 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
-import type { AuthErrorCode } from "@/lib/messages/auth";
 import { sessionCookieOptions } from "./cookie-options";
-import type { AuthService, CookieJar, CookieOptions } from "./types";
+import type {
+  AuthErrorCode,
+  AuthService,
+  CookieJar,
+  CookieOptions,
+} from "./types";
 
 const CREDENTIAL_CODES = new Set([
   "invalid_credentials",
