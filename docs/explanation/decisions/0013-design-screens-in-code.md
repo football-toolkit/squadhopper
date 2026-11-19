@@ -6,6 +6,8 @@ decision-makers: repository owner
 
 # 0013: Design screens in code, reviewed on the preview
 
+Amended by [0021](0021-record-the-owners-review-with-a-checkbox.md): replaces the screenshot record with the owner's review checkbox.
+
 ## Context and problem statement
 
 v0.1's login is the first Feature with screens. [0012](0012-keep-the-design-system-in-code.md) decided where the design system lives, in code with Tailwind CSS and shadcn/ui, but not how a screen goes from idea to review. The workflow says how a Feature's business spec and technical design are made, but not how its screens are designed and checked. How should a Feature's screens be designed, and what does the owner review?
