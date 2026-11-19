@@ -36,6 +36,7 @@ See [docs/how-to/development-workflow.md](docs/how-to/development-workflow.md) f
 - Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason.
 - Merge only after CI is green and the PR checklist is complete.
 - When a PR changes what the app shows or does, the repository owner reviews its Vercel preview before merging.
+- Every PR that uses the PR template ends with the owner's review checkbox (Dependabot PRs don't use it, see below). Only the repository owner ticks it, on GitHub, after reviewing the PR. An agent never ticks it.
 - Dependency PRs opened by Dependabot, both version updates and security updates, need no issue, change key, Superpowers folder or PR checklist. The repository owner reviews them and merges them once CI is green. If one needs code or config changes beyond the bump, close it and do the upgrade as a Task. Never push to a Dependabot branch. See [ADR 0010](docs/explanation/decisions/0010-merge-dependabot-prs-without-an-issue.md).
 
 ### Issue types
@@ -120,8 +121,7 @@ The design step for Features that add or change screens. Everything else skips t
 - **Flows:** the Feature's OpenSpec design describes the screens and the user's path between them, as Mermaid diagrams, in business language.
 - **Wireframe, only if the layout is unclear:** the agent or the repository owner can call for one. Sketch it as a Claude Design artifact and agree it with the repository owner. It settles layout only, and isn't stored as a source.
 - **Build from the design system:** take colors and fonts only from the theme variables in `src/app/globals.css`, spacing and type sizes only from the theme's scales (Tailwind's defaults, unless `globals.css` overrides them), and components from shadcn/ui. No one-off colors, fonts or spacing, such as `p-[13px]`, `text-[#123456]` or `bg-red-500`. This covers the code we write for screens, not what `npx shadcn add` generates. The [design guide](docs/reference/design-guide.md) lists the tokens, the type scale and the page layout.
-- **Review:** the repository owner reviews the screens on the PR's Vercel preview.
-- **Record:** the PR includes screenshots of each new or changed screen at phone (390 px) and desktop (1280 px) widths. The agent captures them from `npm run dev` with a browser it can already drive, adding no tooling just for screenshots. If it can't, the repository owner captures them from the preview or a local run. They're publicly reachable, so use invented data only. If the review changes a screen, retake its screenshots and replace the old ones in the PR body.
+- **Review:** the repository owner reviews the screens on the PR's Vercel preview, at phone (390 px) and desktop (1280 px) widths.
 - See [the how-to guide](docs/how-to/development-workflow.md#screen-design) and [ADR 0013](docs/explanation/decisions/0013-design-screens-in-code.md).
 
 ## Implementation
