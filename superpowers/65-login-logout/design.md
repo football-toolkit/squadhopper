@@ -79,9 +79,11 @@ The owner also asked for a manual check on the preview, already in the PR's "How
 
 ### Picking the auth service (`src/lib/auth/`)
 
-Ports and adapters. Screens, actions and the proxy use only the `AuthService` interface.
+Ports and adapters. Screens, actions and the proxy use only the `AuthService` interface. `index.ts`, `supabase.ts` and `next-cookie-jar.ts` start with `import "server-only"`, so importing them into a Client Component fails the build; Next.js resolves the package itself, and Vitest aliases it to the same empty module (changed after the PR review, 2026-11-19).
 
 ```ts
+// In src/lib/auth/types.ts (changed after the PR review, 2026-11-19). The
+// messages file types its texts as Record<AuthErrorCode, string>.
 type AuthErrorCode = "invalid_credentials" | "unavailable";
 type SignInResult = { ok: true } | { ok: false; code: AuthErrorCode };
 
@@ -127,7 +129,7 @@ function createAuthService(jar: CookieJar, env = process.env): AuthService;
   - **The validation errors** `validation_failed` ("Provided parameters are not in the expected format") and `email_address_invalid` also map to `invalid_credentials` (owner's addition, 2026-11-16), so a rejected email never says "try again in a few minutes". The [error-codes page](https://supabase.com/docs/guides/auth/debugging/error-codes) doesn't group validation errors. These two are the ones about the user's input on sign-in. Left out: `bad_json` (our own request was malformed, so it's a failure on our side), `weak_password` and `same_password` (only when setting a password), and `email_address_not_authorized` (about sending email).
   - Every other error maps to `unavailable` (rate limits, `AuthRetryableFetchError` for network failures and 5xx, unknown errors, and whatever a paused project returns). *My call:* `email_not_confirmed` and `user_banned` also map to `unavailable`. The owner adds and removes users by hand, so neither should happen, and neither may say which detail was wrong.
 - `signOut()` calls `signOut({ scope: "local" })`. The library clears the cookies before the network call, so the device is logged out even when Supabase can't be reached.
-- If `SUPABASE_URL` or `SUPABASE_PUBLISHABLE_KEY` is missing: `hasSession()` is false, so the gate shows the login screen. `signIn()` returns `unavailable`, and the server logs one error that names the missing variable but never its value.
+- If `SUPABASE_URL` or `SUPABASE_PUBLISHABLE_KEY` is missing: `hasSession()` is false, so the gate shows the login screen. `signIn()` returns `unavailable`, and the server logs one error that names the missing variable but never its value, once per server process, not on every request. An unexpected sign-in error (anything mapped to `unavailable`, or a thrown one) is logged with its `code` and `status` only, never its message, the email or the password (both changed after the PR review, 2026-11-19).
 
 **Mock adapter.**
 
@@ -141,7 +143,8 @@ function createAuthService(jar: CookieJar, env = process.env): AuthService;
 
 ### The gate (`src/proxy.ts`)
 
-- The matcher runs on every path except `_next/static`, `_next/image` and the icon files (`favicon.ico`, `icon.svg`, `apple-icon.png`).
+- The matcher runs on every path except those under `_next/static/`, the exact `_next/image` optimizer and the icon files (`favicon.ico`, `icon.svg`, `apple-icon.png`). The first build skipped everything under `_next/image/`, so a logged-out visitor at `/_next/image/x` saw the 404 page (fixed after the PR review, 2026-11-19).
+- A page rendered in the same request sees the refreshed cookies: the proxy writes them onto the request it passes on, and a unit test checks it.
 - The decision is a pure function, `routeFor({ pathname, signedIn })`, unit-tested on its own:
   - not signed in, on any path but `/login` → redirect to `/login`
   - signed in, on `/login` → redirect to `/`
@@ -154,7 +157,7 @@ function createAuthService(jar: CookieJar, env = process.env): AuthService;
 
 - **`page.tsx`:** a synchronous Server Component. It renders `PitchLayout` with no header and a card holding the `Wordmark`, the tagline "All your matches in one place.", and `<LoginForm />`. Under the card, in small print, "Sign-ups are closed." Metadata: `Log in · ${APP_NAME}`. The layout follows the boards: the card is narrower than the home card on desktop, and its exact width is ported to the theme's scale (see Left to the builder).
 - **`login-form.tsx`** (Client Component):
-  - A `<form noValidate>` with Email (`type="email"`, `autoComplete="email"`, placeholder `you@example.com`) and Password (`type="password"`, `autoComplete="current-password"`, placeholder `••••••••`). Each field has a shadcn `Label` and `Input`.
+  - A `<form noValidate>` with Email (`type="email"`, `autoComplete="email"`, placeholder `you@example.com`) and Password (`type="password"`, `autoComplete="current-password"`, placeholder `••••••••`). Each field is a `Field` (`src/app/login/field.tsx`): a shadcn `Label`, an `Input` and its error message (extracted after the PR review, 2026-11-19).
   - **On submit:**
     1. Close any open login popup, on every click of Log in, even when the field check then stops the attempt. The spec says a new click closes the earlier popup. After a wrong password, the password field is empty, so the very next click fails the field check, and the popup shouldn't stay next to "Enter your password".
     2. Trim the email, then check the fields: empty email → "Enter your email"; an email that doesn't match `^[^\s@]+@[^\s@]+\.[^\s@]+$` → "Enter a valid email address"; empty password → "Enter your password".
@@ -167,7 +170,7 @@ function createAuthService(jar: CookieJar, env = process.env): AuthService;
   - **Result `unavailable`:** an error popup with "Can't log in right now. Try again in a few minutes." *My call:* both fields keep their values, so a retry is one click.
   - If the action throws (a network error between browser and server), it's treated as `unavailable`.
 - **`actions.ts`** (`"use server"`): `logIn({ email, password })`.
-  1. Check the input again with the same validation function. Invalid input returns `invalid_credentials` without calling the service.
+  1. Check that the email and password are strings, the email at most 254 characters after trimming and the password at most 1024, then check the input again with the same validation function. Anything else returns `invalid_credentials` without calling the service: a Server Action accepts any posted value (the type and length checks were added after the PR review, 2026-11-19).
   2. Call `createAuthService(cookieJarFromNext()).signIn(...)`.
   3. Return only `{ ok: true }` or `{ ok: false, code }`.
 
@@ -177,9 +180,10 @@ All texts come from `src/lib/messages/auth.ts`, which the screens and the tests 
 
 - **The button:** a Client Component, a shadcn `Button` with `variant="outline"` and `size="sm"` (as on the boards), with the `LogOut` icon and "Log out".
 - **On click:** inside `useTransition`, it sends `fetch("/logout", { method: "POST" })`. While pending, it's disabled and dimmed, and shows the Spinner and "Logging out…".
-- **After the request answers or fails:** `goTo("/login")` (`window.location.assign`), staying pending while the page goes. The failure is swallowed, not rethrown, so Next's error page never shows; the gate decides what `/login` shows.
+- **After an OK answer:** `goTo("/login")` (`window.location.assign`), staying pending while the page goes.
+- **When the request fails or the answer isn't OK** (changed after the PR review, 2026-11-19): the session is still there, so `/login` would only send the user back. The button unlocks and shows an error popup, "Can't log out right now. Try again." (`logOutFailed` in the messages); a new click closes it. The failure is never rethrown, so Next's error page never shows. The first build went to `/login` either way.
 - **Where it shows:** `AppHeader` gets it as a child on `src/app/page.tsx` and `src/app/not-found.tsx`. `not-found.tsx` stays synchronous; a Client Component child doesn't change that.
-- **The route, `src/app/logout/route.ts`:** a Route Handler that exports only `POST`. It calls `authServiceForRequest().signOut()` (scope local, so this device's cookies are cleared even when Supabase can't be reached; the cleared cookies go on its response) and answers `204` with `Cache-Control: private, no-store`. Next.js answers any other method with `405 Method Not Allowed` (`node_modules/next/dist/docs/01-app/01-getting-started/15-route-handlers.md`), so a link, a typed address or a prefetch can't end the session. A signed-out `POST /logout` gets the gate's redirect to `/login`, which is harmless.
+- **The route, `src/app/logout/route.ts`:** a Route Handler that exports only `POST`. It calls `authServiceForRequest().signOut()` (scope local, so this device's cookies are cleared even when Supabase can't be reached; the cleared cookies go on its response) and answers `204` with `Cache-Control: private, no-store`. Before that, it answers `403` (also `no-store`) without signing out when `Sec-Fetch-Site` is present and isn't `same-origin`, or when `Origin` is present and its host doesn't match `X-Forwarded-Host` (else `Host`), as Next.js checks for Server Actions; so another site can't log the user out (added after the PR review, 2026-11-19). Next.js answers any other method with `405 Method Not Allowed` (`node_modules/next/dist/docs/01-app/01-getting-started/15-route-handlers.md`), so a link, a typed address or a prefetch can't end the session. A signed-out `POST /logout` gets the gate's redirect to `/login`, which is harmless.
 
 **Why a route and not a Server Action** (changed after the owner's preview review, 2026-11-17). The first build used a `logOut` Server Action. On the Vercel preview, Log out from the 404 page showed the spinner, then landed on home, still logged in; from home it worked. A Server Action is a POST to the page's own address. Locally, `next start` runs the action from an unknown address too: it answers 404 with a component payload and clears the cookie. Next.js's client accepts an action's answer only as `text/x-component` and throws on anything else, which the empty `catch` hid. The likely cause, inferred but not observed (the preview sits behind Vercel's login): on Vercel the 404 page is prerendered, and a POST to an unknown address most likely gets that static HTML instead of running the action, so the cookie stayed and the gate sent the user home. CI's `next start` doesn't show it, so the end-to-end test that logs out from the 404 page guards against regressions, and the owner checks the fix on the preview. A Route Handler lives at one fixed address that exists on every deployment, so logging out no longer depends on which page the button is on.
 
@@ -194,6 +198,8 @@ Three layers, so no single browser behavior is relied on:
 3. **The back/forward cache:** Chrome evicts `no-store` pages when cookies change, and Safari won't store them over HTTPS. Behaviors differ, though: WebKit on `http://localhost`, browsers that don't evict, and enterprise policies. So `src/components/bfcache-reload.tsx`, a Client Component in the root layout, listens for `pageshow`, and when `event.persisted` is true it calls `location.reload()`, as [web.dev/bfcache](https://web.dev/articles/bfcache) recommends for signed-out users. The reload goes through the gate. The session cookies are httpOnly, so the page can't check them in the browser; it always reloads. The cost: no back/forward cache for this app, which is fine at its size.
 
 ### Error popup (`src/components/ui/toast.tsx` from shadcn, plus our wrapper)
+
+> **Changed after the PR review (2026-11-19):** the place, look and slide-down are edited into the generated `toast.tsx` itself, instead of being overridden from `error-toaster.tsx`; the wrapper adds only `border-destructive`, the icon and the Close label.
 
 - The shadcn Toast's provider and viewport go in the root layout.
 - A small `showError(message)` helper adds a toast with `timeout: 0`, `priority: "high"` and type `error`, and returns its id so the login form can close it on the next attempt. `closeError(id)` closes it.
