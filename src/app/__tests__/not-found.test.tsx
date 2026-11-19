@@ -29,12 +29,15 @@ test("Back to home is one link to /, styled as the main button", () => {
   expect(links[0].className).toContain("text-xl");
   expect(links[0].className).not.toMatch(/(^|\s)(h-8|text-sm)(\s|$)/);
   expect(links[0].className).not.toMatch(/(ring|outline)-primary/);
-  expect(screen.queryAllByRole("button")).toHaveLength(0);
+  const buttons = screen.getAllByRole("button");
+  expect(buttons).toHaveLength(1);
+  expect(buttons[0].textContent).toBe("Log out");
 });
 
-test("the header shows the app name", () => {
+test("the header shows the app name and a Log out button", () => {
   render(<NotFound />);
-  expect(screen.getByRole("banner").textContent).toBe(APP_NAME);
+  expect(screen.getByRole("banner").textContent).toContain(APP_NAME);
+  expect(screen.getByRole("button", { name: "Log out" })).toBeDefined();
 });
 
 test("the 404 page has its own title, built from the app name", () => {

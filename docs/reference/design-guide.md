@@ -132,6 +132,66 @@ Use `cn(buttonVariants(), "…")`, not `buttonVariants({ className: "…" })`. `
 
 When it does something on the same page, such as submitting a form, it's a real button: `<Button className="h-12 w-full px-8 …">`, with the same classes.
 
+## Login card
+
+The login screen has no header. Its card is narrower than the home card: `w-full` on phones and at most `md:max-w-md` (448 px) from 768 px up, inside a column that also holds the small print "Sign-ups are closed." under it. The card's padding is `px-6 pt-8 pb-9`, and `md:px-10 md:pt-10 md:pb-11` from 768 px up.
+
+## Header button
+
+The header's Log out button is shadcn/ui's Button with `variant="outline" size="sm"`, an icon and a label. It's not the main button, so it has no volt. A page's main button stays the one volt button.
+
+## Field error
+
+An invalid field gets `aria-invalid`, which the Input draws as a 1 px border in the error color and no red ring. The generated Input adds a red ring and, under `.dark`, a half-strength border, so the field adds `aria-invalid:ring-0 dark:aria-invalid:border-destructive` to cancel them (tailwind-merge drops the generated classes). The keyboard focus ring stays: `aria-invalid:focus-visible:ring-3 aria-invalid:focus-visible:ring-ring/50 dark:aria-invalid:focus-visible:ring-ring/50` give a focused invalid field the normal light ring, never the red one. The `dark:` one is needed because the generated `dark:aria-invalid:ring-destructive/40` has higher specificity. The label, the field and the message form a column with `gap-2` (8 px). The message goes right under the field: `flex items-center gap-1.5 text-xs text-destructive`, with a decorative `CircleAlert` icon (`size-3.5`, `aria-hidden`) before the text. The field's `aria-describedby` points to the message. Typing in the field clears that field's message. On submit, focus moves to the first invalid field.
+
+```tsx
+<div className="flex flex-col gap-2">
+  <Label htmlFor="email">Email</Label>
+  <Input
+    id="email"
+    className="aria-invalid:ring-0 aria-invalid:focus-visible:ring-3 aria-invalid:focus-visible:ring-ring/50 dark:aria-invalid:border-destructive dark:aria-invalid:focus-visible:ring-ring/50"
+    aria-invalid={error ? true : undefined}
+    aria-describedby={error ? "email-error" : undefined}
+  />
+  {error && (
+    <p id="email-error" className="flex items-center gap-1.5 text-xs text-destructive">
+      <CircleAlert aria-hidden="true" className="size-3.5" />
+      {error}
+    </p>
+  )}
+</div>
+```
+
+## Spinner
+
+The Spinner (`src/components/ui/spinner.tsx`) shows that something is happening. In our screens it's always used inside a button, with these classes, so it stays visible but stops turning when the system asks for reduced motion:
+
+```tsx
+<Spinner aria-hidden="true" className="motion-reduce:animate-none" />
+```
+
+It's `aria-hidden` because the button's visible label, such as "Logging in…", already says what is happening.
+
+## Waiting button
+
+While an action runs, the button that started it:
+
+- is `disabled`, which dims it (`disabled:opacity-50`) and stops clicks (`disabled:pointer-events-none`)
+- replaces its icon with the Spinner
+- changes its label to the "…ing" form, such as "Logging in…" or "Logging out…"
+
+The fields next to it are disabled too, so nothing changes mid-action. After a success that leaves the page, the button stays in this state until the new page loads.
+
+## Error popup
+
+The error popup tells the user that something went wrong, and stays until they close it. It's Base UI Toast through shadcn/ui ([ADR 0020](../explanation/decisions/0020-show-popups-with-base-ui-toast.md)); its place, look and slide are edited into the generated `src/components/ui/toast.tsx`, `src/components/error-toaster.tsx` adds the error color, and `ErrorToaster` is mounted once, in the root layout.
+
+- **Show and close it** with `showError(message)`, which returns an id, and `closeError(id)`, which closes it. It's added with `timeout: 0`, so it never closes itself, and `priority: "high"`, so the visible popup is announced through Base UI's alert region (`role="alert"`).
+- **Look:** one row, everything vertically centred (`flex items-center gap-3`, `py-1 pr-1 pl-4`), on `bg-surface` with a 1 px `border-destructive`, `rounded-xl` and `shadow-2xl`. The `CircleAlert` icon is `size-5 text-destructive`, the message is `flex-1 text-sm font-semibold text-foreground`, and the close button is a ghost icon button named "Close" (`size-11 text-muted-foreground hover:text-foreground`) with an `X` icon (`size-4.5`).
+- **Place:** on phones, across the top, 12 px from the top and each side (`top-3 inset-x-3`). From 768 px up (`md:`), top right, 24 px from the top and the right edge, 400 px wide (`md:top-6 md:right-6 md:left-auto md:w-100`). These replace the generated viewport's bottom placement, `max-w-sm` and `sm:` classes in `toast.tsx`. The whole popup slides down from above and fades in, and slides back up and fades out when it closes. The slide runs on the Toast root (`data-starting-style` and `data-ending-style` with `-translate-y-full` and `opacity-0`), because Base UI waits only for the root's animations before it removes the popup. The slide is off when the system asks for reduced motion (`motion-reduce:transition-none`).
+- **`destructive` is only for errors.** A popup for anything else needs a new decision.
+- Take its message from `src/lib/messages/auth.ts` or a file like it, never from a library's own error text.
+
 ## Do and don't
 
 | Do | Don't | Why |
@@ -144,6 +204,7 @@ When it does something on the same page, such as submitting a form, it's a real 
 | `text-foreground underline` for links | `text-primary` for links | Same rule: links aren't one of volt's three uses. The header's wordmark is the one link without an underline: it looks like the logo, and keyboard focus shows the light `ring` |
 | `font-heading italic font-extrabold` | `font-heading` alone | Only the extra-bold italic is loaded; anything else is faked by the browser |
 | `<Link className={cn(buttonVariants(), …)}>` for a link that looks like a button | `<Button render={<Link />} nativeButton={false}>` | Base UI's Button always sets `role="button"`, which hides that it's a link from screen readers |
+| `text-destructive` and `border-destructive` for errors only | `destructive` for a warning or a delete-looking style that isn't an error | The red means "something went wrong" everywhere |
 | `<PitchLayout>` for a page's frame | Rebuilding the band and overlap in a screen | One component keeps every page's layout the same |
 
 ## App icons

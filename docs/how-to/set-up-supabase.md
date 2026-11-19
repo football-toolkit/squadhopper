@@ -22,7 +22,7 @@ Supabase stores the app's users and checks their passwords. This guide sets up t
 3. **Set up sign-in.** In **Authentication → Sign In / Providers**:
    - Turn **Allow new users to sign up** off. v0.1 has no sign-up page, so the owner adds each user by hand, in **Authentication → Users**.
    - Inside the **Email** provider, set the minimum password length to **12**. Leave the character requirements at their default, and leave the Email provider on.
-4. **Add the two values to Vercel.** In the Vercel project's Settings → Environment Variables, add these two, for the **Production** environment only. Previews and local runs will use a mock, which the login Feature adds. Leave the type at the default, **Secret**.
+4. **Add the two values to Vercel.** In the Vercel project's Settings → Environment Variables, add these two, for the **Production** environment only. Previews and local runs use a mock login instead, picked by `APP_ENV` ([ADR 0018](../explanation/decisions/0018-pick-the-auth-service-with-app-env.md)), so they need neither value. Leave the type at the default, **Secret**.
 
    > **Keep the names exactly `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.** Supabase's Next.js snippet uses `NEXT_PUBLIC_` names, and Vercel warns about them. Don't add the `NEXT_PUBLIC_` prefix, and don't click **Change to Config**. Vercel's warning offers Config only "if it's safe to expose". Config doesn't rename the variable, so a `NEXT_PUBLIC_` value would still be built into the browser code. We keep both values on the server.
 
@@ -35,6 +35,12 @@ Supabase stores the app's users and checks their passwords. This guide sets up t
 
    If you add or change the values after the code that reads them is live, redeploy production, because a change only applies to new deployments.
 
+## Previews, local runs and CI
+
+- **Previews and local runs use the mock.** With `APP_ENV` set to `preview` or `local`, the app doesn't talk to Supabase. The test user is in `src/lib/auth/test-user.ts`, and `unavailable@example.com` shows the "Can't log in right now" popup.
+- **CI runs a temporary Supabase.** The `checks` job starts one from `supabase/config.toml` and logs in against it. The file mirrors production's sign-up and password settings (sign-ups off, minimum password length 12), so CI behaves like production. It needs no setup from the owner. Why: [ADR 0019](../explanation/decisions/0019-test-login-against-a-temporary-supabase-in-ci.md).
+- If you change a sign-in setting in production, change `supabase/config.toml` in the same pull request.
+
 ## Check it works
 
 - In Supabase, Project Settings → General shows `eu-central-1`.
@@ -46,6 +52,8 @@ Supabase stores the app's users and checks their passwords. This guide sets up t
 ## Where next
 
 - 💡 Why Supabase: [ADR 0016](../explanation/decisions/0016-use-supabase-for-authentication.md)
+- 💡 Why a mock outside production: [ADR 0018](../explanation/decisions/0018-pick-the-auth-service-with-app-env.md)
+- 💡 Why a temporary Supabase in CI: [ADR 0019](../explanation/decisions/0019-test-login-against-a-temporary-supabase-in-ci.md)
 - 💡 Why Frankfurt: [ADR 0017](../explanation/decisions/0017-run-in-the-eu-in-frankfurt.md)
 - 🛠️ Hosting and deploys: [Set up Vercel](set-up-vercel.md)
 - ⬆️ [How-to guides](README.md)

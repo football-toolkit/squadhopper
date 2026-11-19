@@ -16,6 +16,7 @@ CLAUDE.local.md
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/playwright/.auth/
 
 # Next.js and Node
 /node_modules

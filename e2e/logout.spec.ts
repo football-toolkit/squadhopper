@@ -1,0 +1,173 @@
+import { expect, test, type Page } from "@playwright/test";
+import { authMessages } from "../src/lib/messages/auth";
+import { logIn } from "./helpers/log-in";
+
+// Each test logs in fresh: logging out ends that session, so a shared one
+// would break other tests. This also applies to browser.newContext() below.
+test.use({ storageState: { cookies: [], origins: [] } });
+
+function logOutButton(page: Page) {
+  return page.getByRole("button", { name: authMessages.logOut });
+}
+
+async function expectLoginScreen(page: Page): Promise<void> {
+  await expect(page).toHaveURL("/login");
+  await expect(
+    page.getByRole("button", { name: authMessages.logIn }),
+  ).toBeVisible();
+}
+
+test("the home page isn't stored by the browser", async ({ page }) => {
+  await logIn(page);
+  const response = await page.goto("/");
+  expect(response).not.toBeNull();
+  expect(await response?.headerValue("cache-control")).toContain("no-store");
+});
+
+// Every page that has the Log out button. Logging out must work from each:
+// on the preview, Log out from the 404 page once left the session in place.
+const pagesWithLogOut = [
+  { name: "the home page", path: "/" },
+  { name: "the 404 page", path: "/does-not-exist" },
+];
+
+for (const { name, path } of pagesWithLogOut) {
+  test(`log out from ${name} shows the login screen`, async ({ page }) => {
+    await logIn(page);
+    // goto waits for load, so the click reaches React.
+    await page.goto(path);
+    await logOutButton(page).click();
+    await expectLoginScreen(page);
+    // The session is really gone: home now sends us to the login screen too.
+    await page.goto("/");
+    await expectLoginScreen(page);
+  });
+}
+
+// The session can already be gone (logged out in another tab, or expired).
+// The gate then redirects POST /logout, and that still means logged out.
+test("Log out in a second tab after logging out in the first shows the login screen", async ({
+  page,
+  context,
+}) => {
+  await logIn(page);
+  const second = await context.newPage();
+  await second.goto("/");
+
+  await logOutButton(page).click();
+  await expectLoginScreen(page);
+
+  await logOutButton(second).click();
+  await expectLoginScreen(second);
+  await expect(
+    second.getByRole("alertdialog", { includeHidden: true }),
+  ).toHaveCount(0);
+});
+
+// The session is still there when the app can't be reached, so the user
+// stays on the page and the popup says to try again.
+test("when the app can't be reached, Log out shows a popup and keeps the user logged in", async ({
+  page,
+}) => {
+  await logIn(page);
+  await page.goto("/");
+  await page.route("**/logout", (route) => route.abort());
+  await logOutButton(page).click();
+
+  const popup = page.getByRole("alertdialog", { includeHidden: true });
+  await expect(popup).toContainText(authMessages.logOutFailed);
+  await expect(page).toHaveURL("/");
+  await expect(logOutButton(page)).toBeEnabled();
+
+  await page.unroute("**/logout");
+  await page.reload();
+  await expect(page).toHaveURL("/");
+  await expect(logOutButton(page)).toBeVisible();
+});
+
+// Only a POST logs out: a link, a typed address or a prefetch must not.
+test("GET /logout answers 405 and keeps the user logged in", async ({
+  page,
+}) => {
+  await logIn(page);
+  // page.request shares the page's cookies, so it carries the session.
+  const response = await page.request.get("/logout", { maxRedirects: 0 });
+  expect(response.status()).toBe(405);
+  await page.goto("/");
+  await expect(page).toHaveURL("/");
+  await expect(logOutButton(page)).toBeVisible();
+});
+
+// Another site can't log the user out by posting to /logout.
+test("a POST to /logout from another site answers 403 and keeps the user logged in", async ({
+  page,
+}) => {
+  await logIn(page);
+  const response = await page.request.post("/logout", {
+    headers: { origin: "https://another-site.example.test" },
+    maxRedirects: 0,
+  });
+  expect(response.status()).toBe(403);
+  await page.goto("/");
+  await expect(page).toHaveURL("/");
+  await expect(logOutButton(page)).toBeVisible();
+});
+
+test("Back after logging out shows the login screen", async ({ page }) => {
+  await logIn(page);
+  await logOutButton(page).click();
+  await expectLoginScreen(page);
+  await page.goBack();
+  await expectLoginScreen(page);
+});
+
+// Playwright turns the back/forward cache off, so this fires the event a
+// restored page gets.
+test("a page restored after logging out reloads into the login screen", async ({
+  page,
+  context,
+}) => {
+  await logIn(page);
+  const other = await context.newPage();
+  await other.goto("/");
+  await logOutButton(other).click();
+  await expectLoginScreen(other);
+
+  await page.evaluate(() =>
+    window.dispatchEvent(
+      new PageTransitionEvent("pageshow", { persisted: true }),
+    ),
+  );
+  await expectLoginScreen(page);
+});
+
+test("logging out on one device keeps the other logged in", async ({
+  browser,
+}) => {
+  const first = await browser.newContext();
+  const second = await browser.newContext();
+  try {
+    const firstPage = await first.newPage();
+    const secondPage = await second.newPage();
+    await logIn(firstPage);
+    await logIn(secondPage);
+
+    await logOutButton(firstPage).click();
+    await expectLoginScreen(firstPage);
+
+    await secondPage.reload();
+    await expect(secondPage).toHaveURL("/");
+    await expect(
+      secondPage.getByRole("heading", { level: 1, name: /all your matches/i }),
+    ).toBeVisible();
+  } finally {
+    await first.close();
+    await second.close();
+  }
+});
+
+test("the 404 page shows Log out", async ({ page }) => {
+  await logIn(page);
+  await page.goto("/does-not-exist");
+  await expect(logOutButton(page)).toBeVisible();
+});

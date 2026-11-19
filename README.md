@@ -12,9 +12,12 @@ The app needs Node.js 24. With [nvm](https://github.com/nvm-sh/nvm), `nvm use` p
 ```bash
 nvm use
 npm install
+cp .env.example .env.local
 npx next telemetry disable  # or set NEXT_TELEMETRY_DISABLED=1
 npm run dev
 ```
+
+`APP_ENV` picks the login backend: `local` and `preview` use an in-memory mock, and `test`, `production`, a missing value or an unknown one use Supabase (which also needs `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`). `.env.example` sets `APP_ENV=local` and explains the rest.
 
 Run `npx next telemetry disable` in the project root. The other commands are listed in [AGENTS.md](AGENTS.md).
 

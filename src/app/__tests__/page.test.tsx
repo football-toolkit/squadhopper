@@ -21,9 +21,10 @@ test("the home page shows the lead text", () => {
   ).toBeDefined();
 });
 
-test("the header shows the app name", () => {
+test("the header shows the app name and a Log out button", () => {
   render(<Page />);
-  expect(screen.getByRole("banner").textContent).toBe(APP_NAME);
+  expect(screen.getByRole("banner").textContent).toContain(APP_NAME);
+  expect(screen.getByRole("button", { name: "Log out" })).toBeDefined();
 });
 
 test("Coming soon is gone, and the only link goes home", () => {
