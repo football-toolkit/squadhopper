@@ -431,6 +431,7 @@ Delivers OpenSpec 5.2, and the ticks for every task.
   - At 390 px and 1280 px: login, home and 404, plus the login screen with field errors and with the wrong-password popup.
   - No spinner states; the unit tests prove them.
   - Ask the owner for them once the preview is up and `APP_ENV` is set. Add them to the PR body with `gh pr edit 66 --attach` only after showing the lines.
+  > **Changed after the PR review (2026-11-19).** Two reviews asked for 11 fixes before merging, each in its own commit, test first where it's behaviour: the matcher gates `/_next/image/x`; unexpected sign-in errors are logged with code and status only, and a missing variable once; the popup's styling moved into `toast.tsx`; `AuthErrorCode` moved to `types.ts`; a failed logout shows a popup (new `logout` scenario and task 4.4, through `/opsx:update`); a `Field` component; `POST /logout` answers 403 cross-site; `logIn` checks its input's types and lengths; `server-only` on the auth modules; the popup and proxy test gaps; two clean-ups. The archive commit was reverted to reopen the change, and the change is archived again as the last commit. See the design's dated notes.
 - [ ] **Step 7: Tick the OpenSpec tasks** whose scenarios pass in CI (1.1–5.1). Tick 5.2 after the owner's preview review. Commit `docs: tick the login tasks`.
 - [ ] **Step 8: Archive.** Run `/opsx:archive` as the last commit, then `openspec validate --specs`, and show the owner the `openspec/specs/` diff.
 - [ ] **Step 9: Finish the PR.**
