@@ -8,7 +8,7 @@ decision-makers: repository owner
 
 ## Context and problem statement
 
-Step 5 ("Record") of [0013](0013-design-screens-in-code.md) asks every pull request that adds or changes screens to include a screenshot of each one at phone (390 px) and desktop (1280 px) widths. That's up to ten screenshots for one screen change, taken by hand, and retaken whenever the review changes a screen. They repeat the design already attached to the issue, as pictures and an HTML reference (#38, #65), and the real check was always the owner's review of the preview, which left no explicit record on the pull request. #65 already skipped the screenshots, by the owner's decision. How should a pull request record that the owner reviewed it?
+Step 5 ("Record") of [0013](0013-design-screens-in-code.md) asks every pull request that adds or changes screens to include a screenshot of each one at phone (390 px) and desktop (1280 px) widths: often ten or more for one screen change, taken by hand and retaken after each review change. They repeat the design already attached to the issue (pictures and an HTML reference, as on #38 and #65), and #65 already skipped them by the owner's decision. The real check is the owner's review of the preview, which leaves no explicit record on the pull request. How should a pull request record that the owner reviewed it?
 
 ## Decision drivers
 
@@ -40,7 +40,7 @@ This amends step 5 of 0013 only. The rest of 0013 stands, so it's amended, not s
 
 ### Consequences
 
-- Good, because it costs one click instead of up to ten screenshots.
+- Good, because it costs one click instead of often ten or more screenshots.
 - Good, because every pull request says explicitly whether the owner reviewed it, not only those with screens.
 - Good, because no screenshots are posted publicly, so there's no risk of personal data in them.
 - Good, because it needs no tool, service or account.
@@ -72,5 +72,5 @@ This amends step 5 of 0013 only. The rest of 0013 stands, so it's amended, not s
 
 ## More information
 
-- Issue: #68.
+- Issue: #68
 - Related: [0010](0010-merge-dependabot-prs-without-an-issue.md), [0013](0013-design-screens-in-code.md), [0015](0015-test-screens-end-to-end-with-playwright-in-ci.md)

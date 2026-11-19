@@ -15,7 +15,7 @@ flowchart TD
     F -->|"yes"| G["OpenSpec archive"]
     F -->|"no"| H["Pull request"]
     G --> H
-    H -->|"CI green, preview reviewed if the app changed"| I["Squash merge"]
+    H -->|"CI green, owner reviewed and ticked the checkbox"| I["Squash merge"]
 ```
 
 ## Steps
@@ -42,9 +42,9 @@ flowchart TD
 5. **Features: archive the OpenSpec change** with `/opsx:archive`, so the spec describes what the app now does. Commit the archive on its own, after all other commits, as the last commit before the pull request. Then run `openspec validate --specs`, and the owner reviews the `openspec/specs/` diff.
 6. **Commit.** Write the message as a Conventional Commit (see the Commits section of [AGENTS.md](../../AGENTS.md)).
 7. **Open the pull request.** Before opening the PR, tick each 'Done when' item in the issue (the Acceptance criteria, for a Feature) that the change meets (with `gh issue edit`), and note in the PR body how each was checked. Don't merge with unticked items: finish them or remove them with a reason. Ask the owner before pushing and before opening it. Use the pull request template, and link the issue with `Closes #<issue-number>`. A later Task adds a CI check that the branch, the Superpowers folder and the OpenSpec change all use the issue's key.
-8. **Review the preview, if the app changed.** When a pull request changes what the app shows or does, the owner reviews its Vercel preview before merging. The Vercel bot comments the preview link on the pull request. Open it, log in to Vercel, and check that the change works as it will in production, at phone (390 px) and desktop (1280 px) widths. The preview needs the owner's Vercel login, which an agent doesn't have, so an agent can't do this step and never claims it's done. Docs-only and workflow pull requests skip the preview. See [Set up Vercel](set-up-vercel.md).
+8. **The owner reviews the pull request, and its preview if the app changed.** When a pull request changes what the app shows or does, the owner reviews its Vercel preview before merging. The Vercel bot comments the preview link on the pull request. Open it, log in to Vercel, and check that the change works as it will in production, at phone (390 px) and desktop (1280 px) widths. The preview needs the owner's Vercel login, which an agent doesn't have, so an agent can't do this step and never claims it's done. Docs-only and workflow pull requests skip the preview. See [Set up Vercel](set-up-vercel.md).
 
-   Once the owner has reviewed the pull request, and its preview if the app changed, they tick the owner's review checkbox at the end of the pull request checklist, on GitHub. Every pull request has it, docs-only and workflow ones too. An agent never ticks it.
+   Once the owner has reviewed the pull request, and its preview if the app changed, they tick the owner's review checkbox at the end of the pull request checklist, on GitHub. Every pull request that uses the template has it, docs-only and workflow ones too. Dependabot pull requests don't use the template. An agent never ticks it.
 9. **Squash-merge** once CI is green, the owner has reviewed the preview if the app changed, and the pull request checklist is complete, including the owner's review checkbox. CI runs typecheck, lint, format check, tests, build and the [end-to-end tests](#end-to-end-tests) on every pull request into `main`, and the `main` ruleset blocks merging until they pass and the branch is up to date. Merging deploys `main` to production (unless production is rolled back, see [Set up Vercel](set-up-vercel.md#roll-back-production)), and the issue closes on its own.
 
 ## Feature, Task and Bug
