@@ -35,7 +35,7 @@ Chosen option: **"Base UI Toast"**. The owner chose it over Sonner on 2026-11-16
 - Good, because the popup stays until closed and is announced as an alert.
 - Good, because there is no new dependency.
 - Good, because it follows what shadcn/ui now recommends.
-- Bad, because the generated Toast animates and sits at the bottom, so our wrapper overrides its position and slide to put it at the top.
+- Bad, because the generated Toast animates and sits at the bottom, so we edited the generated component to put it at the top and slide it down.
 - Bad, because Base UI Toast has a smaller community than Sonner, so there are fewer examples to copy.
 
 ### Confirmation
