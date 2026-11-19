@@ -113,6 +113,59 @@ describe("createSupabaseAuthService", () => {
       expect(result).toEqual({ ok: false, code: "invalid_credentials" });
       expect(JSON.stringify(result)).not.toContain("message");
     });
+
+    it("doesn't log wrong credentials", async () => {
+      const log = vi.spyOn(console, "error").mockImplementation(() => {});
+      const { service } = setup({
+        signInWithPassword: vi.fn().mockResolvedValue({
+          error: { code: "invalid_credentials", status: 400 },
+        }),
+      });
+      await service.signIn("a@b.test", "pw");
+      expect(log).not.toHaveBeenCalled();
+    });
+
+    it("logs an unexpected error with its code and status only", async () => {
+      const log = vi.spyOn(console, "error").mockImplementation(() => {});
+      const { service } = setup({
+        signInWithPassword: vi.fn().mockResolvedValue({
+          error: {
+            code: "unexpected_failure",
+            status: 500,
+            name: "AuthApiError",
+            message: "secret text about player@example.test",
+          },
+        }),
+      });
+      await service.signIn("player@example.test", "kickoff-secret");
+      expect(log).toHaveBeenCalledTimes(1);
+      const logged = JSON.stringify(log.mock.calls[0]);
+      expect(log.mock.calls[0][1]).toEqual({
+        code: "unexpected_failure",
+        status: 500,
+      });
+      for (const text of ["player@example.test", "kickoff-secret", "secret"]) {
+        expect(logged).not.toContain(text);
+      }
+    });
+
+    it("logs a thrown error with its code and status only", async () => {
+      const log = vi.spyOn(console, "error").mockImplementation(() => {});
+      const thrown = Object.assign(new Error("fetch failed for a@b.test"), {
+        name: "AuthRetryableFetchError",
+        status: 0,
+      });
+      const { service } = setup({
+        signInWithPassword: vi.fn().mockRejectedValue(thrown),
+      });
+      expect(await service.signIn("a@b.test", "pw")).toEqual({
+        ok: false,
+        code: "unavailable",
+      });
+      expect(log).toHaveBeenCalledTimes(1);
+      expect(log.mock.calls[0][1]).toEqual({ status: 0 });
+      expect(JSON.stringify(log.mock.calls[0])).not.toContain("a@b.test");
+    });
   });
 
   describe("signOut", () => {
@@ -171,7 +224,15 @@ describe("createSupabaseAuthService", () => {
     ["SUPABASE_URL", undefined, "publishable"],
     ["SUPABASE_PUBLISHABLE_KEY", "https://example.supabase.test", undefined],
   ])("with %s missing", (name, url, publishableKey) => {
+    // The missing-variable error is logged once per server process, so each
+    // test loads a fresh copy of the module.
+    async function freshCreate() {
+      vi.resetModules();
+      return (await import("../supabase")).createSupabaseAuthService;
+    }
+
     it("is unavailable, names the variable and creates no client", async () => {
+      const createSupabaseAuthService = await freshCreate();
       const error = vi.spyOn(console, "error").mockImplementation(() => {});
       const createClient = vi.fn();
       const service = createSupabaseAuthService(createMemoryJar(), {
@@ -190,6 +251,20 @@ describe("createSupabaseAuthService", () => {
       expect(createClient).not.toHaveBeenCalled();
       expect(error).toHaveBeenCalledTimes(1);
       expect(String(error.mock.calls[0][0])).toContain(`${name} is not set`);
+    });
+
+    it("logs it once, not on every request", async () => {
+      const createSupabaseAuthService = await freshCreate();
+      const error = vi.spyOn(console, "error").mockImplementation(() => {});
+      for (let request = 0; request < 3; request++) {
+        createSupabaseAuthService(createMemoryJar(), {
+          url,
+          publishableKey,
+          secure: false,
+          createClient: vi.fn() as unknown as typeof createServerClient,
+        });
+      }
+      expect(error).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -20,6 +20,22 @@ export function mapSignInError(error: {
     : "unavailable";
 }
 
+// Logs only the error's code and status: never its message, which can
+// repeat what the user typed, and never the email or password.
+function logUnexpectedSignInError(error: unknown): void {
+  const { code, status } =
+    typeof error === "object" && error !== null
+      ? (error as { code?: unknown; status?: unknown })
+      : {};
+  console.error("Sign-in failed unexpectedly.", {
+    ...(typeof code === "string" ? { code } : {}),
+    ...(typeof status === "number" ? { status } : {}),
+  });
+}
+
+// A missing variable is logged once per server process, not on every request.
+const reportedMissing = new Set<string>();
+
 // Supabase's cookie options allow a boolean sameSite; ours don't.
 function toCookieOptions(options: {
   sameSite?: boolean | "lax" | "strict" | "none";
@@ -53,7 +69,11 @@ export function createSupabaseAuthService(
       : undefined;
 
   if (missing !== undefined || !url || !publishableKey) {
-    console.error(`${missing} is not set, so sign-in is unavailable.`);
+    const name = missing ?? "SUPABASE_URL";
+    if (!reportedMissing.has(name)) {
+      reportedMissing.add(name);
+      console.error(`${name} is not set, so sign-in is unavailable.`);
+    }
     return {
       async hasSession() {
         return false;
@@ -94,10 +114,12 @@ export function createSupabaseAuthService(
     async signIn(email, password) {
       try {
         const { error } = await auth.signInWithPassword({ email, password });
-        return error
-          ? { ok: false, code: mapSignInError(error) }
-          : { ok: true };
-      } catch {
+        if (!error) return { ok: true };
+        const code = mapSignInError(error);
+        if (code === "unavailable") logUnexpectedSignInError(error);
+        return { ok: false, code };
+      } catch (error) {
+        logUnexpectedSignInError(error);
         return { ok: false, code: "unavailable" };
       }
     },
