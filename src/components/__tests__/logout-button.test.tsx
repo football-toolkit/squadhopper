@@ -76,7 +76,10 @@ test("it logs out with a POST to /logout, then goes to /login, keeping the pendi
   await act(async () => {
     fireEvent.click(screen.getByRole("button", { name: authMessages.logOut }));
   });
-  expect(fetchMock).toHaveBeenCalledWith("/logout", { method: "POST" });
+  expect(fetchMock).toHaveBeenCalledWith("/logout", {
+    method: "POST",
+    redirect: "manual",
+  });
   expect(goTo).toHaveBeenCalledWith("/login");
   expect(
     screen
@@ -132,6 +135,21 @@ test.each([
     }
   },
 );
+
+// With no session, the gate redirects POST /logout to /login. Followed, that
+// redirect repeats the POST at /login, which answers 405, so the button
+// doesn't follow it: a redirect means the session is already gone.
+test("when the session is already gone, the gate's redirect still goes to /login", async () => {
+  fetchMock.mockResolvedValue({
+    ok: false,
+    status: 0,
+    type: "opaqueredirect",
+  } as Response);
+  render(<LogoutButton />);
+  await clickLogOut();
+  expect(showError).not.toHaveBeenCalled();
+  expect(goTo).toHaveBeenCalledWith("/login");
+});
 
 test("clicking Log out again closes the last popup", async () => {
   fetchMock.mockRejectedValueOnce(new TypeError("x"));

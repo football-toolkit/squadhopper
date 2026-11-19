@@ -27,8 +27,15 @@ export function LogoutButton() {
       try {
         // A route at one fixed address, so it works from every page,
         // the 404 page included (see src/app/logout/route.ts).
-        const response = await fetch("/logout", { method: "POST" });
-        loggedOut = response.ok;
+        // Not following redirects: with no session (logged out in another
+        // tab, or expired), the gate redirects to /login, and following that
+        // would repeat the POST there and get 405. A redirect means the
+        // session is already gone, which is logged out too.
+        const response = await fetch("/logout", {
+          method: "POST",
+          redirect: "manual",
+        });
+        loggedOut = response.ok || response.type === "opaqueredirect";
       } catch {
         // The app can't be reached: handled below. Rethrowing would put up
         // Next's error page.

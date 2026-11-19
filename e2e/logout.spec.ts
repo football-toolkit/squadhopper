@@ -44,6 +44,26 @@ for (const { name, path } of pagesWithLogOut) {
   });
 }
 
+// The session can already be gone (logged out in another tab, or expired).
+// The gate then redirects POST /logout, and that still means logged out.
+test("Log out in a second tab after logging out in the first shows the login screen", async ({
+  page,
+  context,
+}) => {
+  await logIn(page);
+  const second = await context.newPage();
+  await second.goto("/");
+
+  await logOutButton(page).click();
+  await expectLoginScreen(page);
+
+  await logOutButton(second).click();
+  await expectLoginScreen(second);
+  await expect(
+    second.getByRole("alertdialog", { includeHidden: true }),
+  ).toHaveCount(0);
+});
+
 // The session is still there when the app can't be reached, so the user
 // stays on the page and the popup says to try again.
 test("when the app can't be reached, Log out shows a popup and keeps the user logged in", async ({
