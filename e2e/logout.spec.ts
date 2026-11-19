@@ -44,6 +44,27 @@ for (const { name, path } of pagesWithLogOut) {
   });
 }
 
+// The session is still there when the app can't be reached, so the user
+// stays on the page and the popup says to try again.
+test("when the app can't be reached, Log out shows a popup and keeps the user logged in", async ({
+  page,
+}) => {
+  await logIn(page);
+  await page.goto("/");
+  await page.route("**/logout", (route) => route.abort());
+  await logOutButton(page).click();
+
+  const popup = page.getByRole("alertdialog", { includeHidden: true });
+  await expect(popup).toContainText(authMessages.logOutFailed);
+  await expect(page).toHaveURL("/");
+  await expect(logOutButton(page)).toBeEnabled();
+
+  await page.unroute("**/logout");
+  await page.reload();
+  await expect(page).toHaveURL("/");
+  await expect(logOutButton(page)).toBeVisible();
+});
+
 // Only a POST logs out: a link, a typed address or a prefetch must not.
 test("GET /logout answers 405 and keeps the user logged in", async ({
   page,

@@ -17,6 +17,7 @@ export const authMessages = {
   loggingIn: "Logging in…",
   logOut: "Log out",
   loggingOut: "Logging out…",
+  logOutFailed: "Can't log out right now. Try again.",
   close: "Close",
   emailMissing: "Enter your email",
   emailInvalid: "Enter a valid email address",

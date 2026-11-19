@@ -3,7 +3,12 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 
 vi.mock("@/lib/navigation", () => ({ goTo: vi.fn(), reloadPage: vi.fn() }));
+vi.mock("@/components/error-toaster", () => ({
+  showError: vi.fn(),
+  closeError: vi.fn(),
+}));
 
+import { closeError, showError } from "@/components/error-toaster";
 import { authMessages } from "@/lib/messages/auth";
 import { goTo } from "@/lib/navigation";
 import { LogoutButton } from "../logout-button";
@@ -25,6 +30,9 @@ beforeEach(() => {
   fetchMock.mockReset();
   vi.stubGlobal("fetch", fetchMock);
   vi.mocked(goTo).mockReset();
+  vi.mocked(showError).mockReset();
+  vi.mocked(showError).mockReturnValue("popup-1");
+  vi.mocked(closeError).mockReset();
 });
 
 afterEach(() => {
@@ -77,31 +85,62 @@ test("it logs out with a POST to /logout, then goes to /login, keeping the pendi
   ).toBe(true);
 });
 
-test("when the request fails it still goes to /login without raising an error", async () => {
-  const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
-  const onError = vi.fn();
-  window.addEventListener("error", onError);
-  try {
-    fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
-    render(
-      <Boundary>
-        <LogoutButton />
-      </Boundary>,
-    );
-    await act(async () => {
-      fireEvent.click(
-        screen.getByRole("button", { name: authMessages.logOut }),
+async function clickLogOut() {
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: authMessages.logOut }));
+  });
+}
+
+// When the app can't be reached, the session is still there: going to /login
+// would only bounce the user back, so the popup says to try again.
+test.each([
+  ["the request fails", () => fetchMock.mockRejectedValue(new TypeError("x"))],
+  [
+    "the server answers 500",
+    () => fetchMock.mockResolvedValue(new Response(null, { status: 500 })),
+  ],
+  [
+    "the server answers 403",
+    () => fetchMock.mockResolvedValue(new Response(null, { status: 403 })),
+  ],
+])(
+  "when %s it shows the popup, stays on the page and unlocks the button",
+  async (_name, arrange) => {
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    const onError = vi.fn();
+    window.addEventListener("error", onError);
+    try {
+      arrange();
+      render(
+        <Boundary>
+          <LogoutButton />
+        </Boundary>,
       );
-    });
-    expect(goTo).toHaveBeenCalledWith("/login");
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    });
-    expect(screen.queryByText("boundary fallback")).toBeNull();
-    expect(onError).not.toHaveBeenCalled();
-    expect(consoleError).not.toHaveBeenCalled();
-  } finally {
-    window.removeEventListener("error", onError);
-    consoleError.mockRestore();
-  }
+      await clickLogOut();
+      expect(showError).toHaveBeenCalledWith(authMessages.logOutFailed);
+      expect(goTo).not.toHaveBeenCalled();
+      const button = screen.getByRole("button", { name: authMessages.logOut });
+      expect(button.hasAttribute("disabled")).toBe(false);
+      expect(screen.queryByText("boundary fallback")).toBeNull();
+      expect(onError).not.toHaveBeenCalled();
+      expect(consoleError).not.toHaveBeenCalled();
+    } finally {
+      window.removeEventListener("error", onError);
+      consoleError.mockRestore();
+    }
+  },
+);
+
+test("clicking Log out again closes the last popup", async () => {
+  fetchMock.mockRejectedValueOnce(new TypeError("x"));
+  render(<LogoutButton />);
+  await clickLogOut();
+  expect(closeError).not.toHaveBeenCalled();
+
+  fetchMock.mockResolvedValueOnce(loggedOut());
+  await clickLogOut();
+  expect(closeError).toHaveBeenCalledWith("popup-1");
+  expect(goTo).toHaveBeenCalledWith("/login");
 });
