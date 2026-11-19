@@ -11,10 +11,7 @@ const CREDENTIAL_CODES = new Set([
 
 // Only wrong credentials are the user's to fix. Everything else, including
 // rate limits and network errors, is reported as unavailable.
-export function mapSignInError(error: {
-  code?: string;
-  name?: string;
-}): AuthErrorCode {
+export function mapSignInError(error: { code?: string }): AuthErrorCode {
   return error.code !== undefined && CREDENTIAL_CODES.has(error.code)
     ? "invalid_credentials"
     : "unavailable";
@@ -62,14 +59,8 @@ export function createSupabaseAuthService(
     secure,
     createClient = createServerClient,
   } = opts;
-  const missing = !url
-    ? "SUPABASE_URL"
-    : !publishableKey
-      ? "SUPABASE_PUBLISHABLE_KEY"
-      : undefined;
-
-  if (missing !== undefined || !url || !publishableKey) {
-    const name = missing ?? "SUPABASE_URL";
+  if (!url || !publishableKey) {
+    const name = !url ? "SUPABASE_URL" : "SUPABASE_PUBLISHABLE_KEY";
     if (!reportedMissing.has(name)) {
       reportedMissing.add(name);
       console.error(`${name} is not set, so sign-in is unavailable.`);

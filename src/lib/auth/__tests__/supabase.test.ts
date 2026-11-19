@@ -45,7 +45,6 @@ describe("mapSignInError", () => {
 
   it.each([
     { code: "over_request_rate_limit" },
-    { name: "AuthRetryableFetchError" },
     { code: "bad_json" },
     { code: "user_banned" },
     { code: "email_not_confirmed" },
