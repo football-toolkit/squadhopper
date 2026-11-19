@@ -1,13 +1,11 @@
 "use client";
 
-import { CircleAlert, LogIn } from "lucide-react";
+import { LogIn } from "lucide-react";
 import { unstable_isUnrecognizedActionError } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import type { FormEvent } from "react";
 import { closeError, showError } from "@/components/error-toaster";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import type { AuthErrorCode } from "@/lib/auth/types";
 import type { LoginFieldErrors } from "@/lib/auth/validate-login";
@@ -15,6 +13,7 @@ import { validateLogin } from "@/lib/auth/validate-login";
 import { authMessages } from "@/lib/messages/auth";
 import { goTo, reloadPage } from "@/lib/navigation";
 import { logIn } from "./actions";
+import { Field } from "./field";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -76,70 +75,36 @@ export function LoginForm() {
 
   return (
     <form noValidate onSubmit={onSubmit} className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="email">{authMessages.emailLabel}</Label>
-        <Input
-          id="email"
-          ref={emailRef}
-          type="email"
-          autoComplete="email"
-          placeholder={authMessages.emailPlaceholder}
-          value={email}
-          disabled={busy}
-          aria-invalid={errors.email ? true : undefined}
-          aria-describedby={errors.email ? "email-error" : undefined}
-          className="aria-invalid:ring-0 aria-invalid:focus-visible:ring-3 aria-invalid:focus-visible:ring-ring/50 dark:aria-invalid:border-destructive dark:aria-invalid:focus-visible:ring-ring/50"
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setErrors((prev) => ({ ...prev, email: undefined }));
-          }}
-        />
-        {errors.email && (
-          <p
-            id="email-error"
-            className="flex items-center gap-1.5 text-xs text-destructive"
-          >
-            <CircleAlert
-              data-testid="field-error-icon"
-              aria-hidden="true"
-              className="size-3.5"
-            />
-            {authMessages[errors.email]}
-          </p>
-        )}
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="password">{authMessages.passwordLabel}</Label>
-        <Input
-          id="password"
-          ref={passwordRef}
-          type="password"
-          autoComplete="current-password"
-          placeholder={authMessages.passwordPlaceholder}
-          value={password}
-          disabled={busy}
-          aria-invalid={errors.password ? true : undefined}
-          aria-describedby={errors.password ? "password-error" : undefined}
-          className="aria-invalid:ring-0 aria-invalid:focus-visible:ring-3 aria-invalid:focus-visible:ring-ring/50 dark:aria-invalid:border-destructive dark:aria-invalid:focus-visible:ring-ring/50"
-          onChange={(e) => {
-            setPassword(e.target.value);
-            setErrors((prev) => ({ ...prev, password: undefined }));
-          }}
-        />
-        {errors.password && (
-          <p
-            id="password-error"
-            className="flex items-center gap-1.5 text-xs text-destructive"
-          >
-            <CircleAlert
-              data-testid="field-error-icon"
-              aria-hidden="true"
-              className="size-3.5"
-            />
-            {authMessages[errors.password]}
-          </p>
-        )}
-      </div>
+      <Field
+        id="email"
+        label={authMessages.emailLabel}
+        type="email"
+        autoComplete="email"
+        placeholder={authMessages.emailPlaceholder}
+        value={email}
+        disabled={busy}
+        error={errors.email && authMessages[errors.email]}
+        inputRef={emailRef}
+        onChange={(value) => {
+          setEmail(value);
+          setErrors((prev) => ({ ...prev, email: undefined }));
+        }}
+      />
+      <Field
+        id="password"
+        label={authMessages.passwordLabel}
+        type="password"
+        autoComplete="current-password"
+        placeholder={authMessages.passwordPlaceholder}
+        value={password}
+        disabled={busy}
+        error={errors.password && authMessages[errors.password]}
+        inputRef={passwordRef}
+        onChange={(value) => {
+          setPassword(value);
+          setErrors((prev) => ({ ...prev, password: undefined }));
+        }}
+      />
       <Button
         type="submit"
         disabled={busy}
