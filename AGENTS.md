@@ -95,7 +95,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `<type>: <subj
 ## Code
 
 - Follow the conventions already in the surrounding code.
-- Before adding code in a new area, read [the architecture overview](docs/explanation/architecture.md). When a change alters the structure it describes, update it in the same PR.
+- Before adding code in a new area, read [the architecture overview](docs/explanation/architecture.md). When a change alters what it describes, such as the structure or a flow, update it in the same PR.
 - Add or update tests with every behavior change.
 - Put unit tests in a `__tests__/` folder next to the code they test, named after the file, e.g. `src/app/__tests__/page.test.tsx` for `src/app/page.tsx`.
 - Put end-to-end tests in `e2e/`, one spec per area, e.g. `e2e/header.spec.ts`. Find elements as a user would, by role and name. Use a test id only for a decorative part that has no role, never a CSS class.
