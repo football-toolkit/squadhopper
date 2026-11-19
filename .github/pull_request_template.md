@@ -22,3 +22,4 @@ Closes #
 - [ ] Docs (`README.md`, `AGENTS.md`) were updated, if setup or conventions changed
 - [ ] An ADR was added, or the Summary says why none is needed
 - [ ] No secrets or credentials are committed
+- [ ] The repository owner reviewed this PR, and its Vercel preview at phone (390 px) and desktop (1280 px) widths if it changes what the app shows or does
