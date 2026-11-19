@@ -59,8 +59,11 @@ test("a wrong password shows a popup that stays until closed", async ({
   await expect(popup).toContainText(authMessages.errors.invalid_credentials);
   await expect(popup).toBeVisible();
 
-  // Base UI's default would close it after 5 seconds.
+  // Base UI's default would close it after 5 seconds. A closing popup is
+  // still visible while it slides out, so also check it hasn't started to
+  // close: Base UI marks a closing popup with data-ending-style.
   await page.clock.fastForward(60_000);
+  await expect(popup).not.toHaveAttribute("data-ending-style");
   await expect(popup).toBeVisible();
 
   await expect(emailField(page)).toHaveValue(TEST_USER.email);

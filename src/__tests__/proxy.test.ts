@@ -113,6 +113,24 @@ describe("proxy", () => {
     expect(res.cookies.get("sb-test-auth-token")?.httpOnly).toBe(true);
   });
 
+  // The page renders in the same request, so it must see the refreshed
+  // session too, not the one the browser sent.
+  it("passes refreshed cookies on to the request the page renders", async () => {
+    signedIn = true;
+    const res = await proxy(
+      new NextRequest("http://localhost/", {
+        headers: { cookie: "sb-test-auth-token=stale; theme=dark" },
+      }),
+    );
+    expect(res.headers.get("x-middleware-override-headers")).toContain(
+      "cookie",
+    );
+    const passedOn = res.headers.get("x-middleware-request-cookie") ?? "";
+    expect(passedOn).toContain("sb-test-auth-token=fresh");
+    expect(passedOn).not.toContain("stale");
+    expect(passedOn).toContain("theme=dark");
+  });
+
   it("asks for secure cookies only over https", async () => {
     signedIn = true;
     await proxy(new NextRequest("https://localhost/"));
