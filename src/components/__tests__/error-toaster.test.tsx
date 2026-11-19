@@ -1,12 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, test, vi } from "vitest";
-import {
-  closeError,
-  contentClasses,
-  ErrorToaster,
-  showError,
-  toastClasses,
-} from "../error-toaster";
+import { closeError, ErrorToaster, showError } from "../error-toaster";
 import { authMessages } from "@/lib/messages/auth";
 
 afterEach(() => {
@@ -102,32 +96,28 @@ test("the whole popup slides down from above, on the root only", () => {
   const root = popup()!;
   const rootClasses = Array.from(root.classList);
   for (const c of [
+    "top-0",
     "origin-top",
-    "not-data-limited:data-starting-style:transform-none",
-    "not-data-limited:not-data-swipe-direction:data-ending-style:transform-none!",
     "data-starting-style:-translate-y-full",
     "data-starting-style:opacity-0",
     "data-ending-style:-translate-y-full",
     "data-ending-style:opacity-0",
-    "not-data-limited:transition-all",
-    "not-data-limited:duration-300",
-    "not-data-limited:ease-out",
-    "not-data-limited:motion-reduce:transition-none",
+    "transition-all",
+    "duration-300",
+    "ease-out",
+    "motion-reduce:transition-none",
   ]) {
     expect(rootClasses).toContain(c);
   }
+  // The generated slide up from 150% below, and the overrides that used to
+  // cancel it, are gone: the look lives in the generated component itself.
+  expect(root.className).not.toContain("translateY(150%)");
+  expect(root.className).not.toContain("transform-none");
+  expect(root.className).not.toContain("not-data-limited:");
+  expect(rootClasses).not.toContain("bottom-0");
   const content = root.querySelector('[data-slot="toast-content"]')!;
   expect(content.className).not.toMatch(/translate/);
-  expect(content.className).not.toContain("group-data-");
   expect(content.className).not.toContain("transition-all");
-  // The exit override must not depend on the toast being collapsed: Base UI
-  // sets data-expanded while the mouse is over the viewport (as when Close is clicked).
-  expect(rootClasses).not.toContain(
-    "not-data-expanded:not-data-limited:not-data-swipe-direction:data-ending-style:transform-none",
-  );
-  // No bracket values in the classes this project adds.
-  expect(toastClasses).not.toContain("[");
-  expect(contentClasses).not.toContain("[");
 });
 
 test("the popup is a centred, one-line row on the surface color", () => {
@@ -186,7 +176,6 @@ test("the popup sits 12 px from the top on phones and 24 px top right from md up
   for (const c of [
     "top-3",
     "inset-x-3",
-    "bottom-auto",
     "md:top-6",
     "md:right-6",
     "md:left-auto",
