@@ -63,6 +63,10 @@ describe("config.matcher", () => {
     "/favicon.ico/x",
     "/apple-icon.png/secret",
     "/_next/staticfoo",
+    "/_next/static",
+    "/_next/image/x",
+    "/_next/image/",
+    "/_next/imagex",
   ])("runs on %s", (url) => {
     expect(unstable_doesMiddlewareMatch({ config, url })).toBe(true);
   });

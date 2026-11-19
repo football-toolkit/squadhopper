@@ -48,8 +48,11 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
   return response;
 }
 
+// Skips only Next.js's own files: everything under /_next/static/, the exact
+// /_next/image optimizer, and the three icons. Any other address, such as
+// /_next/image/x, goes through the gate.
 export const config = {
   matcher: [
-    "/((?!(?:_next/static|_next/image)(?:/|$)|(?:favicon\\.ico|icon\\.svg|apple-icon\\.png)$).*)",
+    "/((?!_next/static/|_next/image$|(?:favicon\\.ico|icon\\.svg|apple-icon\\.png)$).*)",
   ],
 };
