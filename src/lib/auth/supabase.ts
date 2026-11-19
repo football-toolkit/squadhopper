@@ -1,3 +1,4 @@
+import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { sessionCookieOptions } from "./cookie-options";
 import type {

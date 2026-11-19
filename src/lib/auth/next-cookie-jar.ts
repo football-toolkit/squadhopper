@@ -1,3 +1,4 @@
+import "server-only";
 import { cookies, headers } from "next/headers";
 import { createAuthService } from "@/lib/auth";
 import { isSecureRequest } from "@/lib/auth/is-secure-request";

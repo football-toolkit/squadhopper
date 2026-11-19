@@ -1,3 +1,4 @@
+import "server-only";
 import { pickAuthBackend } from "./backend";
 import { createMockAuthService } from "./mock";
 import { createSupabaseAuthService } from "./supabase";
