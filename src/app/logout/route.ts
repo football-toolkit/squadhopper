@@ -5,7 +5,8 @@ import { authServiceForRequest } from "@/lib/auth/next-cookie-jar";
 // most likely answers a POST to an unknown address with static HTML, so the
 // action never ran from the 404 page. This route exists at one fixed address.
 //
-// Only POST is exported: Next.js answers any other method with 405, so a
+// Only POST is exported: Next.js answers any other method except OPTIONS
+// with 405 (it answers OPTIONS itself, without running this file), so a
 // link, a typed address or a prefetch can't end the session.
 
 const NO_STORE = { "Cache-Control": "private, no-store" };
