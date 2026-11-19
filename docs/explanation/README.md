@@ -6,9 +6,10 @@
 
 | Section | What you'll find |
 | --- | --- |
+| [Architecture](architecture.md) | How the app is built: where code runs, the folders, the auth module, the main flows, and how to add a new area |
 | [Decisions](decisions/README.md) | Every design decision, the alternatives we rejected, and why (ADRs) |
 
-More sections are added as they're written, such as the architecture once the code exists.
+More sections are added as they're written.
 
 ## Where next
 
