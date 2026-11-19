@@ -57,6 +57,21 @@ test("GET /logout answers 405 and keeps the user logged in", async ({
   await expect(logOutButton(page)).toBeVisible();
 });
 
+// Another site can't log the user out by posting to /logout.
+test("a POST to /logout from another site answers 403 and keeps the user logged in", async ({
+  page,
+}) => {
+  await logIn(page);
+  const response = await page.request.post("/logout", {
+    headers: { origin: "https://another-site.example.test" },
+    maxRedirects: 0,
+  });
+  expect(response.status()).toBe(403);
+  await page.goto("/");
+  await expect(page).toHaveURL("/");
+  await expect(logOutButton(page)).toBeVisible();
+});
+
 test("Back after logging out shows the login screen", async ({ page }) => {
   await logIn(page);
   await logOutButton(page).click();
