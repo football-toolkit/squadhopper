@@ -62,3 +62,12 @@ Logging out SHALL end the user's session on the device they're using and show th
 
 - **WHEN** the user is logged in on a phone and a computer, and logs out on the phone
 - **THEN** the computer stays logged in
+
+### Requirement: A logout that can't reach the app shows an error popup
+
+If logging out can't reach the app, the user SHALL stay logged in on the page they're on, the Log out button SHALL work again, and an error popup SHALL say "Can't log out right now. Try again."
+
+#### Scenario: The app can't be reached
+
+- **WHEN** the user clicks Log out and the app can't be reached
+- **THEN** an error popup says "Can't log out right now. Try again.", and they stay on the page, still logged in, with the Log out button ready again

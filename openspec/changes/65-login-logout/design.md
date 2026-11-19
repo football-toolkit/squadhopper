@@ -67,7 +67,10 @@ flowchart TD
 ```mermaid
 flowchart TD
     H[Home page or Page not found] -->|Clicks Log out| W[Button dimmed: spinner and 'Logging out…']
-    W --> L[Login screen, no message]
+    W --> R{App reached?}
+    R -- Yes --> L[Login screen, no message]
+    R -- No --> E[Popup 'Can't log out right now. Try again.' Still logged in, Log out ready again]
+    E --> H
 ```
 
 ## Decisions
@@ -81,7 +84,7 @@ flowchart TD
 - **A new login attempt closes the previous error popup**, so popups don't pile up while the user tries again.
 - **No success or "logged out" message.** The screen the user lands on already says it worked.
 - **"Sign-ups are closed." under the card**, as on the boards, so someone without an account knows not to look for a sign-up link.
-- **Logging out always ends the session on this device**, even if the login service can't be reached at that moment. The user asked to leave, and the device forgets them either way.
+- **Logging out always ends the session on this device**, even if the login service can't be reached at that moment. The user asked to leave, and the device forgets them either way. Only when the app itself can't be reached does the user stay logged in, with a popup to try again: nothing can tell the device to forget them.
 - **The texts are the app's own.** The screen never shows the login service's wording, so every message reads the same and gives nothing away.
 
 ## Edge cases

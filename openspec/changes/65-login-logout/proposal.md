@@ -11,7 +11,7 @@ Anyone who opens the app sees everything in it. The teams' matches are meant onl
 - While logging in, the fields and the button are locked, and the button shows a spinner and "Logging in…".
 - A wrong email or password, or a login the app can't check right now, shows an error popup with a plain message. The popup never says which of email or password was wrong.
 - After logging in, the user always lands on the home page. A logged-in user who opens the login screen goes to the home page.
-- A Log out button in the header of the home page and the "page not found" page. Logging out ends the session on this device only and shows the login screen.
+- A Log out button in the header of the home page and the "page not found" page. Logging out ends the session on this device only and shows the login screen. If the app can't be reached, a popup says to try again.
 - A new error popup that later features can reuse for other errors.
 - No sign-up and no password reset: the owner adds each user by hand, and the login screen says that sign-ups are closed.
 
