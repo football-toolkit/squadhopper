@@ -53,7 +53,7 @@ Checked on 2026-11-19.
    - `README.md`: "The app needs Node.js 26."
    - `AGENTS.md`: "The app is built with Next.js on Node 26."
    - `docs/how-to/set-up-vercel.md`, step 7: pick 26.x, production runs on Node 26, and the sentence about #35 is removed.
-4. **No ADR.** The upgrade makes no new choice. It applies the existing rule (pin the newest LTS Vercel offers), and it's cheap to undo. The PR body will say this.
+4. **No ADR.** The upgrade makes no new choice. It follows the choice made in #25 (pin the newest LTS Vercel offers), and it's cheap to undo. The PR body will say this.
 5. **Vercel setting (owner, by hand):** Settings → Build and Deployment → Node.js Version → 26.x. Production follows `engines` either way. The setting keeps the dashboard in line with it.
 
 ## Verification

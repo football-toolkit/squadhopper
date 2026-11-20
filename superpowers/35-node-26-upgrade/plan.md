@@ -16,7 +16,7 @@
 - No other dependency changes version.
 - No CI workflow change, and no change to `.github/dependabot.yml`.
 - History stays as it is: no edits to accepted ADRs (ADR 0011 included) or to other changes' `superpowers/` folders.
-- No ADR for this change. The PR body says why: it applies the existing rule (pin the newest LTS Vercel offers), and it's cheap to undo.
+- No ADR for this change. The PR body says why: it follows the choice made in #25 (pin the newest LTS Vercel offers), and it's cheap to undo.
 - Don't set `VERCEL_FETCH_DISABLE_H2`.
 - Install nothing on this machine beyond the project dependencies (`npm ci`, `npm install`): no Playwright browsers, no global tools.
 - No changes outside: `.nvmrc`, `package.json`, `package-lock.json`, `README.md`, `AGENTS.md`, `docs/how-to/set-up-vercel.md`, and `superpowers/35-node-26-upgrade/`.
