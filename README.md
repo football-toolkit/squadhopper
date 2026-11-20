@@ -7,7 +7,7 @@ See [docs/](docs/README.md) for the documentation, including the design decision
 
 ## Setup
 
-The app needs Node.js 24. With [nvm](https://github.com/nvm-sh/nvm), `nvm use` picks the version from `.nvmrc`. Install the dependencies, turn Next.js telemetry off, and start the app at http://localhost:3000:
+The app needs Node.js 26. With [nvm](https://github.com/nvm-sh/nvm), `nvm use` picks the version from `.nvmrc`. Install the dependencies, turn Next.js telemetry off, and start the app at http://localhost:3000:
 
 ```bash
 nvm use
