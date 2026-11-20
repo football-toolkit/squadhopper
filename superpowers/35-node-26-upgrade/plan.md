@@ -18,6 +18,7 @@
 - History stays as it is: no edits to accepted ADRs (ADR 0011 included) or to other changes' `superpowers/` folders.
 - No ADR for this change. The PR body says why: it applies the existing rule (pin the newest LTS Vercel offers), and it's cheap to undo.
 - Don't set `VERCEL_FETCH_DISABLE_H2`.
+- Install nothing on this machine beyond the project dependencies (`npm ci`, `npm install`): no Playwright browsers, no global tools.
 - No changes outside: `.nvmrc`, `package.json`, `package-lock.json`, `README.md`, `AGENTS.md`, `docs/how-to/set-up-vercel.md`, and `superpowers/35-node-26-upgrade/`.
 - Stage by explicit path only. No personal data.
 - Every commit message ends with the trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, after a blank line. The commit commands below show only the subject, so add the trailer to each.
@@ -112,7 +113,7 @@ Expected: exactly the three lines listed under Files. If there are others, updat
 - [ ] **Step 3: Check that nothing is left**
 
 Run: Step 1's command again, then `npm run format:check`.
-Expected: no output from the search, and the formatting check passes. `format:check` doesn't cover Markdown, so also run `npx prettier --check README.md AGENTS.md docs/how-to/set-up-vercel.md` and expect it to pass.
+Expected: no output from the search, and the formatting check passes. Don't reformat any Markdown file.
 
 - [ ] **Step 4: Commit**
 
@@ -123,7 +124,7 @@ git commit -m "docs: name Node 26 as the project's runtime"
 
 ### Task 3: Verify the whole branch on Node 26
 
-**Files:** none changed. `.env.local` is created for the end-to-end tests, and git ignores it.
+**Files:** none changed. The end-to-end tests run in CI on every PR, on Node 26 from `.nvmrc`. Don't install Playwright browsers or any other tool on this machine. Project dependencies installed with `npm ci` are fine.
 
 - [ ] **Step 1: Run the five checks**
 
@@ -135,17 +136,12 @@ Expected: `exit 0`, and the build output names Next.js 16.4.
 Run: `grep -n 'DeprecationWarning\|ExperimentalWarning' "$LOG"`
 Expected: no output. If something shows up, name the package and the warning code (for example DEP0201) in the PR body. Fix it only if it comes from our own code.
 
-- [ ] **Step 3: Run the end-to-end tests if the local setup allows it**
-
-Run: `test -f .env.local || cp .env.example .env.local`, then `npx playwright install chromium webkit`, then `npm run test:e2e`.
-Expected: all tests pass in Chromium and WebKit. If WebKit can't start because system libraries are missing, don't install them with `sudo`. Note it for the PR body: CI runs the tests on every PR.
-
-- [ ] **Step 4: Check that the working tree is clean**
+- [ ] **Step 3: Check that the working tree is clean**
 
 Run: `git status --short`
-Expected: no output (`.env.local`, `.next/`, `node_modules/`, `test-results/` and `playwright-report/` are ignored).
+Expected: no output (`.next/` and `node_modules/` are ignored).
 
-- [ ] **Step 5: Hand the Vercel check to the owner**
+- [ ] **Step 4: Hand the Vercel check to the owner**
 
 After the push and the PR (each needs the owner's OK), the owner sets Settings → Build and Deployment → Node.js Version to 26.x and opens the PR's Vercel preview build log. Expected: the log shows Node 26 (for example "Using Node.js 26.x" or `node -v` v26). That ticks the third "Done when" item.
 

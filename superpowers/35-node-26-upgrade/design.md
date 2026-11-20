@@ -58,7 +58,7 @@ Checked on 2026-11-19.
 
 ## Verification
 
-- On Node 26: `npm test`, `npm run lint`, `npm run typecheck`, `npm run format:check`, `npm run build`, and `npm run test:e2e` when the local setup allows. CI runs all of them on Node 26 from `.nvmrc`.
+- On Node 26: `npm test`, `npm run lint`, `npm run typecheck`, `npm run format:check`, `npm run build`, and the end-to-end tests run in CI. CI runs all of them on Node 26 from `.nvmrc`.
 - `node -v` prints v26, `.nvmrc` is `26`, `engines.node` is `26.x`, and `npm ls @types/node` shows 26.6.6.
 - A search for "Node 24", "Node.js 24" and "24.x" outside history (accepted ADRs, earlier `superpowers/` folders) finds nothing.
 - The build log of the PR's Vercel preview shows Node 26.
