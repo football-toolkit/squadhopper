@@ -4,7 +4,7 @@ All your football matches in one place.
 
 ## Commands
 
-The app is built with Next.js on Node 24. Setup steps are in `README.md`.
+The app is built with Next.js on Node 26. Setup steps are in `README.md`.
 
 - `npm run dev`: start the app at http://localhost:3000
 - `npm run build`: build the app for production
