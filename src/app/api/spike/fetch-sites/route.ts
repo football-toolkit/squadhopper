@@ -21,13 +21,26 @@ const BROWSER_HEADERS = {
   "Accept-Language": "en-GB,en;q=0.9",
 };
 
+type FailureStatus = "timeout" | "redirect loop" | "network error";
+
 type FetchSummary = {
-  status: number | "timeout" | "network error";
+  status: number | FailureStatus;
   ms: number;
   bytes: number | null;
   redirected: boolean | null;
   matchRows: number | null;
 };
+
+// The error can name the address, so only its kind is reported.
+function failureStatus(error: unknown): FailureStatus {
+  if (!(error instanceof Error)) return "network error";
+  if (error.name === "TimeoutError") return "timeout";
+  // Node's fetch gives up after 20 redirects. A challenge page can loop.
+  const cause = error.cause;
+  return cause instanceof Error && cause.message === "redirect count exceeded"
+    ? "redirect loop"
+    : "network error";
+}
 
 async function fetchSummary(
   url: string,
@@ -48,10 +61,8 @@ async function fetchSummary(
     body = await response.arrayBuffer();
     ms = elapsed();
   } catch (error) {
-    // The error can name the address, so only its kind is reported.
-    const timedOut = error instanceof Error && error.name === "TimeoutError";
     return {
-      status: timedOut ? "timeout" : "network error",
+      status: failureStatus(error),
       ms: elapsed(),
       bytes: null,
       redirected: null,
@@ -73,8 +84,9 @@ export async function GET(): Promise<Response> {
   await connection();
 
   const urls = (process.env.SPIKE_TEAM_URLS ?? "")
-    .split(",")
-    .map((url) => url.trim())
+    // Also on whitespace: fetch drops a line break inside an address, so two
+    // addresses pasted on two lines would become one.
+    .split(/[\s,]+/)
     .filter((url) => url !== "");
   if (urls.length === 0) {
     return Response.json(

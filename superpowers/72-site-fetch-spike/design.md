@@ -41,13 +41,13 @@ The issue settles the approach, and the owner approved it in the conversation: a
 `src/app/api/spike/fetch-sites/route.ts`, exporting only `GET` (Next.js answers other methods with 405).
 
 1. `await connection()`.
-2. Read `SPIKE_TEAM_URLS`, split on commas, trim, drop empty entries. If none are left, return 500 with `{ "error": "SPIKE_TEAM_URLS is not set" }`.
+2. Read `SPIKE_TEAM_URLS`, split on commas and whitespace, drop empty entries. (Whitespace too, because fetch drops a line break inside an address, so two addresses pasted on two lines would become one page.) If none are left, return 500 with `{ "error": "SPIKE_TEAM_URLS is not set" }`.
 3. For each page, in order, fetch it with each user agent in turn, with a 1 s pause before every request except the first:
    - **Honest:** `` `${APP_NAME} (personal schedule sync)` ``, with `APP_NAME` from `src/lib/app-name.ts`.
    - **Browser:** a current desktop Chrome user agent string, plus the `Accept` and `Accept-Language` headers a browser sends.
    - `AbortSignal.timeout(10_000)` covers the request and reading the body. `cache: "no-store"`. Redirects are followed.
 4. For each request, record:
-   - `status`: the HTTP status, or `"timeout"` (the abort fired) or `"network error"` (any other thrown error);
+   - `status`: the HTTP status, or `"timeout"` (the abort fired), `"redirect loop"` (fetch gave up after 20 redirects, as a challenge page that keeps redirecting does) or `"network error"` (any other thrown error);
    - `ms`: time from the start of the request until the body is read;
    - `bytes`: the size of the body;
    - `redirected`: `response.redirected`, so a redirect to a challenge page shows up without showing where;
