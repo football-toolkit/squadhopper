@@ -20,7 +20,7 @@ The issue is accurate, with one correction: on a preview, the login gate uses th
 ## Goals
 
 - `GET /api/spike/fetch-sites` on the preview returns one numbered summary per page in `SPIKE_TEAM_URLS`, for each user agent.
-- No address, hostname or page content appears in the code, the response, logs, the PR or the issue.
+- No address, hostname or page content appears in the code, the response, the code's own log output, the PR or the issue.
 
 ## Non-goals
 
@@ -70,11 +70,13 @@ The issue settles the approach, and the owner approved it in the conversation: a
 
 `region` comes from `VERCEL_REGION`, which Vercel sets at runtime. It proves the function ran in `fra1`. Locally it's `null`.
 
-Errors are reported in the response only. Nothing is logged, so no address can end up in Vercel's logs.
+Errors are reported in the response only, and the code logs nothing. Vercel still records the hostnames a function calls, by itself: in the project's Observability (External APIs), and possibly under a runtime log's Outgoing Requests ([Observability insights](https://vercel.com/docs/observability/insights), [runtime logs](https://vercel.com/docs/logs/runtime)). Only people with access to the Vercel project see them, so no screenshot of either goes into the issue or the PR.
 
 ## The match-row counter
 
-`countMatchRows(html: string): number` counts the `<a …>` opening tags whose `href` contains `/match/` and whose `class` contains `row match`, as the prototype's parser reads them. It looks for each attribute inside the tag, so their order doesn't matter. Regex only, no HTML parser dependency. It lives in the route's folder, in `count-match-rows.ts`, with a unit test in `__tests__/count-match-rows.test.ts`.
+`countMatchRows(html: string): number` counts the links whose `href` contains `/match/` and which contain an element with the classes `row` and `match`. On the real pages, `row match` is the class of an element inside the link, not of the `<a>` itself. It uses [cheerio](https://cheerio.js.org/) (1.2.0, the current release) with the prototype's selectors: `a[href*="/match/"]`, then `.row.match` found inside each. The dependency never reaches `main` from this branch, and it's what the real sync will use. The counter lives in the route's folder, in `count-match-rows.ts`, with a unit test in `__tests__/count-match-rows.test.ts`.
+
+The test uses page-shaped HTML: a link to `/match/` wrapping a `<div class="row match">` (counted), a link to `/match/` without one (not counted), and a `.row.match` outside any `/match/` link (not counted).
 
 My call: that one small test is the only test. The route is throwaway, and the counter is the one piece that decides success or failure. No end-to-end test.
 
@@ -83,8 +85,8 @@ My call: that one small test is the only test. The route is throwaway, and the c
 1. The owner adds `SPIKE_TEAM_URLS` in Vercel, Secret, Preview only, before the code is pushed (or redeploys after).
 2. The agent opens a draft PR. Vercel builds a preview.
 3. The owner opens `/api/spike/fetch-sites` on the preview at least three times, at different times of day, and pastes the JSON into the issue.
-4. The owner gives the agent the four site domains in chat, never committed. The agent reads each site's `robots.txt` and terms of use, and notes in the issue what they say about automated access.
-5. The agent writes the results table and the conclusion into the issue, from the issue's decision table.
+4. The owner gives the agent the four site domains in chat, never committed, and keeps the mapping from domain to Site 1–4. The agent reads each site's `robots.txt` and terms of use. If WebFetch is refused for a site, the agent fetches its `robots.txt` with curl from the shell. The issue is public, so the notes on automated access call the sites Site 1–4, never by domain or name, and quote nothing that identifies one.
+5. The agent writes the results table and the conclusion into the issue, from the issue's decision table. They also use only page numbers and Site 1–4.
 6. The PR is closed without merging, and the owner removes `SPIKE_TEAM_URLS` from Vercel.
 
 ## Checks
@@ -96,4 +98,4 @@ My call: that one small test is the only test. The route is throwaway, and the c
 ## Left to the builder
 
 - The exact Chrome user agent string.
-- How the counter matches attributes (quotes, spacing, case), as long as the unit test covers both orders, single and double quotes, and a row-match link without `/match/` in it.
+- How the counter's test HTML looks beyond the three cases above, as long as it holds no real team, site or match.
